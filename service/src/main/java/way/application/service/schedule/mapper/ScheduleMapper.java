@@ -11,5 +11,5 @@ import way.application.service.schedule.dto.ScheduleDto;
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ScheduleMapper {
 	@Mapping(target = "scheduleSeq", ignore = true)
-	ScheduleEntity toScheduleEntity(ScheduleDto dto);
+	ScheduleEntity toScheduleEntity(ScheduleDto scheduleDto);
 }

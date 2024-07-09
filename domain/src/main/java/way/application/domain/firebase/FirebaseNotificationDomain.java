@@ -29,10 +29,17 @@ public class FirebaseNotificationDomain {
 	private final String API_URL = "https://fcm.googleapis.com/v1/projects/whereareyou-34289/messages:send";
 	private final ObjectMapper objectMapper;
 
-	public void sendNotification(MemberEntity invitedMember, MemberEntity createMember) {
+	/**
+	 * @param targetMemberEntity
+	 * @param sendMemberEntity
+	 *
+	 * sendMemberEntity -> targetMemberEntity 에게 푸시 알림 보내기
+	 * 추후 친구 추가와 관련된 로직의 경우 하드 코딩되어 있는 푸시 알림 메세지 Constant 변수로 수정하여 인자로 입력
+	 */
+	public void sendNotification(MemberEntity targetMemberEntity, MemberEntity sendMemberEntity) {
 		try {
-			String body = createMember.getUserName() + "이(가) 일정 초대를 했습니다.";
-			sendMessageTo(invitedMember.getFireBaseTargetToken(), "일정 요청이 들어왔습니다.", body);
+			String body = sendMemberEntity.getUserName() + "이(가) 일정 초대를 했습니다.";
+			sendMessageTo(targetMemberEntity.getFireBaseTargetToken(), "일정 요청이 들어왔습니다.", body);
 		} catch (IOException e) {
 			throw new ServerException(ErrorResult.FIREBASE_CLOUD_MESSAGING_EXCEPTION);
 		}
