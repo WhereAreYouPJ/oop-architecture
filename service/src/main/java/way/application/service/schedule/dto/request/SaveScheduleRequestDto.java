@@ -1,9 +1,9 @@
-package way.application.service.schedule.dto;
+package way.application.service.schedule.dto.request;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record ScheduleDto(
+public record SaveScheduleRequestDto(
 	String title,
 
 	LocalDateTime startTime,

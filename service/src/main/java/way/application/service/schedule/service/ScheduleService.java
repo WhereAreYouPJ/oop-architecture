@@ -14,7 +14,8 @@ import way.application.infrastructure.member.repository.MemberRepository;
 import way.application.infrastructure.schedule.entity.ScheduleEntity;
 import way.application.infrastructure.schedule.repository.ScheduleRepository;
 import way.application.infrastructure.scheduleMember.repository.ScheduleMemberRepository;
-import way.application.service.schedule.dto.ScheduleDto;
+import way.application.service.schedule.dto.request.SaveScheduleRequestDto;
+import way.application.service.schedule.dto.response.SaveScheduleResponseDto;
 import way.application.service.schedule.mapper.ScheduleMapper;
 import way.application.service.scheduleMember.mapper.ScheduleMemberMapper;
 
@@ -32,20 +33,24 @@ public class ScheduleService {
 	private final ScheduleMemberMapper scheduleMemberMapper;
 
 	/**
-	 * @param scheduleDto
+	 * @param saveScheduleRequestDto
 	 *
 	 * 유효성 검사 -> Repository Interface 에서 처리
 	 * 비즈니스 로직 -> Domain 단에서 처리
 	 * Service 로직 -> Domain 호출 및 저장
 	 */
 	@Transactional
-	public Long createSchedule(ScheduleDto scheduleDto) {
+	public SaveScheduleResponseDto createSchedule(SaveScheduleRequestDto saveScheduleRequestDto) {
 		// Member 유효성 검사 (Repository 에서 처리)
-		MemberEntity createMemberEntity = memberRepository.validateMemberSeq(scheduleDto.createMemberSeq());
-		List<MemberEntity> invitedMemberEntity = memberRepository.validateMemberSeqs(scheduleDto.invitedMemberSeqs());
+		MemberEntity createMemberEntity = memberRepository.validateMemberSeq(saveScheduleRequestDto.createMemberSeq());
+		List<MemberEntity> invitedMemberEntity = memberRepository.validateMemberSeqs(
+			saveScheduleRequestDto.invitedMemberSeqs()
+		);
 
 		// Schedule 저장
-		ScheduleEntity savedSchedule = scheduleRepository.saveSchedule(scheduleMapper.toScheduleEntity(scheduleDto));
+		ScheduleEntity savedSchedule = scheduleRepository.saveSchedule(
+			scheduleMapper.toScheduleEntity(saveScheduleRequestDto)
+		);
 
 		// ScheduleMember 저장
 		Set<MemberEntity> invitedMembers = memberDomain.createMemberSet(createMemberEntity, invitedMemberEntity);
@@ -62,6 +67,6 @@ public class ScheduleService {
 				firebaseNotificationDomain.sendNotification(invitedMember, createMemberEntity);
 		}
 
-		return savedSchedule.getScheduleSeq();
+		return new SaveScheduleResponseDto(savedSchedule.getScheduleSeq());
 	}
 }
