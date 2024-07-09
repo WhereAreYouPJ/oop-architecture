@@ -5,7 +5,7 @@ import java.util.List;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import way.application.service.schedule.dto.ScheduleDto;
+import way.application.service.schedule.dto.request.SaveScheduleRequestDto;
 
 public record SaveScheduleRequest(
 	@NotEmpty(message = "title 값을 입력해주세요.")
@@ -40,8 +40,8 @@ public record SaveScheduleRequest(
 	@NotNull(message = "createMemberSeq 값을 입력해주세요")
 	Long createMemberSeq
 ) {
-	public ScheduleDto toScheduleDto() {
-		return new ScheduleDto(
+	public SaveScheduleRequestDto toScheduleDto() {
+		return new SaveScheduleRequestDto(
 			this.title,
 			this.startTime,
 			this.endTime,

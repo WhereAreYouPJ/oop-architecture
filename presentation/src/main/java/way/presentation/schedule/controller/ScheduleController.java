@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import way.application.service.schedule.dto.response.SaveScheduleResponseDto;
 import way.application.service.schedule.service.ScheduleService;
 import way.presentation.base.BaseResponse;
 import way.presentation.schedule.vo.req.SaveScheduleRequest;
@@ -25,10 +26,12 @@ public class ScheduleController {
 		@Valid
 		@RequestBody SaveScheduleRequest request
 	) {
-		Long scheduleSeq = scheduleService.createSchedule(request.toScheduleDto());
+		// VO -> DTO 변환
+		SaveScheduleResponseDto saveScheduleResponseDto = scheduleService.createSchedule(request.toScheduleDto());
 
-		return ResponseEntity.ok().body(
-			BaseResponse.ofSuccess(HttpStatus.OK.value(), new SaveScheduleResponse(scheduleSeq))
-		);
+		// DTO -> VO 변환
+		SaveScheduleResponse response = new SaveScheduleResponse(saveScheduleResponseDto.scheduleSeq());
+
+		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
 }
