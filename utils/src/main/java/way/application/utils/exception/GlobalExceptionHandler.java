@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +59,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 		response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		return this.makeErrorResponseEntity(ErrorResult.UNKNOWN_EXCEPTION);
+	}
+
+	@ExceptionHandler({BadRequestException.class})
+	public ResponseEntity<ErrorResponse> handleBadRequestException(
+		final BadRequestException exception,
+		HttpServletRequest request,
+		HttpServletResponse response
+	) {
+		log.warn("BadRequest Exception occur: ", exception);
+
+		response.setStatus(exception.getErrorResult().getHttpStatus().value());
+		return this.makeErrorResponseEntity(exception.getErrorResult());
 	}
 
 	private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final ErrorResult errorResult) {
