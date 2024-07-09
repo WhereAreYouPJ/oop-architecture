@@ -271,4 +271,4 @@ public class PostService {
 서비스 컴포넌트의 동작이 사실상 트랜잭션이 걸려 있는 거대한 스크립트를 실행하는 것처럼 보입니다. 나아가 이러한 코드는 **객체지향보다 절차지향에 가까운 사례**이기 때문에 절차지향의 문제점을 그대로 가집니다. 변경에 취약하고 확장에 취약하며 업무가 병렬 처리되기 어렵습니다.
 
 ## Architecture Schematic Diagram
-![img_3.png](Architecture Schmatic Diagram.png)
+![image](https://github.com/WhereAreYouPJ/oop-architecture/assets/103410386/7fcf1b86-6fad-46a5-8fcf-58386005f91d)
