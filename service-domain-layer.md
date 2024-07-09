@@ -8,7 +8,7 @@
 <br><br>
 
 **개발자 A의 비즈니스 로직**
-![img.png](Sequence Diagram1.png)
+![image](https://github.com/WhereAreYouPJ/oop-architecture/assets/103410386/ab9140b9-eb6d-48a9-94b1-4d9ace092bae)
 ```text
 1. 레포지터리에서 데이터를 불러온다
 
@@ -24,7 +24,7 @@
 <br><br>
 
 **개발자  B의 비즈니스 로직**
-![img_1.png](Sequence Diagram2.png)
+![image](https://github.com/WhereAreYouPJ/oop-architecture/assets/103410386/63338517-997a-47f4-9cb4-f81412db5b06)
 ```text
 1. 레포지터리에서 도메인 객체를 불러온다.
 
