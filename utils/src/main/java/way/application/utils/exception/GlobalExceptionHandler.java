@@ -25,30 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-	@Override
-	protected ResponseEntity<Object> handleMethodArgumentNotValid(
-		MethodArgumentNotValidException ex,
-		HttpHeaders headers,
-		HttpStatusCode status,
-		WebRequest request
-	) {
-		final List<String> errorList = ex.getBindingResult()
-			.getAllErrors()
-			.stream()
-			.map(DefaultMessageSourceResolvable::getDefaultMessage)
-			.collect(Collectors.toList());
-
-		log.warn("Invalid DTO Parameter errors : {}", errorList);
-		return this.makeErrorResponseEntity(errorList.toString());
-	}
-
-	private ResponseEntity<Object> makeErrorResponseEntity(final String errorDescription) {
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-			.body(
-				new ErrorResponse(
-					HttpStatus.BAD_REQUEST.toString(), errorDescription, "B001")
-			);
-	}
 
 	@ExceptionHandler({Exception.class})
 	public ResponseEntity<ErrorResponse> handleException(
@@ -64,7 +40,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler({BadRequestException.class})
 	public ResponseEntity<ErrorResponse> handleBadRequestException(
 		final BadRequestException exception,
-		HttpServletRequest request,
 		HttpServletResponse response
 	) {
 		log.warn("BadRequest Exception occur: ", exception);

@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import way.application.service.schedule.dto.response.SaveScheduleResponseDto;
 import way.application.service.schedule.service.ScheduleService;
 import way.presentation.base.BaseResponse;
+import way.presentation.schedule.validates.SaveScheduleValidator;
 import way.presentation.schedule.vo.req.SaveScheduleRequest;
 import way.presentation.schedule.vo.res.SaveScheduleResponse;
 
@@ -19,6 +20,8 @@ import way.presentation.schedule.vo.res.SaveScheduleResponse;
 @RequestMapping("/schedule")
 @RequiredArgsConstructor
 public class ScheduleController {
+	private final SaveScheduleValidator saveScheduleValidator;
+
 	private final ScheduleService scheduleService;
 
 	@PostMapping()
@@ -26,6 +29,9 @@ public class ScheduleController {
 		@Valid
 		@RequestBody SaveScheduleRequest request
 	) {
+		// DTO 유효성 검사
+		saveScheduleValidator.validate(request);
+
 		// VO -> DTO 변환
 		SaveScheduleResponseDto saveScheduleResponseDto = scheduleService.createSchedule(request.toScheduleDto());
 
