@@ -1,5 +1,6 @@
 package way.application.infrastructure.scheduleMember.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -32,4 +33,35 @@ public interface ScheduleMemberJpaRepository extends JpaRepository<ScheduleMembe
 	);
 
 	void deleteAllBySchedule(ScheduleEntity scheduleEntity);
+
+	@Query("""
+		SELECT 
+			sme 
+		FROM 
+			ScheduleMemberEntity sme 
+		WHERE 
+			sme.schedule.scheduleSeq =:scheduleSeq 
+			AND 
+			sme.invitedMember.memberSeq =:memberSeq 
+			AND 
+			sme.acceptSchedule = true
+		""")
+	Optional<ScheduleMemberEntity> findAcceptedScheduleMemberByScheduleSeqAndMemberSeq(
+		@Param("scheduleSeq") Long scheduleSeq,
+		@Param("memberSeq") Long memberSeq
+	);
+
+	@Query("""
+		SELECT 
+			sme 
+		FROM 
+			ScheduleMemberEntity sme 
+		WHERE 
+			sme.schedule =:scheduleEntity 
+			AND 
+			sme.acceptSchedule = true
+		""")
+	List<ScheduleMemberEntity> findAcceptedScheduleMemberByScheduleEntity(
+		@Param("scheduleEntity") ScheduleEntity scheduleEntity
+	);
 }
