@@ -3,20 +3,24 @@ package way.application.service.schedule.service;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import way.application.domain.firebase.FirebaseNotificationDomain;
 import way.application.domain.member.MemberDomain;
+import way.application.domain.scheduleMember.ScheduleMemberDomain;
 import way.application.infrastructure.member.entity.MemberEntity;
 import way.application.infrastructure.member.repository.MemberRepository;
 import way.application.infrastructure.schedule.entity.ScheduleEntity;
 import way.application.infrastructure.schedule.repository.ScheduleRepository;
+import way.application.infrastructure.scheduleMember.entity.ScheduleMemberEntity;
 import way.application.infrastructure.scheduleMember.repository.ScheduleMemberRepository;
 import way.application.service.schedule.dto.request.DeleteScheduleRequestDto;
 import way.application.service.schedule.dto.request.ModifyScheduleRequestDto;
 import way.application.service.schedule.dto.request.SaveScheduleRequestDto;
+import way.application.service.schedule.dto.response.GetScheduleResponseDto;
 import way.application.service.schedule.dto.response.ModifyScheduleResponseDto;
 import way.application.service.schedule.dto.response.SaveScheduleResponseDto;
 import way.application.service.schedule.mapper.ScheduleMapper;
@@ -30,6 +34,7 @@ public class ScheduleService {
 	private final MemberRepository memberRepository;
 
 	private final MemberDomain memberDomain;
+	private final ScheduleMemberDomain scheduleMemberDomain;
 	private final FirebaseNotificationDomain firebaseNotificationDomain;
 
 	private final ScheduleMapper scheduleMapper;
@@ -112,5 +117,28 @@ public class ScheduleService {
 		// 전체 데이터 삭제: 연관관계 매핑으로 인해 ScheduleMember -> Schedule 삭제
 		scheduleMemberRepository.deleteAllBySchedule(scheduleEntity);
 		scheduleRepository.deleteById(scheduleEntity.getScheduleSeq());
+	}
+
+	@Cacheable(value = "schedules", key = "#scheduleSeq + '-' + #memberSeq")
+	@Transactional(readOnly = true)
+	public GetScheduleResponseDto getSchedule(Long scheduleSeq, Long memberSeq) {
+		// 유효성 검사 (Repository 에서 처리)
+		memberRepository.validateMemberSeq(memberSeq);
+		ScheduleEntity scheduleEntity = scheduleRepository.validateScheduleSeq(scheduleSeq);
+		scheduleMemberRepository.findAcceptedScheduleMemberByScheduleSeqAndMemberSeq(scheduleSeq, memberSeq);
+
+		// ScheduleEntity 에서 ScheduleMemberEntity 추출
+		// Schedule accept = true 인 경우만
+		List<ScheduleMemberEntity> scheduleEntities
+			= scheduleMemberRepository.findAcceptedScheduleMemberByScheduleEntity(scheduleEntity);
+
+		// userName 추출 (Domain Layer)
+		List<String> userName = scheduleMemberDomain.extractUserNameFromScheduleMemberEntities(scheduleEntities);
+
+		return new GetScheduleResponseDto(
+			scheduleEntity.getTitle(), scheduleEntity.getStartTime(), scheduleEntity.getEndTime(),
+			scheduleEntity.getLocation(), scheduleEntity.getStreetName(), scheduleEntity.getX(), scheduleEntity.getY(),
+			scheduleEntity.getColor(), scheduleEntity.getMemo(), userName
+		);
 	}
 }
