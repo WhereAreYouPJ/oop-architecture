@@ -1,6 +1,5 @@
 package way.application.infrastructure.scheduleMember.repository;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,7 +26,7 @@ public interface ScheduleMemberJpaRepository extends JpaRepository<ScheduleMembe
 			AND
 			sme.isCreator = true
 		""")
-	Optional<ScheduleMemberEntity> findByScheduleSeqAndMemberSeqAndAcceptScheduleTrueAndIsCreatorTrue(
+	Optional<ScheduleMemberEntity> findScheduleMemberEntityByCreatorAndSchedule(
 		@Param("scheduleSeq") Long scheduleSeq,
 		@Param("memberSeq") Long memberSeq
 	);

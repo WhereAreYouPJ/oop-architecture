@@ -14,7 +14,7 @@ final public class BaseResponse<T> {
 	private final T data;
 
 	public static <T> BaseResponse<T> ofSuccess(int status, T data) {
-		return new BaseResponse<>(200, "SUCCESS", data);
+		return new BaseResponse<>(status, "SUCCESS", data);
 	}
 
 	public static <T> BaseResponse<T> ofFail(int status, String message) {

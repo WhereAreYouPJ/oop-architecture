@@ -20,7 +20,7 @@ public class ScheduleMemberRepositoryImpl implements ScheduleMemberRepository {
 
 	@Override
 	public ScheduleEntity validateScheduleEntityCreatedByMember(Long scheduleSeq, Long memberSeq) {
-		return scheduleMemberJpaRepository.findByScheduleSeqAndMemberSeqAndAcceptScheduleTrueAndIsCreatorTrue(
+		return scheduleMemberJpaRepository.findScheduleMemberEntityByCreatorAndSchedule(
 			scheduleSeq, memberSeq
 		).orElseThrow(() ->
 			new BadRequestException(ErrorResult.SCHEDULE_DIDNT_CREATED_BY_MEMBER_BAD_REQUEST_EXCEPTION)).getSchedule();

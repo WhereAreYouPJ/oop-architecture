@@ -2,6 +2,7 @@ package way.presentation.schedule.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import way.application.service.schedule.dto.request.DeleteScheduleRequestDto;
 import way.application.service.schedule.dto.request.ModifyScheduleRequestDto;
 import way.application.service.schedule.dto.request.SaveScheduleRequestDto;
 import way.application.service.schedule.dto.response.ModifyScheduleResponseDto;
@@ -22,8 +24,10 @@ import way.application.service.schedule.dto.response.SaveScheduleResponseDto;
 import way.application.service.schedule.service.ScheduleService;
 import way.application.utils.exception.GlobalExceptionHandler;
 import way.presentation.base.BaseResponse;
+import way.presentation.schedule.validates.DeleteScheduleValidator;
 import way.presentation.schedule.validates.ModifyScheduleValidator;
 import way.presentation.schedule.validates.SaveScheduleValidator;
+import way.presentation.schedule.vo.req.DeleteScheduleRequest;
 import way.presentation.schedule.vo.req.ModifyScheduleRequest;
 import way.presentation.schedule.vo.req.SaveScheduleRequest;
 import way.presentation.schedule.vo.res.ModifyScheduleResponse;
@@ -35,6 +39,7 @@ import way.presentation.schedule.vo.res.SaveScheduleResponse;
 public class ScheduleController {
 	private final SaveScheduleValidator saveScheduleValidator;
 	private final ModifyScheduleValidator modifyScheduleValidator;
+	private final DeleteScheduleValidator deleteScheduleValidator;
 
 	private final ScheduleService scheduleService;
 
@@ -146,5 +151,60 @@ public class ScheduleController {
 		ModifyScheduleResponse response = new ModifyScheduleResponse(modifyScheduleResponseDto.scheduleSeq());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
+	}
+
+	@DeleteMapping(name = "일정 삭제")
+	@Operation(summary = "일정 삭제 API", description = "일정 삭제 API")
+	@ApiResponses(value = {
+		@ApiResponse(
+			responseCode = "200",
+			description = "요청에 성공하였습니다.",
+			content = @Content(
+				mediaType = "application/json",
+				schema = @Schema(
+					implementation = BaseResponse.class))),
+		@ApiResponse(
+			responseCode = "S500",
+			description = "500 SERVER_ERROR (나도 몰라 ..)",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "B001",
+			description = "400 Invalid DTO Parameter errors / 요청 값 형식 요류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "SSB003",
+			description = "400 SCHEDULE_SEQ_BAD_REQUEST_EXCEPTION / SCHEDULE_ID 오류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "MSB002",
+			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "SDCBMB008",
+			description = "400 SCHEDULE_DIDNT_CREATED_BY_MEMBER_BAD_REQUEST_EXCEPTION / SCHEDULE_ID 오류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class)))
+	})
+	public ResponseEntity<BaseResponse> deleteSchedule(
+		@Valid
+		@RequestBody DeleteScheduleRequest request
+	) {
+		// DTO 유효성 검사
+		deleteScheduleValidator.validate(request);
+
+		// VO -> DTO
+		DeleteScheduleRequestDto deleteScheduleRequestDto = request.toDeleteScheduleRequestDto();
+		scheduleService.deleteSchedule(deleteScheduleRequestDto);
+
+		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
 	}
 }

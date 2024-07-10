@@ -14,6 +14,7 @@ import way.application.infrastructure.member.repository.MemberRepository;
 import way.application.infrastructure.schedule.entity.ScheduleEntity;
 import way.application.infrastructure.schedule.repository.ScheduleRepository;
 import way.application.infrastructure.scheduleMember.repository.ScheduleMemberRepository;
+import way.application.service.schedule.dto.request.DeleteScheduleRequestDto;
 import way.application.service.schedule.dto.request.ModifyScheduleRequestDto;
 import way.application.service.schedule.dto.request.SaveScheduleRequestDto;
 import way.application.service.schedule.dto.response.ModifyScheduleResponseDto;
@@ -96,5 +97,20 @@ public class ScheduleService {
 		);
 
 		return new ModifyScheduleResponseDto(saveScheduleResponseDto.scheduleSeq());
+	}
+
+	@Transactional
+	public void deleteSchedule(DeleteScheduleRequestDto deleteScheduleRequestDto) {
+		// 유효성 검사 (Repository 에서 처리)
+		memberRepository.validateMemberSeq(deleteScheduleRequestDto.creatorSeq());
+		scheduleRepository.validateScheduleSeq(deleteScheduleRequestDto.scheduleSeq());
+		ScheduleEntity scheduleEntity = scheduleMemberRepository.validateScheduleEntityCreatedByMember(
+			deleteScheduleRequestDto.scheduleSeq(),
+			deleteScheduleRequestDto.creatorSeq()
+		);
+
+		// 전체 데이터 삭제: 연관관계 매핑으로 인해 ScheduleMember -> Schedule 삭제
+		scheduleMemberRepository.deleteAllBySchedule(scheduleEntity);
+		scheduleRepository.deleteById(scheduleEntity.getScheduleSeq());
 	}
 }

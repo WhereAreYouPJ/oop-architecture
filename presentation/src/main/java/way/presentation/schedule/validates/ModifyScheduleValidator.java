@@ -11,7 +11,7 @@ import way.presentation.schedule.vo.req.ModifyScheduleRequest;
 @Component
 public class ModifyScheduleValidator {
 	public void validate(ModifyScheduleRequest request) {
-		validateSeq(request.scheduleSeq());
+		validateScheduleSeq(request.scheduleSeq());
 		validateTitle(request.title());
 		validateStartTime(request.startTime());
 		validateEndTime(request.endTime());
@@ -24,8 +24,8 @@ public class ModifyScheduleValidator {
 		validateCreateMemberSeq(request.createMemberSeq());
 	}
 
-	private void validateSeq(Long seq) {
-		if (seq == null) {
+	private void validateScheduleSeq(Long scheduleSeq) {
+		if (scheduleSeq == null) {
 			throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 		}
 	}
