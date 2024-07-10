@@ -14,7 +14,9 @@ import way.application.infrastructure.member.repository.MemberRepository;
 import way.application.infrastructure.schedule.entity.ScheduleEntity;
 import way.application.infrastructure.schedule.repository.ScheduleRepository;
 import way.application.infrastructure.scheduleMember.repository.ScheduleMemberRepository;
+import way.application.service.schedule.dto.request.ModifyScheduleRequestDto;
 import way.application.service.schedule.dto.request.SaveScheduleRequestDto;
+import way.application.service.schedule.dto.response.ModifyScheduleResponseDto;
 import way.application.service.schedule.dto.response.SaveScheduleResponseDto;
 import way.application.service.schedule.mapper.ScheduleMapper;
 import way.application.service.scheduleMember.mapper.ScheduleMemberMapper;
@@ -68,5 +70,31 @@ public class ScheduleService {
 		}
 
 		return new SaveScheduleResponseDto(savedSchedule.getScheduleSeq());
+	}
+
+	@Transactional
+	public ModifyScheduleResponseDto modifySchedule(ModifyScheduleRequestDto modifyScheduleRequestDto) {
+		// 유효성 검사 (Repository 에서 처리)
+		MemberEntity createMemberEntity = memberRepository.validateMemberSeq(
+			modifyScheduleRequestDto.createMemberSeq()
+		);
+		List<MemberEntity> invitedMemberEntity = memberRepository.validateMemberSeqs(
+			modifyScheduleRequestDto.invitedMemberSeqs()
+		);
+		ScheduleEntity scheduleEntity = scheduleMemberRepository.validateScheduleEntityCreatedByMember(
+			modifyScheduleRequestDto.scheduleSeq(),
+			modifyScheduleRequestDto.createMemberSeq()
+		);
+
+		// 삭제 (Repository 에서 처리)
+		scheduleRepository.deleteById(modifyScheduleRequestDto.scheduleSeq());
+		scheduleMemberRepository.deleteAllBySchedule(scheduleEntity);
+
+		// 재저장
+		SaveScheduleResponseDto saveScheduleResponseDto = createSchedule(
+			modifyScheduleRequestDto.toSaveScheduleRequestDto()
+		);
+
+		return new ModifyScheduleResponseDto(saveScheduleResponseDto.scheduleSeq());
 	}
 }
