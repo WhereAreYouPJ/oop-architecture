@@ -14,4 +14,9 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 	public ScheduleEntity saveSchedule(ScheduleEntity scheduleEntity) {
 		return scheduleJpaRepository.save(scheduleEntity);
 	}
+
+	@Override
+	public void deleteById(Long scheduleSeq) {
+		scheduleJpaRepository.deleteById(scheduleSeq);
+	}
 }

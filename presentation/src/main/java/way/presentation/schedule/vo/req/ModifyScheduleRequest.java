@@ -3,9 +3,11 @@ package way.presentation.schedule.vo.req;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import way.application.service.schedule.dto.request.SaveScheduleRequestDto;
+import way.application.service.schedule.dto.request.ModifyScheduleRequestDto;
 
-public record SaveScheduleRequest(
+public record ModifyScheduleRequest(
+	Long scheduleSeq,
+
 	String title,
 
 	LocalDateTime startTime,
@@ -28,8 +30,9 @@ public record SaveScheduleRequest(
 
 	Long createMemberSeq
 ) {
-	public SaveScheduleRequestDto toSaveScheduleRequestDto() {
-		return new SaveScheduleRequestDto(
+	public ModifyScheduleRequestDto toModifyScheduleRequestDto() {
+		return new ModifyScheduleRequestDto(
+			this.scheduleSeq,
 			this.title,
 			this.startTime,
 			this.endTime,

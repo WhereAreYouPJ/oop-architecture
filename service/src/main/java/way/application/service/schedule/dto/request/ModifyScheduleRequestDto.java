@@ -1,11 +1,11 @@
-package way.presentation.schedule.vo.req;
+package way.application.service.schedule.dto.request;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import way.application.service.schedule.dto.request.SaveScheduleRequestDto;
+public record ModifyScheduleRequestDto(
+	Long scheduleSeq,
 
-public record SaveScheduleRequest(
 	String title,
 
 	LocalDateTime startTime,
