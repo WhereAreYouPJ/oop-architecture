@@ -41,12 +41,14 @@ public class ScheduleService {
 	private final ScheduleMemberMapper scheduleMemberMapper;
 
 	/**
-	 * @param saveScheduleRequestDto
-	 *
 	 * 유효성 검사 -> Repository Interface 에서 처리
 	 * 비즈니스 로직 -> Domain 단에서 처리
 	 * Service 로직 -> Domain 호출 및 저장
+	 *
+	 * Service Layer -> Repo의 CRUD만 처리
 	 */
+
+
 	@Transactional
 	public SaveScheduleResponseDto createSchedule(SaveScheduleRequestDto saveScheduleRequestDto) {
 		// Member 유효성 검사 (Repository 에서 처리)

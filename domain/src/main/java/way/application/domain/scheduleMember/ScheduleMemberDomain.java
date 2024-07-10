@@ -5,27 +5,17 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
-import way.application.infrastructure.member.entity.MemberEntity;
-import way.application.infrastructure.schedule.entity.ScheduleEntity;
 import way.application.infrastructure.scheduleMember.entity.ScheduleMemberEntity;
 
 @Component
 public class ScheduleMemberDomain {
 
-	public ScheduleMemberEntity createScheduleMemberEntity(
-		ScheduleEntity schedule,
-		MemberEntity invitedMember,
-		Boolean isCreator,
-		Boolean acceptSchedule
-	) {
-		return ScheduleMemberEntity.builder()
-			.schedule(schedule)
-			.invitedMember(invitedMember)
-			.isCreator(isCreator)
-			.acceptSchedule(acceptSchedule)
-			.build();
-	}
-
+	/**
+	 * @param scheduleMemberEntities
+	 * @return
+	 *
+	 * ScheduleMemberEntity 로부터 UserName 값 추출 메서드
+	 */
 	public List<String> extractUserNameFromScheduleMemberEntities(
 		List<ScheduleMemberEntity> scheduleMemberEntities
 	) {
