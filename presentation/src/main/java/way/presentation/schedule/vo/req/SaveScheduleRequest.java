@@ -3,8 +3,6 @@ package way.presentation.schedule.vo.req;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import way.application.service.schedule.dto.request.SaveScheduleRequestDto;
 
 public record SaveScheduleRequest(
@@ -30,7 +28,7 @@ public record SaveScheduleRequest(
 
 	Long createMemberSeq
 ) {
-	public SaveScheduleRequestDto toScheduleDto() {
+	public SaveScheduleRequestDto toSaveScheduleRequestDto() {
 		return new SaveScheduleRequestDto(
 			this.title,
 			this.startTime,
