@@ -3,13 +3,17 @@ package way.presentation.schedule.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import way.application.service.schedule.dto.request.DeleteScheduleRequestDto;
 import way.application.service.schedule.dto.request.ModifyScheduleRequestDto;
 import way.application.service.schedule.dto.request.SaveScheduleRequestDto;
+import way.application.service.schedule.dto.response.GetScheduleResponseDto;
 import way.application.service.schedule.dto.response.ModifyScheduleResponseDto;
 import way.application.service.schedule.dto.response.SaveScheduleResponseDto;
 import way.application.service.schedule.service.ScheduleService;
@@ -30,6 +35,7 @@ import way.presentation.schedule.validates.SaveScheduleValidator;
 import way.presentation.schedule.vo.req.DeleteScheduleRequest;
 import way.presentation.schedule.vo.req.ModifyScheduleRequest;
 import way.presentation.schedule.vo.req.SaveScheduleRequest;
+import way.presentation.schedule.vo.res.GetScheduleResponse;
 import way.presentation.schedule.vo.res.ModifyScheduleResponse;
 import way.presentation.schedule.vo.res.SaveScheduleResponse;
 
@@ -206,5 +212,70 @@ public class ScheduleController {
 		scheduleService.deleteSchedule(deleteScheduleRequestDto);
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
+	}
+
+	@GetMapping(name = "일정 조회")
+	@Operation(summary = "일정 상세 조회 API", description = "일정 상세 조회 API")
+	@Parameters({
+		@Parameter(
+			name = "scheduleSeq",
+			description = "Schedule Sequence",
+			example = "1"),
+		@Parameter(
+			name = "memberSeq",
+			description = "Member Sequence",
+			example = "1")
+	})
+	@ApiResponses(value = {
+		@ApiResponse(
+			responseCode = "200",
+			description = "요청에 성공하였습니다.",
+			useReturnTypeSchema = true),
+		@ApiResponse(
+			responseCode = "S500",
+			description = "500 SERVER_ERROR (나도 몰라 ..)",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "SSB003",
+			description = "400 SCHEDULE_SEQ_BAD_REQUEST_EXCEPTION / SCHEDULE_ID 오류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "MSB002",
+			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "MSNISB004",
+			description = "400 MEMBER_SEQ_NOT_IN_SCHEDULE_BAD_REQUEST_EXCEPTION / 일정에 존재하지 않는 Member의 경우 + Schedule에서 일정을 수락하지 않은 경우 조회 불가",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class)))
+	})
+	public ResponseEntity<BaseResponse<GetScheduleResponse>> getSchedule(
+		@Valid
+		@RequestParam(name = "scheduleSeq") Long scheduleSeq,
+		@RequestParam(name = "memberSeq") Long memberSeq) {
+		GetScheduleResponseDto getScheduleResponseDto = scheduleService.getSchedule(scheduleSeq, memberSeq);
+
+		// DTO -> VO 변환
+		GetScheduleResponse response = new GetScheduleResponse(
+			getScheduleResponseDto.title(),
+			getScheduleResponseDto.startTime(),
+			getScheduleResponseDto.endTime(),
+			getScheduleResponseDto.location(),
+			getScheduleResponseDto.streetName(),
+			getScheduleResponseDto.x(),
+			getScheduleResponseDto.y(),
+			getScheduleResponseDto.color(),
+			getScheduleResponseDto.memo(),
+			getScheduleResponseDto.userName()
+		);
+
+		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
 }
