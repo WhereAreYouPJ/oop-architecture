@@ -1,5 +1,8 @@
 package way.application.domain.scheduleMember;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Component;
 
 import way.application.infrastructure.member.entity.MemberEntity;
@@ -21,5 +24,13 @@ public class ScheduleMemberDomain {
 			.isCreator(isCreator)
 			.acceptSchedule(acceptSchedule)
 			.build();
+	}
+
+	public List<String> extractUserNameFromScheduleMemberEntities(
+		List<ScheduleMemberEntity> scheduleMemberEntities
+	) {
+		return scheduleMemberEntities.stream()
+			.map(sm -> sm.getInvitedMember().getUserName())
+			.collect(Collectors.toList());
 	}
 }

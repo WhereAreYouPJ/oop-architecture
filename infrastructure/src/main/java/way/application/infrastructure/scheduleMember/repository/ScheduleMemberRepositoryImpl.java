@@ -1,5 +1,7 @@
 package way.application.infrastructure.scheduleMember.repository;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,20 @@ public class ScheduleMemberRepositoryImpl implements ScheduleMemberRepository {
 	@Override
 	public void deleteAllBySchedule(ScheduleEntity scheduleEntity) {
 		scheduleMemberJpaRepository.deleteAllBySchedule(scheduleEntity);
+	}
+
+	@Override
+	public ScheduleMemberEntity findAcceptedScheduleMemberByScheduleSeqAndMemberSeq(
+		Long scheduleSeq,
+		Long memberSeq
+	) {
+		return scheduleMemberJpaRepository.findAcceptedScheduleMemberByScheduleSeqAndMemberSeq(scheduleSeq, memberSeq)
+			.orElseThrow(() -> new BadRequestException(ErrorResult.MEMBER_SEQ_NOT_IN_SCHEDULE_BAD_REQUEST_EXCEPTION));
+	}
+
+	@Override
+	public List<ScheduleMemberEntity> findAcceptedScheduleMemberByScheduleEntity(ScheduleEntity scheduleEntity) {
+		return scheduleMemberJpaRepository.findAcceptedScheduleMemberByScheduleEntity(scheduleEntity);
 	}
 
 }
