@@ -1,5 +1,8 @@
 package way.application.infrastructure.schedule.repository;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import way.application.infrastructure.schedule.entity.ScheduleEntity;
 
 public interface ScheduleRepository {
@@ -10,5 +13,8 @@ public interface ScheduleRepository {
 	void deleteById(Long scheduleSeq);
 
 	// Schedule Seq 로 Validate 진행
-	ScheduleEntity validateScheduleSeq(Long scheduleSeq);
+	ScheduleEntity findByScheduleSeq(Long scheduleSeq);
+
+	// memberSeq, Date, accept = true 조회
+	List<ScheduleEntity> findAcceptedSchedulesByMemberAndDate(Long memberSeq, LocalDate date);
 }
