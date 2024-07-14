@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 import way.application.infrastructure.member.entity.MemberEntity;
 import way.application.utils.exception.BadRequestException;
+import way.application.utils.exception.ConflictException;
 import way.application.utils.exception.ErrorResult;
 
 @Component
@@ -22,6 +23,14 @@ public class MemberRepositoryImpl implements MemberRepository {
 	}
 
 	@Override
+	public void isDuplicatedUserId(String userId) {
+		memberJpaRepository.findByUserId(userId)
+				.ifPresent(user -> {
+					throw new ConflictException(ErrorResult.USER_ID_DUPLICATION_CONFLICT_EXCEPTION);
+				});
+	}
+
+	@Override
 	public List<MemberEntity> findByMemberSeqs(List<Long> memberSeqs) {
 		if (memberSeqs == null || memberSeqs.isEmpty()) {
 			return Collections.emptyList();
@@ -33,5 +42,10 @@ public class MemberRepositoryImpl implements MemberRepository {
 		}
 
 		return memberEntities;
+	}
+
+	@Override
+	public MemberEntity saveMember(MemberEntity memberEntity) {
+		return memberJpaRepository.save(memberEntity);
 	}
 }

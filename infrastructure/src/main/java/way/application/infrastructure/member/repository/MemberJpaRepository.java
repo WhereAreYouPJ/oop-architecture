@@ -5,7 +5,11 @@ import org.springframework.stereotype.Repository;
 
 import way.application.infrastructure.member.entity.MemberEntity;
 
+import java.util.Optional;
+
 @Repository
 public interface MemberJpaRepository extends JpaRepository<MemberEntity, Long> {
+
+    Optional<MemberEntity> findByUserId(String userId);
 
 }
