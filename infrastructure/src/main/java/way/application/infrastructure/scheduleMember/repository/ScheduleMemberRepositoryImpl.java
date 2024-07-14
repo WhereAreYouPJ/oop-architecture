@@ -47,4 +47,10 @@ public class ScheduleMemberRepositoryImpl implements ScheduleMemberRepository {
 		return scheduleMemberJpaRepository.findAcceptedScheduleMemberByScheduleEntity(scheduleEntity);
 	}
 
+	@Override
+	public ScheduleMemberEntity findScheduleMemberEntityByMemberSeqAndScheduleSeq(Long memberSeq, Long scheduleSeq) {
+		return scheduleMemberJpaRepository.findScheduleMemberEntityByMemberSeqAndScheduleSeq(memberSeq, scheduleSeq)
+			.orElseThrow(() -> new BadRequestException(ErrorResult.MEMBER_SEQ_NOT_IN_SCHEDULE_BAD_REQUEST_EXCEPTION));
+	}
+
 }

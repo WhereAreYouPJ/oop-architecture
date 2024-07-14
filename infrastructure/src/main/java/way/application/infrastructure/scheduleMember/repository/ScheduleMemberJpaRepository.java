@@ -64,4 +64,19 @@ public interface ScheduleMemberJpaRepository extends JpaRepository<ScheduleMembe
 	List<ScheduleMemberEntity> findAcceptedScheduleMemberByScheduleEntity(
 		@Param("scheduleEntity") ScheduleEntity scheduleEntity
 	);
+
+	@Query("""
+			SELECT 
+				sme
+			FROM 
+				ScheduleMemberEntity sme
+			WHERE 
+				sme.invitedMember.memberSeq =:memberSeq
+				AND
+				sme.schedule.scheduleSeq =:scheduleSeq
+		""")
+	Optional<ScheduleMemberEntity> findScheduleMemberEntityByMemberSeqAndScheduleSeq(
+		@Param("memberSeq") Long memberSeq,
+		@Param("scheduleSeq") Long scheduleSeq
+	);
 }

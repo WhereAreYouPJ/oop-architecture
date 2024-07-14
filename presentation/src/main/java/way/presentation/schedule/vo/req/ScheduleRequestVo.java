@@ -113,4 +113,16 @@ public class ScheduleRequestVo {
 			);
 		}
 	}
+
+	public record AcceptScheduleRequest(
+		Long scheduleSeq,
+		Long memberSeq
+	) {
+		public ScheduleRequestDto.AcceptScheduleRequestDto toAcceptScheduleRequestDto() {
+			return new ScheduleRequestDto.AcceptScheduleRequestDto(
+				this.scheduleSeq,
+				this.memberSeq
+			);
+		}
+	}
 }

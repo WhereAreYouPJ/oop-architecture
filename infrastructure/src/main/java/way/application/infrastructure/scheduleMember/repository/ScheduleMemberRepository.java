@@ -15,9 +15,12 @@ public interface ScheduleMemberRepository {
 	// ScheduleEntity 전체 삭제
 	void deleteAllBySchedule(ScheduleEntity scheduleEntity);
 
-	// Schedule 수락 O, 해당 Schedule에 Member O -> ScheduleMemberEntity 반환
+	// Schedule 수락 O, 해당 Schedule 에 Member O -> ScheduleMemberEntity 반환
 	ScheduleMemberEntity findAcceptedScheduleMemberByScheduleSeqAndMemberSeq(Long scheduleSeq, Long memberSeq);
 
 	// 해당 Schedule 을 수락한 모든 ScheduleEntity 반환
 	List<ScheduleMemberEntity> findAcceptedScheduleMemberByScheduleEntity(ScheduleEntity scheduleEntity);
+
+	// Schedule 수락 X, memberSeq + scheduleSeq -> 반환
+	ScheduleMemberEntity findScheduleMemberEntityByMemberSeqAndScheduleSeq(Long memberSeq, Long scheduleSeq);
 }

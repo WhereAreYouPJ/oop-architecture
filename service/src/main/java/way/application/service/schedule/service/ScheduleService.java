@@ -149,7 +149,7 @@ public class ScheduleService {
 	public List<ScheduleResponseDto.GetScheduleByDateResponseDto> getScheduleByDate(
 		ScheduleRequestDto.GetScheduleByDateRequestDto getScheduleByDateRequestDto
 	) {
-		// 유효성 검사
+		// 유효성 검사 (Repository 에서 처리)
 		memberRepository.findByMemberSeq(getScheduleByDateRequestDto.memberSeq());
 
 		// ScheduleEntity 추출
@@ -167,5 +167,20 @@ public class ScheduleService {
 				scheduleEntity.getStartTime(),
 				scheduleEntity.getEndTime()))
 			.collect(Collectors.toList());
+	}
+
+	@Transactional(readOnly = true)
+	public void acceptSchedule(ScheduleRequestDto.AcceptScheduleRequestDto request) {
+		// 유효성 검사 (Repository 에서 처리)
+		memberRepository.findByMemberSeq(request.memberSeq());
+		scheduleRepository.findByScheduleSeq(request.scheduleSeq());
+
+		// ScheduleEntity 추출
+		ScheduleMemberEntity scheduleMemberEntity
+			= scheduleMemberRepository.findScheduleMemberEntityByMemberSeqAndScheduleSeq(request.memberSeq(), request.scheduleSeq());
+
+		scheduleMemberEntity.updateAcceptSchedule();
+
+		scheduleMemberRepository.saveScheduleMemberEntity(scheduleMemberEntity);
 	}
 }
