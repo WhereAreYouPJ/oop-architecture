@@ -21,7 +21,7 @@ public class ScheduleMemberRepositoryImpl implements ScheduleMemberRepository {
 	}
 
 	@Override
-	public ScheduleEntity validateScheduleEntityCreatedByMember(Long scheduleSeq, Long memberSeq) {
+	public ScheduleEntity findScheduleByCreator(Long scheduleSeq, Long memberSeq) {
 		return scheduleMemberJpaRepository.findScheduleMemberEntityByCreatorAndSchedule(
 			scheduleSeq, memberSeq
 		).orElseThrow(() ->
