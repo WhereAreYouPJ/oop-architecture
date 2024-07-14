@@ -2,6 +2,7 @@ package way.application.service.schedule.dto.request;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.List;
 
 public class ScheduleRequestDto {
@@ -89,6 +90,13 @@ public class ScheduleRequestDto {
 
 	public record AcceptScheduleRequestDto(
 		Long scheduleSeq,
+		Long memberSeq
+	) {
+
+	}
+
+	public record GetScheduleByMonthRequestDto(
+		YearMonth yearMonth,
 		Long memberSeq
 	) {
 
