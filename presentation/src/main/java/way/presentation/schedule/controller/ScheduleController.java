@@ -20,12 +20,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import way.application.service.schedule.dto.request.DeleteScheduleRequestDto;
-import way.application.service.schedule.dto.request.ModifyScheduleRequestDto;
-import way.application.service.schedule.dto.request.SaveScheduleRequestDto;
-import way.application.service.schedule.dto.response.GetScheduleResponseDto;
-import way.application.service.schedule.dto.response.ModifyScheduleResponseDto;
-import way.application.service.schedule.dto.response.SaveScheduleResponseDto;
+import way.application.service.schedule.dto.request.ScheduleRequestDto;
+import way.application.service.schedule.dto.response.ScheduleResponseDto;
 import way.application.service.schedule.service.ScheduleService;
 import way.application.utils.exception.GlobalExceptionHandler;
 import way.presentation.base.BaseResponse;
@@ -85,8 +81,9 @@ public class ScheduleController {
 		saveScheduleValidator.validate(request);
 
 		// VO -> DTO 변환
-		SaveScheduleRequestDto scheduleDto = request.toSaveScheduleRequestDto();
-		SaveScheduleResponseDto saveScheduleResponseDto = scheduleService.createSchedule(scheduleDto);
+		ScheduleRequestDto.SaveScheduleRequestDto scheduleDto = request.toSaveScheduleRequestDto();
+		ScheduleResponseDto.SaveScheduleResponseDto saveScheduleResponseDto = scheduleService.createSchedule(
+			scheduleDto);
 
 		// DTO -> VO 변환
 		ScheduleResponseVo.SaveScheduleResponse response
@@ -147,8 +144,9 @@ public class ScheduleController {
 		modifyScheduleValidator.validate(request);
 
 		// VO -> DTO 변환
-		ModifyScheduleRequestDto scheduleDto = request.toModifyScheduleRequestDto();
-		ModifyScheduleResponseDto modifyScheduleResponseDto = scheduleService.modifySchedule(scheduleDto);
+		ScheduleRequestDto.ModifyScheduleRequestDto scheduleDto = request.toModifyScheduleRequestDto();
+		ScheduleResponseDto.ModifyScheduleResponseDto modifyScheduleResponseDto = scheduleService.modifySchedule(
+			scheduleDto);
 
 		// DTO -> VO 변환
 		ScheduleResponseVo.ModifyScheduleResponse response
@@ -206,7 +204,7 @@ public class ScheduleController {
 		deleteScheduleValidator.validate(request);
 
 		// VO -> DTO
-		DeleteScheduleRequestDto deleteScheduleRequestDto = request.toDeleteScheduleRequestDto();
+		ScheduleRequestDto.DeleteScheduleRequestDto deleteScheduleRequestDto = request.toDeleteScheduleRequestDto();
 		scheduleService.deleteSchedule(deleteScheduleRequestDto);
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
@@ -258,7 +256,7 @@ public class ScheduleController {
 		@Valid
 		@RequestParam(name = "scheduleSeq") Long scheduleSeq,
 		@RequestParam(name = "memberSeq") Long memberSeq) {
-		GetScheduleResponseDto getScheduleResponseDto = scheduleService.getSchedule(scheduleSeq, memberSeq);
+		ScheduleResponseDto.GetScheduleResponseDto getScheduleResponseDto = scheduleService.getSchedule(scheduleSeq, memberSeq);
 
 		// DTO -> VO 변환
 		ScheduleResponseVo.GetScheduleResponse response = new ScheduleResponseVo.GetScheduleResponse(

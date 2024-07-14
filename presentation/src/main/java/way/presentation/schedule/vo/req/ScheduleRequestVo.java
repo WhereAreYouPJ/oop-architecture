@@ -1,11 +1,10 @@
 package way.presentation.schedule.vo.req;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import way.application.service.schedule.dto.request.DeleteScheduleRequestDto;
-import way.application.service.schedule.dto.request.ModifyScheduleRequestDto;
-import way.application.service.schedule.dto.request.SaveScheduleRequestDto;
+import way.application.service.schedule.dto.request.ScheduleRequestDto;
 
 public class ScheduleRequestVo {
 	public record SaveScheduleRequest(
@@ -31,8 +30,8 @@ public class ScheduleRequestVo {
 
 		Long createMemberSeq
 	) {
-		public SaveScheduleRequestDto toSaveScheduleRequestDto() {
-			return new SaveScheduleRequestDto(
+		public ScheduleRequestDto.SaveScheduleRequestDto toSaveScheduleRequestDto() {
+			return new ScheduleRequestDto.SaveScheduleRequestDto(
 				this.title,
 				this.startTime,
 				this.endTime,
@@ -73,8 +72,8 @@ public class ScheduleRequestVo {
 
 		Long createMemberSeq
 	) {
-		public ModifyScheduleRequestDto toModifyScheduleRequestDto() {
-			return new ModifyScheduleRequestDto(
+		public ScheduleRequestDto.ModifyScheduleRequestDto toModifyScheduleRequestDto() {
+			return new ScheduleRequestDto.ModifyScheduleRequestDto(
 				this.scheduleSeq,
 				this.title,
 				this.startTime,
@@ -95,8 +94,8 @@ public class ScheduleRequestVo {
 		Long scheduleSeq,
 		Long creatorSeq
 	) {
-		public DeleteScheduleRequestDto toDeleteScheduleRequestDto() {
-			return new DeleteScheduleRequestDto(
+		public ScheduleRequestDto.DeleteScheduleRequestDto toDeleteScheduleRequestDto() {
+			return new ScheduleRequestDto.DeleteScheduleRequestDto(
 				this.scheduleSeq,
 				this.creatorSeq
 			);
