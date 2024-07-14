@@ -16,9 +16,7 @@ public class ScheduleMemberDomain {
 	 *
 	 * ScheduleMemberEntity 로부터 UserName 값 추출 메서드
 	 */
-	public List<String> extractUserNameFromScheduleMemberEntities(
-		List<ScheduleMemberEntity> scheduleMemberEntities
-	) {
+	public List<String> extractUserNameFromScheduleMemberEntities(List<ScheduleMemberEntity> scheduleMemberEntities) {
 		return scheduleMemberEntities.stream()
 			.map(sm -> sm.getInvitedMember().getUserName())
 			.collect(Collectors.toList());

@@ -1,5 +1,7 @@
 package way.presentation.schedule.vo.req;
 
+import static way.application.service.schedule.dto.request.ScheduleRequestDto.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
@@ -31,8 +33,8 @@ public class ScheduleRequestVo {
 
 		Long createMemberSeq
 	) {
-		public ScheduleRequestDto.SaveScheduleRequestDto toSaveScheduleRequestDto() {
-			return new ScheduleRequestDto.SaveScheduleRequestDto(
+		public SaveScheduleRequestDto toSaveScheduleRequestDto() {
+			return new SaveScheduleRequestDto(
 				this.title,
 				this.startTime,
 				this.endTime,
@@ -73,8 +75,8 @@ public class ScheduleRequestVo {
 
 		Long createMemberSeq
 	) {
-		public ScheduleRequestDto.ModifyScheduleRequestDto toModifyScheduleRequestDto() {
-			return new ScheduleRequestDto.ModifyScheduleRequestDto(
+		public ModifyScheduleRequestDto toModifyScheduleRequestDto() {
+			return new ModifyScheduleRequestDto(
 				this.scheduleSeq,
 				this.title,
 				this.startTime,
@@ -95,8 +97,8 @@ public class ScheduleRequestVo {
 		Long scheduleSeq,
 		Long creatorSeq
 	) {
-		public ScheduleRequestDto.DeleteScheduleRequestDto toDeleteScheduleRequestDto() {
-			return new ScheduleRequestDto.DeleteScheduleRequestDto(
+		public DeleteScheduleRequestDto toDeleteScheduleRequestDto() {
+			return new DeleteScheduleRequestDto(
 				this.scheduleSeq,
 				this.creatorSeq
 			);
@@ -107,8 +109,8 @@ public class ScheduleRequestVo {
 		Long memberSeq,
 		LocalDate date
 	) {
-		public ScheduleRequestDto.GetScheduleByDateRequestDto toGetScheduleByDateRequestDto() {
-			return new ScheduleRequestDto.GetScheduleByDateRequestDto(
+		public GetScheduleByDateRequestDto toGetScheduleByDateRequestDto() {
+			return new GetScheduleByDateRequestDto(
 				this.memberSeq,
 				this.date
 			);
@@ -119,8 +121,8 @@ public class ScheduleRequestVo {
 		Long scheduleSeq,
 		Long memberSeq
 	) {
-		public ScheduleRequestDto.AcceptScheduleRequestDto toAcceptScheduleRequestDto() {
-			return new ScheduleRequestDto.AcceptScheduleRequestDto(
+		public AcceptScheduleRequestDto toAcceptScheduleRequestDto() {
+			return new AcceptScheduleRequestDto(
 				this.scheduleSeq,
 				this.memberSeq
 			);
@@ -131,8 +133,8 @@ public class ScheduleRequestVo {
 		YearMonth yearMonth,
 		Long memberSeq
 	) {
-		public ScheduleRequestDto.GetScheduleByMonthRequestDto toGetScheduleByMonthRequestDto() {
-			return new ScheduleRequestDto.GetScheduleByMonthRequestDto(
+		public GetScheduleByMonthRequestDto toGetScheduleByMonthRequestDto() {
+			return new GetScheduleByMonthRequestDto(
 				this.yearMonth,
 				this.memberSeq
 			);

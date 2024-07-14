@@ -1,5 +1,7 @@
 package way.presentation.schedule.validates;
 
+import static way.presentation.schedule.vo.req.ScheduleRequestVo.*;
+
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Component;
@@ -10,7 +12,7 @@ import way.presentation.schedule.vo.req.ScheduleRequestVo;
 
 @Component
 public class ModifyScheduleValidator {
-	public void validate(ScheduleRequestVo.ModifyScheduleRequest request) {
+	public void validate(ModifyScheduleRequest request) {
 		validateScheduleSeq(request.scheduleSeq());
 		validateTitle(request.title());
 		validateStartTime(request.startTime());
