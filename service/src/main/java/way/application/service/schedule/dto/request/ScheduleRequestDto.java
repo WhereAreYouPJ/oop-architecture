@@ -1,5 +1,6 @@
 package way.application.service.schedule.dto.request;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -76,6 +77,13 @@ public class ScheduleRequestDto {
 		Long scheduleSeq,
 		Long creatorSeq
 	) {
+
 	}
 
+	public record GetScheduleByDateRequestDto(
+		Long memberSeq,
+		LocalDate date
+	) {
+
+	}
 }

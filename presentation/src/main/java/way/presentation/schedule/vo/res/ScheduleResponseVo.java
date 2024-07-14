@@ -40,4 +40,20 @@ public class ScheduleResponseVo {
 	) implements Serializable {
 		private static final long serialVersionUID = 1L;
 	}
+
+	public record GetScheduleByDateResponse(
+		Long scheduleSeq,
+
+		String title,
+
+		String location,
+
+		String color,
+
+		LocalDateTime startTime,
+
+		LocalDateTime endTime
+	) {
+
+	}
 }

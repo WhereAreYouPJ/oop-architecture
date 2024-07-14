@@ -101,4 +101,16 @@ public class ScheduleRequestVo {
 			);
 		}
 	}
+
+	public record GetScheduleByDateRequest(
+		Long memberSeq,
+		LocalDate date
+	) {
+		public ScheduleRequestDto.GetScheduleByDateRequestDto toGetScheduleByDateRequestDto() {
+			return new ScheduleRequestDto.GetScheduleByDateRequestDto(
+				this.memberSeq,
+				this.date
+			);
+		}
+	}
 }

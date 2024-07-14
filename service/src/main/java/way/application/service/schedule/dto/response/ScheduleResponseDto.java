@@ -41,4 +41,20 @@ public class ScheduleResponseDto {
 		private static final long serialVersionUID = 1L;
 
 	}
+
+	public record GetScheduleByDateResponseDto(
+		Long scheduleSeq,
+
+		String title,
+
+		String location,
+
+		String color,
+
+		LocalDateTime startTime,
+
+		LocalDateTime endTime
+	) {
+
+	}
 }
