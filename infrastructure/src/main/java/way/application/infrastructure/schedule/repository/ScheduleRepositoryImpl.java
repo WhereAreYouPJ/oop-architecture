@@ -1,6 +1,7 @@
 package way.application.infrastructure.schedule.repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -34,5 +35,14 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 	@Override
 	public List<ScheduleEntity> findAcceptedSchedulesByMemberAndDate(Long memberSeq, LocalDate date) {
 		return scheduleJpaRepository.findAcceptedSchedulesByMemberAndDate(memberSeq, date);
+	}
+
+	@Override
+	public List<ScheduleEntity> findSchedulesByYearMonth(
+		LocalDateTime startOfMonth,
+		LocalDateTime endOfMonth,
+		Long memberSeq
+	) {
+		return scheduleJpaRepository.findSchedulesByYearMonth(startOfMonth, endOfMonth, memberSeq);
 	}
 }

@@ -1,6 +1,7 @@
 package way.application.infrastructure.schedule.repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import way.application.infrastructure.schedule.entity.ScheduleEntity;
@@ -17,4 +18,7 @@ public interface ScheduleRepository {
 
 	// memberSeq, Date, accept = true 조회
 	List<ScheduleEntity> findAcceptedSchedulesByMemberAndDate(Long memberSeq, LocalDate date);
+
+	// YearMonth 로 Schedule 조회
+	List<ScheduleEntity> findSchedulesByYearMonth(LocalDateTime startOfMonth, LocalDateTime endOfMonth, Long memberSeq);
 }
