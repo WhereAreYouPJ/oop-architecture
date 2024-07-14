@@ -2,6 +2,7 @@ package way.presentation.schedule.vo.req;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.List;
 
 import way.application.service.schedule.dto.request.ScheduleRequestDto;
@@ -121,6 +122,18 @@ public class ScheduleRequestVo {
 		public ScheduleRequestDto.AcceptScheduleRequestDto toAcceptScheduleRequestDto() {
 			return new ScheduleRequestDto.AcceptScheduleRequestDto(
 				this.scheduleSeq,
+				this.memberSeq
+			);
+		}
+	}
+
+	public record GetScheduleByMonthRequest(
+		YearMonth yearMonth,
+		Long memberSeq
+	) {
+		public ScheduleRequestDto.GetScheduleByMonthRequestDto toGetScheduleByMonthRequestDto() {
+			return new ScheduleRequestDto.GetScheduleByMonthRequestDto(
+				this.yearMonth,
 				this.memberSeq
 			);
 		}

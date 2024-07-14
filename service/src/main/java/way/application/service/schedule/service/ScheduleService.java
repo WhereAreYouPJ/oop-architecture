@@ -1,5 +1,7 @@
 package way.application.service.schedule.service;
 
+import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import way.application.domain.firebase.FirebaseNotificationDomain;
 import way.application.domain.member.MemberDomain;
+import way.application.domain.schedule.ScheduleDomain;
 import way.application.domain.scheduleMember.ScheduleMemberDomain;
 import way.application.infrastructure.member.entity.MemberEntity;
 import way.application.infrastructure.member.repository.MemberRepository;
@@ -32,6 +35,7 @@ public class ScheduleService {
 
 	private final MemberDomain memberDomain;
 	private final ScheduleMemberDomain scheduleMemberDomain;
+	private final ScheduleDomain scheduleDomain;
 	private final FirebaseNotificationDomain firebaseNotificationDomain;
 
 	private final ScheduleMapper scheduleMapper;
@@ -177,10 +181,45 @@ public class ScheduleService {
 
 		// ScheduleEntity 추출
 		ScheduleMemberEntity scheduleMemberEntity
-			= scheduleMemberRepository.findScheduleMemberEntityByMemberSeqAndScheduleSeq(request.memberSeq(), request.scheduleSeq());
+			= scheduleMemberRepository.findScheduleMemberEntityByMemberSeqAndScheduleSeq(
+			request.memberSeq(),
+			request.scheduleSeq()
+		);
 
 		scheduleMemberEntity.updateAcceptSchedule();
 
 		scheduleMemberRepository.saveScheduleMemberEntity(scheduleMemberEntity);
+	}
+
+	public List<ScheduleResponseDto.GetScheduleByMonthResponseDto> getScheduleByMonth(
+		ScheduleRequestDto.GetScheduleByMonthRequestDto getScheduleByMonthRequestDto
+	) {
+		// 유효성 검사 (Repository 에서 처리)
+		memberRepository.findByMemberSeq(getScheduleByMonthRequestDto.memberSeq());
+
+		// Domain 에서 처리
+		LocalDateTime startOfMonth = scheduleDomain.getStartOfMonth(getScheduleByMonthRequestDto.yearMonth());
+		LocalDateTime endOfMonth = scheduleDomain.getEndOfMonth(getScheduleByMonthRequestDto.yearMonth());
+
+		List<ScheduleEntity> scheduleEntities = scheduleRepository.findSchedulesByYearMonth(
+			startOfMonth,
+			endOfMonth,
+			getScheduleByMonthRequestDto.memberSeq()
+		);
+
+		return scheduleEntities.stream()
+			.map(scheduleEntity -> new ScheduleResponseDto.GetScheduleByMonthResponseDto(
+				scheduleEntity.getScheduleSeq(),
+				scheduleEntity.getTitle(),
+				scheduleEntity.getStartTime(),
+				scheduleEntity.getEndTime(),
+				scheduleEntity.getLocation(),
+				scheduleEntity.getStreetName(),
+				scheduleEntity.getX(),
+				scheduleEntity.getY(),
+				scheduleEntity.getColor(),
+				scheduleEntity.getMemo()
+			))
+			.collect(Collectors.toList());
 	}
 }

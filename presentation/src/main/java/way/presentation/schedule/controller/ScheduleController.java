@@ -1,9 +1,11 @@
 package way.presentation.schedule.controller;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -314,9 +316,11 @@ public class ScheduleController {
 		@Valid
 		@RequestParam(name = "date") LocalDate date,
 		@RequestParam(name = "memberSeq") Long memberSeq) {
-		// VO -> DTO
+		// Param -> VO
 		ScheduleRequestVo.GetScheduleByDateRequest request
 			= new ScheduleRequestVo.GetScheduleByDateRequest(memberSeq, date);
+
+		// VO -> DTO
 		List<ScheduleResponseDto.GetScheduleByDateResponseDto> scheduleByDateResponseDto
 			= scheduleService.getScheduleByDate(request.toGetScheduleByDateRequestDto());
 
@@ -378,5 +382,76 @@ public class ScheduleController {
 		scheduleService.acceptSchedule(request.toAcceptScheduleRequestDto());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
+	}
+
+	@GetMapping(value = "/month-schedule", name = "월별 일정 조회")
+	@Operation(summary = "월별 일정 조회 API", description = "월별 일정 조회 API")
+	@Parameters({
+		@Parameter(
+			name = "yearMonth",
+			description = "조회하려는 날짜(yyyy-dd)",
+			example = "2024-05"),
+		@Parameter(
+			name = "memberSeq",
+			description = "Member Sequence",
+			example = "1")
+	})
+	@ApiResponses(value = {
+		@ApiResponse(
+			responseCode = "200",
+			description = "요청에 성공하였습니다.",
+			useReturnTypeSchema = true
+			// content = @Content(
+			// 	mediaType = "application/json",
+			// 	schema = @Schema(
+			// 		implementation = Schedule.GetScheduleByMonthResponse.class,
+			// 		type = "array"))
+		),
+		@ApiResponse(
+			responseCode = "S500",
+			description = "500 SERVER_ERROR (나도 몰라 ..)",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "MSB002",
+			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class)))
+	})
+	public ResponseEntity<BaseResponse<List<ScheduleResponseVo.GetScheduleByMonthResponse>>> getScheduleByMonth(
+		@Valid
+		@DateTimeFormat(pattern = "yyyy-MM") YearMonth yearMonth,
+		@RequestParam("memberSeq") Long memberSeq
+	) {
+		// Param -> VO
+		ScheduleRequestVo.GetScheduleByMonthRequest requestVO = new ScheduleRequestVo.GetScheduleByMonthRequest(
+			yearMonth,
+			memberSeq
+		);
+
+		// VO -> DTO
+		List<ScheduleResponseDto.GetScheduleByMonthResponseDto> responseDto = scheduleService.getScheduleByMonth(
+			requestVO.toGetScheduleByMonthRequestDto()
+		);
+
+		// DTO -> VO
+		List<ScheduleResponseVo.GetScheduleByMonthResponse> response = responseDto.stream()
+			.map(scheduleEntity -> new ScheduleResponseVo.GetScheduleByMonthResponse(
+				scheduleEntity.scheduleSeq(),
+				scheduleEntity.title(),
+				scheduleEntity.startTime(),
+				scheduleEntity.endTime(),
+				scheduleEntity.location(),
+				scheduleEntity.streetName(),
+				scheduleEntity.x(),
+				scheduleEntity.y(),
+				scheduleEntity.color(),
+				scheduleEntity.memo()
+			))
+			.collect(Collectors.toList());
+
+		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
 }
