@@ -1,5 +1,9 @@
 package way.presentation.schedule.controller;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -256,7 +260,8 @@ public class ScheduleController {
 		@Valid
 		@RequestParam(name = "scheduleSeq") Long scheduleSeq,
 		@RequestParam(name = "memberSeq") Long memberSeq) {
-		ScheduleResponseDto.GetScheduleResponseDto getScheduleResponseDto = scheduleService.getSchedule(scheduleSeq, memberSeq);
+		ScheduleResponseDto.GetScheduleResponseDto getScheduleResponseDto = scheduleService.getSchedule(scheduleSeq,
+			memberSeq);
 
 		// DTO -> VO 변환
 		ScheduleResponseVo.GetScheduleResponse response = new ScheduleResponseVo.GetScheduleResponse(
@@ -271,6 +276,60 @@ public class ScheduleController {
 			getScheduleResponseDto.memo(),
 			getScheduleResponseDto.userName()
 		);
+
+		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
+	}
+
+	@GetMapping(value = "/date", name = "해당 날짜 일정 조회")
+	@Operation(summary = "해당 날짜 일정 조회 API", description = "해당 날짜 일정 조회 API")
+	@Parameters({
+		@Parameter(
+			name = "date",
+			description = "조회하려는 날짜",
+			example = "2024-05-12"),
+		@Parameter(
+			name = "memberSeq",
+			description = "Member Sequence",
+			example = "1")
+	})
+	@ApiResponses(value = {
+		@ApiResponse(
+			responseCode = "200",
+			description = "요청에 성공하였습니다.",
+			useReturnTypeSchema = true),
+		@ApiResponse(
+			responseCode = "S500",
+			description = "500 SERVER_ERROR (나도 몰라 ..)",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "MSB002",
+			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class)))
+	})
+	public ResponseEntity<BaseResponse<List<ScheduleResponseVo.GetScheduleByDateResponse>>> getScheduleByDate(
+		@Valid
+		@RequestParam(name = "date") LocalDate date,
+		@RequestParam(name = "memberSeq") Long memberSeq) {
+		// VO -> DTO
+		ScheduleRequestVo.GetScheduleByDateRequest request
+			= new ScheduleRequestVo.GetScheduleByDateRequest(memberSeq, date);
+		List<ScheduleResponseDto.GetScheduleByDateResponseDto> scheduleByDateResponseDto
+			= scheduleService.getScheduleByDate(request.toGetScheduleByDateRequestDto());
+
+		// DTO -> VO
+		List<ScheduleResponseVo.GetScheduleByDateResponse> response = scheduleByDateResponseDto.stream()
+			.map(dto -> new ScheduleResponseVo.GetScheduleByDateResponse(
+				dto.scheduleSeq(),
+				dto.title(),
+				dto.location(),
+				dto.color(),
+				dto.startTime(),
+				dto.endTime()))
+			.collect(Collectors.toList());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
