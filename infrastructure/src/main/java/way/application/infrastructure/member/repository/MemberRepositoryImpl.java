@@ -16,13 +16,13 @@ public class MemberRepositoryImpl implements MemberRepository {
 	private final MemberJpaRepository memberJpaRepository;
 
 	@Override
-	public MemberEntity validateMemberSeq(Long memberSeq) {
+	public MemberEntity findByMemberSeq(Long memberSeq) {
 		return memberJpaRepository.findById(memberSeq)
 			.orElseThrow(() -> new BadRequestException(ErrorResult.MEMBER_SEQ_BAD_REQUEST_EXCEPTION));
 	}
 
 	@Override
-	public List<MemberEntity> validateMemberSeqs(List<Long> memberSeqs) {
+	public List<MemberEntity> findByMemberSeqs(List<Long> memberSeqs) {
 		if (memberSeqs == null || memberSeqs.isEmpty()) {
 			return Collections.emptyList();
 		}

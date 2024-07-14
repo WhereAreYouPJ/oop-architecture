@@ -6,11 +6,11 @@ import org.springframework.stereotype.Component;
 
 import way.application.utils.exception.BadRequestException;
 import way.application.utils.exception.ErrorResult;
-import way.presentation.schedule.vo.req.SaveScheduleRequest;
+import way.presentation.schedule.vo.req.ScheduleRequestVo;
 
 @Component
 public class SaveScheduleValidator {
-	public void validate(SaveScheduleRequest request) {
+	public void validate(ScheduleRequestVo.SaveScheduleRequest request) {
 		validateTitle(request.title());
 		validateStartTime(request.startTime());
 		validateEndTime(request.endTime());

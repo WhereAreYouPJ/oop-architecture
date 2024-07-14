@@ -10,7 +10,7 @@ public interface ScheduleMemberRepository {
 	ScheduleMemberEntity saveScheduleMemberEntity(ScheduleMemberEntity scheduleMemberEntity);
 
 	// ScheduleEntity 가 해당 memberSeq 가 creator 인지 확인
-	ScheduleEntity validateScheduleEntityCreatedByMember(Long scheduleSeq, Long memberSeq);
+	ScheduleEntity findScheduleByCreator(Long scheduleSeq, Long memberSeq);
 
 	// ScheduleEntity 전체 삭제
 	void deleteAllBySchedule(ScheduleEntity scheduleEntity);
