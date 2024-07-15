@@ -48,6 +48,12 @@ public class MemberController {
                     description = "400 Invalid DTO Parameter errors",
                     content = @Content(
                             schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "UIDC001",
+                    description = "409 USER_ID_DUPLICATION_CONFLICT_EXCEPTION",
+                    content = @Content(
+                            schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class)))
     })
     public ResponseEntity<BaseResponse<String>> saveMember(@Valid @RequestBody SaveMemberRequest request) {
