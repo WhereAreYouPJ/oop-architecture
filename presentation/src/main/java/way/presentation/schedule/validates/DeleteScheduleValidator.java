@@ -21,8 +21,8 @@ public class DeleteScheduleValidator {
 		}
 	}
 
-	private void validateMemberSeq(Long scheduleSeq) {
-		if (scheduleSeq == null) {
+	private void validateMemberSeq(Long memberSeq) {
+		if (memberSeq == null) {
 			throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 		}
 	}
