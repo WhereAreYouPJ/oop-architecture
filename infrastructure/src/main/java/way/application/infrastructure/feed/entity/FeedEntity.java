@@ -37,6 +37,7 @@ public class FeedEntity {
 	@JoinColumn(name = "schedule_seq")
 	private ScheduleEntity schedule;
 
+	@Column(name = "title", nullable = false)
 	private String title;
 
 	@Lob
