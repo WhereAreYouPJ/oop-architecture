@@ -24,7 +24,17 @@ public class MemberRequestVo {
                     this.email
             );
         }
-
-
     }
+
+   public record CheckIdRequest(
+
+           String userId
+   ) {
+       public MemberRequestDto.CheckIdRequestDto toCheckIdRequestDto() {
+           return new MemberRequestDto.CheckIdRequestDto(
+                   this.userId
+           );
+       }
+   }
+
 }
