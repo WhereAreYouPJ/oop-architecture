@@ -1,5 +1,10 @@
 package way.presentation.schedule.controller;
 
+import static way.application.service.schedule.dto.request.ScheduleRequestDto.*;
+import static way.application.service.schedule.dto.response.ScheduleResponseDto.*;
+import static way.presentation.schedule.vo.req.ScheduleRequestVo.*;
+import static way.presentation.schedule.vo.res.ScheduleResponseVo.*;
+
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
@@ -79,21 +84,21 @@ public class ScheduleController {
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
-	public ResponseEntity<BaseResponse<ScheduleResponseVo.SaveScheduleResponse>> saveSchedule(
+	public ResponseEntity<BaseResponse<SaveScheduleResponse>> saveSchedule(
 		@Valid
-		@RequestBody ScheduleRequestVo.SaveScheduleRequest request
+		@RequestBody SaveScheduleRequest request
 	) {
 		// DTO 유효성 검사
 		saveScheduleValidator.validate(request);
 
 		// VO -> DTO 변환
-		ScheduleRequestDto.SaveScheduleRequestDto scheduleDto = request.toSaveScheduleRequestDto();
-		ScheduleResponseDto.SaveScheduleResponseDto saveScheduleResponseDto = scheduleService.createSchedule(
+		SaveScheduleRequestDto scheduleDto = request.toSaveScheduleRequestDto();
+		SaveScheduleResponseDto saveScheduleResponseDto = scheduleService.createSchedule(
 			scheduleDto);
 
 		// DTO -> VO 변환
-		ScheduleResponseVo.SaveScheduleResponse response
-			= new ScheduleResponseVo.SaveScheduleResponse(saveScheduleResponseDto.scheduleSeq());
+		SaveScheduleResponse response
+			= new SaveScheduleResponse(saveScheduleResponseDto.scheduleSeq());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
@@ -142,21 +147,20 @@ public class ScheduleController {
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
-	public ResponseEntity<BaseResponse<ScheduleResponseVo.ModifyScheduleResponse>> modifySchedule(
+	public ResponseEntity<BaseResponse<ModifyScheduleResponse>> modifySchedule(
 		@Valid
-		@RequestBody ScheduleRequestVo.ModifyScheduleRequest request
+		@RequestBody ModifyScheduleRequest request
 	) {
 		// DTO 유효성 검사
 		modifyScheduleValidator.validate(request);
 
 		// VO -> DTO 변환
-		ScheduleRequestDto.ModifyScheduleRequestDto scheduleDto = request.toModifyScheduleRequestDto();
-		ScheduleResponseDto.ModifyScheduleResponseDto modifyScheduleResponseDto = scheduleService.modifySchedule(
-			scheduleDto);
+		ModifyScheduleRequestDto scheduleDto = request.toModifyScheduleRequestDto();
+		ModifyScheduleResponseDto modifyScheduleResponseDto = scheduleService.modifySchedule(scheduleDto);
 
 		// DTO -> VO 변환
-		ScheduleResponseVo.ModifyScheduleResponse response
-			= new ScheduleResponseVo.ModifyScheduleResponse(modifyScheduleResponseDto.scheduleSeq());
+		ModifyScheduleResponse response
+			= new ModifyScheduleResponse(modifyScheduleResponseDto.scheduleSeq());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
@@ -204,13 +208,13 @@ public class ScheduleController {
 	})
 	public ResponseEntity<BaseResponse> deleteSchedule(
 		@Valid
-		@RequestBody ScheduleRequestVo.DeleteScheduleRequest request
+		@RequestBody DeleteScheduleRequest request
 	) {
 		// DTO 유효성 검사
 		deleteScheduleValidator.validate(request);
 
 		// VO -> DTO
-		ScheduleRequestDto.DeleteScheduleRequestDto deleteScheduleRequestDto = request.toDeleteScheduleRequestDto();
+		DeleteScheduleRequestDto deleteScheduleRequestDto = request.toDeleteScheduleRequestDto();
 		scheduleService.deleteSchedule(deleteScheduleRequestDto);
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
@@ -258,15 +262,15 @@ public class ScheduleController {
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
-	public ResponseEntity<BaseResponse<ScheduleResponseVo.GetScheduleResponse>> getSchedule(
+	public ResponseEntity<BaseResponse<GetScheduleResponse>> getSchedule(
 		@Valid
 		@RequestParam(name = "scheduleSeq") Long scheduleSeq,
 		@RequestParam(name = "memberSeq") Long memberSeq) {
-		ScheduleResponseDto.GetScheduleResponseDto getScheduleResponseDto = scheduleService.getSchedule(scheduleSeq,
+		GetScheduleResponseDto getScheduleResponseDto = scheduleService.getSchedule(scheduleSeq,
 			memberSeq);
 
 		// DTO -> VO 변환
-		ScheduleResponseVo.GetScheduleResponse response = new ScheduleResponseVo.GetScheduleResponse(
+		GetScheduleResponse response = new GetScheduleResponse(
 			getScheduleResponseDto.title(),
 			getScheduleResponseDto.startTime(),
 			getScheduleResponseDto.endTime(),
@@ -312,21 +316,20 @@ public class ScheduleController {
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
-	public ResponseEntity<BaseResponse<List<ScheduleResponseVo.GetScheduleByDateResponse>>> getScheduleByDate(
+	public ResponseEntity<BaseResponse<List<GetScheduleByDateResponse>>> getScheduleByDate(
 		@Valid
 		@RequestParam(name = "date") LocalDate date,
 		@RequestParam(name = "memberSeq") Long memberSeq) {
 		// Param -> VO
-		ScheduleRequestVo.GetScheduleByDateRequest request
-			= new ScheduleRequestVo.GetScheduleByDateRequest(memberSeq, date);
+		GetScheduleByDateRequest request = new GetScheduleByDateRequest(memberSeq, date);
 
 		// VO -> DTO
-		List<ScheduleResponseDto.GetScheduleByDateResponseDto> scheduleByDateResponseDto
+		List<GetScheduleByDateResponseDto> scheduleByDateResponseDto
 			= scheduleService.getScheduleByDate(request.toGetScheduleByDateRequestDto());
 
 		// DTO -> VO
-		List<ScheduleResponseVo.GetScheduleByDateResponse> response = scheduleByDateResponseDto.stream()
-			.map(dto -> new ScheduleResponseVo.GetScheduleByDateResponse(
+		List<GetScheduleByDateResponse> response = scheduleByDateResponseDto.stream()
+			.map(dto -> new GetScheduleByDateResponse(
 				dto.scheduleSeq(),
 				dto.title(),
 				dto.location(),
@@ -376,7 +379,7 @@ public class ScheduleController {
 	public ResponseEntity<BaseResponse> acceptSchedule(
 		@Valid
 		@RequestBody
-		ScheduleRequestVo.AcceptScheduleRequest request
+		AcceptScheduleRequest request
 	) {
 		// VO -> DTO
 		scheduleService.acceptSchedule(request.toAcceptScheduleRequestDto());
@@ -420,25 +423,22 @@ public class ScheduleController {
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
-	public ResponseEntity<BaseResponse<List<ScheduleResponseVo.GetScheduleByMonthResponse>>> getScheduleByMonth(
+	public ResponseEntity<BaseResponse<List<GetScheduleByMonthResponse>>> getScheduleByMonth(
 		@Valid
 		@DateTimeFormat(pattern = "yyyy-MM") YearMonth yearMonth,
 		@RequestParam("memberSeq") Long memberSeq
 	) {
 		// Param -> VO
-		ScheduleRequestVo.GetScheduleByMonthRequest requestVO = new ScheduleRequestVo.GetScheduleByMonthRequest(
-			yearMonth,
-			memberSeq
-		);
+		GetScheduleByMonthRequest requestVO = new GetScheduleByMonthRequest(yearMonth, memberSeq);
 
 		// VO -> DTO
-		List<ScheduleResponseDto.GetScheduleByMonthResponseDto> responseDto = scheduleService.getScheduleByMonth(
+		List<GetScheduleByMonthResponseDto> responseDto = scheduleService.getScheduleByMonth(
 			requestVO.toGetScheduleByMonthRequestDto()
 		);
 
 		// DTO -> VO
-		List<ScheduleResponseVo.GetScheduleByMonthResponse> response = responseDto.stream()
-			.map(scheduleEntity -> new ScheduleResponseVo.GetScheduleByMonthResponse(
+		List<GetScheduleByMonthResponse> response = responseDto.stream()
+			.map(scheduleEntity -> new GetScheduleByMonthResponse(
 				scheduleEntity.scheduleSeq(),
 				scheduleEntity.title(),
 				scheduleEntity.startTime(),

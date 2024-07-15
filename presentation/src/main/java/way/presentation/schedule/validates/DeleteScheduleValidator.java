@@ -1,5 +1,7 @@
 package way.presentation.schedule.validates;
 
+import static way.presentation.schedule.vo.req.ScheduleRequestVo.*;
+
 import org.springframework.stereotype.Component;
 
 import way.application.utils.exception.BadRequestException;
@@ -8,7 +10,7 @@ import way.presentation.schedule.vo.req.ScheduleRequestVo;
 
 @Component
 public class DeleteScheduleValidator {
-	public void validate(ScheduleRequestVo.DeleteScheduleRequest request) {
+	public void validate(DeleteScheduleRequest request) {
 		validateScheduleSeq(request.scheduleSeq());
 		validateMemberSeq(request.creatorSeq());
 	}
