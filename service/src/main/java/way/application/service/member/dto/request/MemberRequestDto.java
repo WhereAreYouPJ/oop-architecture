@@ -13,4 +13,11 @@ public class MemberRequestDto {
     ) {
 
     }
+
+    public record CheckIdRequestDto (
+            String userId
+
+    ) {
+
+    }
 }

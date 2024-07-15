@@ -7,8 +7,11 @@ import way.application.infrastructure.member.entity.MemberEntity;
 import way.application.infrastructure.member.repository.MemberRepository;
 import way.application.service.member.dto.request.MemberRequestDto;
 import way.application.service.member.dto.request.MemberRequestDto.SaveMemberRequestDto;
+import way.application.service.member.dto.response.MemberResponseDto;
 import way.application.service.member.mapper.MemberMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import static way.application.service.member.dto.response.MemberResponseDto.*;
 
 
 @Service
@@ -37,6 +40,15 @@ public class MemberService {
 				memberMapper.toMemberEntity(saveMemberRequestDto,encoder.encode(saveMemberRequestDto.password()))
 		);
 
+
+	}
+
+	public CheckIdResponseDto checkId(MemberRequestDto.CheckIdRequestDto checkIdRequestDto) {
+
+		//userId 중복 검사
+		memberRepository.isDuplicatedUserId(checkIdRequestDto.userId());
+
+		return new CheckIdResponseDto(checkIdRequestDto.userId());
 
 	}
 }
