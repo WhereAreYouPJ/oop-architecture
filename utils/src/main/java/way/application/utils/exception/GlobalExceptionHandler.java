@@ -48,6 +48,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		return this.makeErrorResponseEntity(exception.getErrorResult());
 	}
 
+	@ExceptionHandler({ConflictException.class})
+	public ResponseEntity<ErrorResponse> handleConflictException(
+		final BadRequestException exception,
+		HttpServletResponse response
+	) {
+		log.warn("Conflict Exception occur: ", exception);
+
+		response.setStatus(exception.getErrorResult().getHttpStatus().value());
+		return this.makeErrorResponseEntity(exception.getErrorResult());
+	}
+
 	private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final ErrorResult errorResult) {
 		return ResponseEntity.status(errorResult.getHttpStatus())
 			.body(
