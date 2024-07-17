@@ -1,18 +1,18 @@
-package way.presentation.schedule.validates;
+package way.presentation.feed.validates;
 
-import static way.presentation.schedule.vo.req.ScheduleRequestVo.*;
+import static way.presentation.feed.vo.req.FeedRequestVo.*;
 
 import org.springframework.stereotype.Component;
 
 import way.application.utils.exception.BadRequestException;
 import way.application.utils.exception.ErrorResult;
-import way.presentation.schedule.vo.req.ScheduleRequestVo;
 
 @Component
-public class DeleteScheduleValidator {
-	public void validate(DeleteScheduleRequest request) {
+public class SaveFeedValidator {
+	public void validate(SaveFeedRequest request) {
 		validateScheduleSeq(request.scheduleSeq());
 		validateMemberSeq(request.creatorSeq());
+		validateTitle(request.title());
 	}
 
 	private void validateScheduleSeq(Long scheduleSeq) {
@@ -23,6 +23,12 @@ public class DeleteScheduleValidator {
 
 	private void validateMemberSeq(Long memberSeq) {
 		if (memberSeq == null) {
+			throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+		}
+	}
+
+	private void validateTitle(String title) {
+		if (title == null || title.trim().isEmpty()) {
 			throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 		}
 	}

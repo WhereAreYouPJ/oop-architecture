@@ -172,7 +172,7 @@ public class ScheduleService {
 			.collect(Collectors.toList());
 	}
 
-	@Transactional(readOnly = true)
+	@Transactional
 	public void acceptSchedule(AcceptScheduleRequestDto request) {
 		// 유효성 검사 (Repository 에서 처리)
 		memberRepository.findByMemberSeq(request.memberSeq());
@@ -190,6 +190,7 @@ public class ScheduleService {
 		scheduleMemberRepository.saveScheduleMemberEntity(scheduleMemberEntity);
 	}
 
+	@Transactional(readOnly = true)
 	public List<GetScheduleByMonthResponseDto> getScheduleByMonth(
 		GetScheduleByMonthRequestDto getScheduleByMonthRequestDto
 	) {

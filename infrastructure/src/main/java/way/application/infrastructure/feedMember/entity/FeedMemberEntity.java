@@ -1,4 +1,4 @@
-package way.application.infrastructure.feed.entity;
+package way.application.infrastructure.feedMember.entity;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -10,42 +10,35 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import way.application.infrastructure.feed.entity.FeedEntity;
 import way.application.infrastructure.member.entity.MemberEntity;
-import way.application.infrastructure.schedule.entity.ScheduleEntity;
 
 @Entity
-@Table(name = "FEED")
+@Table(name = "FEED_MEMBER")
 @AllArgsConstructor
 @NoArgsConstructor
 @DynamicInsert
 @DynamicUpdate
 @Getter
 @Builder(toBuilder = true)
-public class FeedEntity {
+public class FeedMemberEntity {
 	@Id
-	@Column(name = "feed_seq")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long feedSeq;
+	@Column(name = "feed_member_seq")
+	private Long feedMemberSeq;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "schedule_seq")
-	private ScheduleEntity schedule;
+	@JoinColumn(name = "feed_seq")
+	private FeedEntity feedEntity;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "creator_member_seq")
-	private MemberEntity creatorMember;
+	@JoinColumn(name = "member_seq")
+	private MemberEntity memberEntity;
 
-	@Column(name = "title", nullable = false)
-	private String title;
-
-	@Lob
-	@Column(name = "content", nullable = true, columnDefinition = "TEXT")
-	private String content;
 }

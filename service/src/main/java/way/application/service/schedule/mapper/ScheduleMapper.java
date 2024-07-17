@@ -1,5 +1,7 @@
 package way.application.service.schedule.mapper;
 
+import static way.application.service.schedule.dto.request.ScheduleRequestDto.*;
+
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -11,5 +13,5 @@ import way.application.service.schedule.dto.request.ScheduleRequestDto;
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ScheduleMapper {
 	@Mapping(target = "scheduleSeq", ignore = true)
-	ScheduleEntity toScheduleEntity(ScheduleRequestDto.SaveScheduleRequestDto scheduleDto);
+	ScheduleEntity toScheduleEntity(SaveScheduleRequestDto scheduleDto);
 }
