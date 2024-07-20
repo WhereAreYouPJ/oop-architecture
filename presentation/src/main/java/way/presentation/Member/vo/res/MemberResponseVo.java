@@ -8,4 +8,11 @@ public class MemberResponseVo {
     ) {
 
     }
+
+    public record CheckEmailResponse(
+            String email
+
+    ) {
+
+    }
 }

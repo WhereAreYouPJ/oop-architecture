@@ -37,4 +37,15 @@ public class MemberRequestVo {
        }
    }
 
+    public record CheckEmailRequest(
+
+            String email
+    ) {
+        public MemberRequestDto.CheckEmailRequestDto toCheckEmailRequestDto() {
+            return new MemberRequestDto.CheckEmailRequestDto(
+                    this.email
+            );
+        }
+    }
+
 }

@@ -102,7 +102,7 @@ public class MemberController {
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class))),
             @ApiResponse(
-                    responseCode = "UID001",
+                    responseCode = "UIDC001",
                     description = "409 USER_ID_DUPLICATION_EXCEPTION",
                     content = @Content(
                             schema = @Schema(
@@ -120,5 +120,51 @@ public class MemberController {
         CheckIdResponse checkIdResponse = new CheckIdResponse(checkIdResponseDto.userId());
 
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(),checkIdResponse));
+    }
+
+    @GetMapping(value = "/checkEmail", name = "이메일 중복 체크")
+    @Operation(summary = "Check Email API", description = "아이디ㅠ 중복 체크 API")
+    @Parameters({
+            @Parameter(
+                    name = "email",
+                    description = "email",
+                    example = "dlswns@whereareyou.com")
+    })
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청에 성공하였습니다.",
+                    useReturnTypeSchema = true),
+            @ApiResponse(
+                    responseCode = "B001",
+                    description = "400 Invalid DTO Parameter errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "S500",
+                    description = "500 SERVER_ERROR",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "EDC002",
+                    description = "409 EMAIL_DUPLICATION_EXCEPTION",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class)))
+    })
+    public ResponseEntity<BaseResponse<CheckEmailResponse>> checkEmail(@Valid @RequestParam("email") String email) {
+
+        // Param -> VO
+        MemberRequestVo.CheckEmailRequest request = new MemberRequestVo.CheckEmailRequest(email);
+
+        // VO -> DTO
+        CheckEmailResponseDto checkEmailResponseDto = memberService.checkEmail(request.toCheckEmailRequestDto());
+
+        // DTO -> VO
+        CheckEmailResponse checkEmailResponse = new CheckEmailResponse(checkEmailResponseDto.email());
+
+        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(),checkEmailResponse));
     }
 }

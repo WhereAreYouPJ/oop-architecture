@@ -20,4 +20,11 @@ public class MemberRequestDto {
     ) {
 
     }
+
+    public record CheckEmailRequestDto (
+            String email
+
+    ) {
+
+    }
 }

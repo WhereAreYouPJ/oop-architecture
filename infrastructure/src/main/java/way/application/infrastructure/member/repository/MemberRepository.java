@@ -14,4 +14,6 @@ public interface MemberRepository {
 	List<MemberEntity> findByMemberSeqs(List<Long> memberSeqs);
 
 	MemberEntity saveMember(MemberEntity memberEntity);
+
+	void isDuplicatedEmail(String email);
 }

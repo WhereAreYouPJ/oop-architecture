@@ -48,4 +48,12 @@ public class MemberRepositoryImpl implements MemberRepository {
 	public MemberEntity saveMember(MemberEntity memberEntity) {
 		return memberJpaRepository.save(memberEntity);
 	}
+
+	@Override
+	public void isDuplicatedEmail(String email) {
+		memberJpaRepository.findByEmail(email)
+				.ifPresent(entity -> {
+					throw new ConflictException(ErrorResult.EMAIL_DUPLICATION_CONFLICT_EXCEPTION);
+				});
+	}
 }
