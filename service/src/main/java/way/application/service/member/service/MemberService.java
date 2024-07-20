@@ -51,4 +51,12 @@ public class MemberService {
 		return new CheckIdResponseDto(checkIdRequestDto.userId());
 
 	}
+
+	public CheckEmailResponseDto checkEmail(MemberRequestDto.CheckEmailRequestDto checkEmailRequestDto) {
+
+		//email 중복 검사
+		memberRepository.isDuplicatedEmail(checkEmailRequestDto.email());
+
+		return new CheckEmailResponseDto(checkEmailRequestDto.email());
+	}
 }
