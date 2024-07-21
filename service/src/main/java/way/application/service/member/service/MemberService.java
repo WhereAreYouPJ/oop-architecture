@@ -3,6 +3,7 @@ package way.application.service.member.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import way.application.domain.member.MemberDomain;
 import way.application.infrastructure.member.entity.MemberEntity;
 import way.application.infrastructure.member.repository.MemberRepository;
 import way.application.service.member.dto.request.MemberRequestDto;
@@ -28,6 +29,7 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 	private final MemberMapper memberMapper;
 	private final BCryptPasswordEncoder encoder;
+	private final MemberDomain memberDomain;
 
 	@Transactional
 	public void saveMember(SaveMemberRequestDto saveMemberRequestDto) {
@@ -58,5 +60,23 @@ public class MemberService {
 		memberRepository.isDuplicatedEmail(checkEmailRequestDto.email());
 
 		return new CheckEmailResponseDto(checkEmailRequestDto.email());
+	}
+
+	public LoginResponseDto login(MemberRequestDto.LoginRequestDto loginRequestDto) {
+
+		// 이메일 검증
+		MemberEntity memberEntity = memberRepository.validateEmail(loginRequestDto.email());
+
+		// 비번 검증
+		memberDomain.checkPassword(loginRequestDto.password(), memberEntity.getEncodedPassword());
+
+		// jwt 생성
+		String accessToken = memberDomain.generateAccessToken(loginRequestDto.email());
+		String refreshToken = memberDomain.generateRefreshToken(loginRequestDto.email());
+
+		// refreshToken 저장
+		memberRepository.saveRefreshToken(refreshToken, loginRequestDto.email());
+
+		return new LoginResponseDto(accessToken,refreshToken,memberEntity.getMemberSeq());
 	}
 }

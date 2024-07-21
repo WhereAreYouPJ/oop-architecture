@@ -12,18 +12,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import way.application.service.member.dto.request.MemberRequestDto;
-import way.application.service.member.dto.response.MemberResponseDto;
 import way.application.service.member.service.MemberService;
-import way.application.service.schedule.dto.response.ScheduleResponseDto;
 import way.application.utils.exception.GlobalExceptionHandler;
+import way.presentation.Member.validates.LoginValidator;
 import way.presentation.Member.validates.SaveMemberValidator;
 import way.presentation.Member.vo.req.MemberRequestVo;
-import way.presentation.Member.vo.res.MemberResponseVo;
 import way.presentation.base.BaseResponse;
-import way.presentation.schedule.vo.req.ScheduleRequestVo;
 
-import java.util.List;
 
 import static way.application.service.member.dto.request.MemberRequestDto.*;
 import static way.application.service.member.dto.response.MemberResponseDto.*;
@@ -36,6 +31,7 @@ import static way.presentation.Member.vo.res.MemberResponseVo.*;
 public class MemberController {
 
     private final SaveMemberValidator saveMemberValidator;
+    private final LoginValidator loginValidator;
     private final MemberService memberService;
 
     @PostMapping(name = "회원가입")
@@ -166,5 +162,49 @@ public class MemberController {
         CheckEmailResponse checkEmailResponse = new CheckEmailResponse(checkEmailResponseDto.email());
 
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(),checkEmailResponse));
+    }
+
+    @PostMapping(value = "/login", name = "로그인")
+    @Operation(summary = "Login API", description = "로그인 API")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청에 성공하였습니다.",
+                    useReturnTypeSchema = true),
+            @ApiResponse(
+                    responseCode = "B001",
+                    description = "400 Invalid DTO Parameter errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "S500",
+                    description = "500 SERVER_ERROR",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "EB005",
+                    description = "400 EMAIL_BAD_REQUEST_EXCEPTION",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "PB006",
+                    description = "400 PASSWORD_BAD_REQUEST_EXCEPTION",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class)))
+    })
+    public ResponseEntity<BaseResponse<LoginResponseDto>> login(@Valid @RequestBody MemberRequestVo.LoginRequest request) {
+
+        // DTO 유효성 검사
+        loginValidator.validate(request);
+
+        // VO -> DTO 변환
+        LoginRequestDto loginRequestDto = request.toLoginRequestDto();
+        LoginResponseDto loginResponseDto = memberService.login(loginRequestDto);
+
+        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), loginResponseDto));
     }
 }
