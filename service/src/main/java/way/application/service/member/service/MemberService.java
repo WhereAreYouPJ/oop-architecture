@@ -136,4 +136,14 @@ public class MemberService {
 		memberRepository.saveMember(memberEntity);
 
 	}
+
+	public GetMemberDetailResponseDto getMemberDetail(MemberRequestDto.GetMemberDetailDto getMemberDetailDto) {
+
+		// memberSeq 검사
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(getMemberDetailDto.memberSeq());
+
+
+		return new GetMemberDetailResponseDto(memberEntity.getUserName(), memberEntity.getEmail(), memberEntity.getProfileImage());
+
+	}
 }

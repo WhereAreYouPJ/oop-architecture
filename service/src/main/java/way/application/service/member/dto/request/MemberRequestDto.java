@@ -53,4 +53,9 @@ public class MemberRequestDto {
             String checkPassword
     ) {
     }
+
+    public record GetMemberDetailDto(
+            Long memberSeq
+    ) {
+    }
 }

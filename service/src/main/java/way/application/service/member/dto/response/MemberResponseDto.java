@@ -23,4 +23,13 @@ public class MemberResponseDto {
     ) {
 
     }
+
+    public record GetMemberDetailResponseDto(
+            String userName,
+            String email,
+            String profileImage
+    ) {
+
+    }
+
 }

@@ -92,11 +92,24 @@ public class MemberRequestVo {
             String checkPassword
     ) {
         public MemberRequestDto.PasswordResetRequestDto toPasswordResetRequestDto() {
-            return new MemberRequestDto.PasswordResetRequestDto(this.email,
+            return new MemberRequestDto.PasswordResetRequestDto(
+                    this.email,
                     this.password,
                     this.checkPassword
             );
         }
 
+    }
+
+    public record GetMemberDetailRequest(
+
+            Long memberSeq
+    ) {
+
+        public MemberRequestDto.GetMemberDetailDto toGetMemberDetailDto() {
+            return new MemberRequestDto.GetMemberDetailDto(
+                    this.memberSeq
+            );
+        }
     }
 }
