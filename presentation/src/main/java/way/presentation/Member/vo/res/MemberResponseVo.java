@@ -15,4 +15,13 @@ public class MemberResponseVo {
     ) {
 
     }
+
+    public record GetMemberDetailResponse(
+            String userName,
+            String email,
+            String profileImage
+    ) {
+
+    }
+
 }
