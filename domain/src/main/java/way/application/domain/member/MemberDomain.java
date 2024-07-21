@@ -109,4 +109,11 @@ public class MemberDomain {
 			throw new BadRequestException(ErrorResult.EMAIL_BAD_REQUEST_EXCEPTION);
 		}
 	}
+
+	public void verifyCode(String code, String verifyCode) {
+
+		if(!code.equals(verifyCode)) {
+			throw new BadRequestException(ErrorResult.CODE_BAD_REQUEST_EXCEPTION);
+		}
+	}
 }

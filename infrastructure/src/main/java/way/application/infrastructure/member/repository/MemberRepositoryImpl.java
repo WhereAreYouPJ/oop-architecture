@@ -91,4 +91,14 @@ public class MemberRepositoryImpl implements MemberRepository {
 				TimeUnit.MILLISECONDS
 		);
 	}
+
+	@Override
+	public String getCode(String email) {
+		return redisTemplate.opsForValue().get(email);
+	}
+
+	@Override
+	public void deleteCode(String email) {
+		redisTemplate.delete(email);
+	}
 }
