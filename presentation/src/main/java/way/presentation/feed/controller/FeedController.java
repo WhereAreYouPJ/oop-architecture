@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import way.application.service.feed.service.FeedService;
 import way.application.utils.exception.GlobalExceptionHandler;
 import way.presentation.base.BaseResponse;
+import way.presentation.feed.validates.ModifyFeedValidator;
 import way.presentation.feed.validates.SaveFeedValidator;
 
 @RestController
@@ -31,6 +33,7 @@ import way.presentation.feed.validates.SaveFeedValidator;
 @RequiredArgsConstructor
 public class FeedController {
 	private final SaveFeedValidator saveFeedValidator;
+	private final ModifyFeedValidator modifyFeedValidator;
 
 	private final FeedService feedService;
 
@@ -38,7 +41,7 @@ public class FeedController {
 	@Operation(summary = "피드 생성 API", description = "피드 생성 API")
 	@ApiResponses(value = {
 		@ApiResponse(
-			responseCode = "204",
+			responseCode = "201",
 			description = "요청에 성공하였습니다.",
 			useReturnTypeSchema = true),
 		@ApiResponse(
@@ -86,5 +89,65 @@ public class FeedController {
 		SaveFeedResponse response = new SaveFeedResponse(saveFeedResponseDto.feedSeq());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.CREATED.value(), response));
+	}
+
+	@PutMapping(name = "피드 수정")
+	@Operation(summary = "피드 수정 API", description = "피드 수정 API")
+	@ApiResponses(value = {
+		@ApiResponse(
+			responseCode = "200",
+			description = "요청에 성공하였습니다.",
+			useReturnTypeSchema = true),
+		@ApiResponse(
+			responseCode = "S500",
+			description = "500 SERVER_ERROR (나도 몰라 ..)",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "B001",
+			description = "400 Invalid DTO Parameter errors / 요청 값 형식 요류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "MSB002",
+			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "FSB019",
+			description = "400 FEED_SEQ_BAD_REQUEST_EXCEPTION / FEED_SEQ 오류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "FDCBMB020",
+			description = "400 FEED_DIDNT_CREATED_BY_MEMBER_BAD_REQUEST_EXCEPTION / Member가 생성한 Feed가 아닌 경우",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "MSB002",
+			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class)))
+	})
+	public ResponseEntity<BaseResponse<ModifyFeedResponse>> modifyFeed(
+		@Valid
+		@ModelAttribute ModifyReedRequest request
+	) throws IOException {
+		// 유효성 검사
+		modifyFeedValidator.validate(request);
+
+		// VO -> DTO
+		ModifyFeedResponseDto modifyFeedResponseDto = feedService.modifyFeed(request.toModifyFeedRequestDto());
+
+		// DTO -> VO
+		ModifyFeedResponse response = new ModifyFeedResponse(modifyFeedResponseDto.feedSeq());
+
+		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
 }

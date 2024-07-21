@@ -6,4 +6,10 @@ public class FeedResponseDto {
 	) {
 
 	}
+
+	public record ModifyFeedResponseDto(
+		Long feedSeq
+	) {
+
+	}
 }

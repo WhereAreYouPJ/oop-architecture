@@ -1,5 +1,6 @@
 package way.application.infrastructure.feed.entity;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -48,4 +49,8 @@ public class FeedEntity {
 	@Lob
 	@Column(name = "content", nullable = true, columnDefinition = "TEXT")
 	private String content;
+
+	@Column(name = "hide", nullable = false)
+	@ColumnDefault("false")
+	private Boolean hide;
 }

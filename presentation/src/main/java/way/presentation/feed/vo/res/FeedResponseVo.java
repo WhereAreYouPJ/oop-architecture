@@ -6,4 +6,10 @@ public class FeedResponseVo {
 	) {
 
 	}
+
+	public record ModifyFeedResponse(
+		Long feedSeq
+	) {
+
+	}
 }

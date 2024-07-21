@@ -80,15 +80,36 @@ public class FeedService {
 		}
 
 		// Feed Image Entity 저장
-		for (MultipartFile image : saveFeedRequestDto.images()) {
-			String imageURL = s3Utils.uploadMultipartFile(image);
+		if (saveFeedRequestDto.images() != null) {
+			for (MultipartFile image : saveFeedRequestDto.images()) {
+				String imageURL = s3Utils.uploadMultipartFile(image);
 
-			// Feed Image Entity 생성
-			feedImageRepository.saveFeedImageEntity(
-				feedImageMapper.toFeedImageEntity(savedFeedEntity, imageURL)
-			);
+				// Feed Image Entity 생성
+				feedImageRepository.saveFeedImageEntity(
+					feedImageMapper.toFeedImageEntity(savedFeedEntity, imageURL)
+				);
+			}
 		}
 
 		return new SaveFeedResponseDto(savedFeedEntity.getFeedSeq());
+	}
+
+	@Transactional
+	public ModifyFeedResponseDto modifyFeed(ModifyFeedRequestDto modifyFeedRequestDto) throws IOException {
+		// 유효성 처리 (Repo 단)
+		MemberEntity creatorMemberEntity = memberRepository.findByMemberSeq(modifyFeedRequestDto.creatorSeq());
+		FeedEntity savedFeed = feedRepository.findByFeedSeq(modifyFeedRequestDto.feedSeq());
+		feedRepository.findByCreatorMemberAndFeedSeq(creatorMemberEntity, modifyFeedRequestDto.feedSeq());
+
+		// Feed, Feed Image, Feed Member 삭제
+		feedRepository.deleteAllByFeedSeq(savedFeed.getFeedSeq());
+		feedImageRepository.deleteAllByFeedEntity(savedFeed);
+		feedMemberRepository.deleteAllByFeedEntity(savedFeed);
+
+		SaveFeedResponseDto saveFeedResponseDto = saveFeed(
+			modifyFeedRequestDto.toSaveFeedRequestDto(savedFeed.getSchedule().getScheduleSeq())
+		);
+
+		return new ModifyFeedResponseDto(saveFeedResponseDto.feedSeq());
 	}
 }

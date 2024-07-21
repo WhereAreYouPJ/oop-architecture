@@ -56,7 +56,7 @@ public class ScheduleController {
 	@Operation(summary = "일정 생성 API", description = "일정 생성 API")
 	@ApiResponses(value = {
 		@ApiResponse(
-			responseCode = "200",
+			responseCode = "201",
 			description = "요청에 성공하였습니다.",
 			useReturnTypeSchema = true),
 		@ApiResponse(
@@ -100,7 +100,7 @@ public class ScheduleController {
 		SaveScheduleResponse response
 			= new SaveScheduleResponse(saveScheduleResponseDto.scheduleSeq());
 
-		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
+		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.CREATED.value(), response));
 	}
 
 	@PutMapping(name = "일정 수정")
