@@ -46,4 +46,11 @@ public class MemberRequestDto {
 
     ) {
     }
+
+    public record PasswordResetRequestDto(
+            String email,
+            String password,
+            String checkPassword
+    ) {
+    }
 }

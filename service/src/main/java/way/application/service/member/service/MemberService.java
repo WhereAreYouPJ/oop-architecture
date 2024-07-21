@@ -120,4 +120,20 @@ public class MemberService {
 		memberRepository.deleteCode(verifyCodeDto.email());
 
 	}
+
+	public void resetPassword(MemberRequestDto.PasswordResetRequestDto passwordResetRequestDto) {
+
+		// 이메일 검사
+		MemberEntity memberEntity = memberRepository.validateEmail(passwordResetRequestDto.email());
+
+		// 비밀번호 검증
+		memberDomain.validateResetPassword(passwordResetRequestDto.password(), passwordResetRequestDto.checkPassword());
+
+		// 비밀번호 재설정
+		memberEntity.updateEncodedPassword(encoder.encode(passwordResetRequestDto.password()));
+
+		// 비밀번호 저장
+		memberRepository.saveMember(memberEntity);
+
+	}
 }
