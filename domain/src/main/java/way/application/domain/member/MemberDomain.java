@@ -116,4 +116,12 @@ public class MemberDomain {
 			throw new BadRequestException(ErrorResult.CODE_BAD_REQUEST_EXCEPTION);
 		}
 	}
+
+	public void validateResetPassword(String password, String checkPassword) {
+
+		if(!password.equals(checkPassword)) {
+			throw new BadRequestException(ErrorResult.PASSWORD_MISMATCH_BAD_REQUEST_EXCEPTION);
+		}
+
+	}
 }

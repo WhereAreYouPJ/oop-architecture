@@ -25,16 +25,15 @@ public class MemberRequestVo {
         }
     }
 
-   public record CheckIdRequest(
-
-           String userId
-   ) {
-       public MemberRequestDto.CheckIdRequestDto toCheckIdRequestDto() {
-           return new MemberRequestDto.CheckIdRequestDto(
-                   this.userId
-           );
-       }
-   }
+    public record CheckIdRequest(
+            String userId
+    ) {
+        public MemberRequestDto.CheckIdRequestDto toCheckIdRequestDto() {
+            return new MemberRequestDto.CheckIdRequestDto(
+                    this.userId
+            );
+        }
+    }
 
     public record CheckEmailRequest(
 
@@ -81,6 +80,21 @@ public class MemberRequestVo {
             return new MemberRequestDto.VerifyCodeDto(
                     this.email,
                     this.code
+            );
+        }
+
+    }
+
+    public record PasswordResetRequest(
+
+            String email,
+            String password,
+            String checkPassword
+    ) {
+        public MemberRequestDto.PasswordResetRequestDto toPasswordResetRequestDto() {
+            return new MemberRequestDto.PasswordResetRequestDto(this.email,
+                    this.password,
+                    this.checkPassword
             );
         }
 
