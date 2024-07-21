@@ -212,7 +212,7 @@ public class MemberController {
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), loginResponseDto));
     }
 
-    @PostMapping(value = "/mail/send", name = "메일 전송")
+    @PostMapping(value = "/email/send", name = "메일 전송")
     @Operation(summary = "Mail Send API", description = "인증 메일 전송 API")
     @ApiResponses(value = {
             @ApiResponse(
@@ -228,12 +228,6 @@ public class MemberController {
             @ApiResponse(
                     responseCode = "S500",
                     description = "500 SERVER_ERROR",
-                    content = @Content(
-                            schema = @Schema(
-                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
-            @ApiResponse(
-                    responseCode = "EB009",
-                    description = "400 Invalid Email errors",
                     content = @Content(
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class)))
@@ -270,13 +264,7 @@ public class MemberController {
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class))),
             @ApiResponse(
-                    responseCode = "EB009",
-                    description = "400 Invalid Email errors",
-                    content = @Content(
-                            schema = @Schema(
-                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
-            @ApiResponse(
-                    responseCode = "CB011",
+                    responseCode = "CB007",
                     description = "400 Invalid Code errors",
                     content = @Content(
                             schema = @Schema(
@@ -290,6 +278,50 @@ public class MemberController {
         // VO -> DTO 변환
         VerifyCodeDto verifyCodeDto = request.toVerifyCodeDto();
         memberService.verify(verifyCodeDto);
+
+        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
+    }
+
+    @PostMapping(value = "/email/verifyPassword", name = "비밀번호 재설정 인증코드 검증 ")
+    @Operation(summary = "Password Code Verify API", description = "비밀번호 재설정 인증코드 API")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청에 성공하였습니다.",
+                    useReturnTypeSchema = true),
+            @ApiResponse(
+                    responseCode = "B001",
+                    description = "400 Invalid DTO Parameter errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "S500",
+                    description = "500 SERVER_ERROR",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "EB005",
+                    description = "400 Invalid Email errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "CB007",
+                    description = "400 Invalid Code errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class)))
+    })
+    public ResponseEntity<BaseResponse<String>> verifyPasswordCode(@Valid @RequestBody MemberRequestVo.VerifyCodeRequest request) {
+
+        // DTO 유효성 검사
+        verifyCodeValidator.validate(request);
+
+        // VO -> DTO 변환
+        VerifyCodeDto verifyCodeDto = request.toVerifyCodeDto();
+        memberService.verifyPassword(verifyCodeDto);
 
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
     }
