@@ -8,7 +8,6 @@ import way.application.infrastructure.member.entity.MemberEntity;
 import way.application.infrastructure.member.repository.MemberRepository;
 import way.application.service.member.dto.request.MemberRequestDto;
 import way.application.service.member.dto.request.MemberRequestDto.SaveMemberRequestDto;
-import way.application.service.member.dto.response.MemberResponseDto;
 import way.application.service.member.mapper.MemberMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -90,5 +89,19 @@ public class MemberService {
 
 		// 인증코드 저장
 		memberRepository.saveAuthKey(mailSendRequestDto.email(), authKey);
+	}
+
+	public void verify(MemberRequestDto.VerifyCodeDto verifyCodeDto) {
+
+		// 인증코드 조회
+		String verifyCode = memberRepository.getCode(verifyCodeDto.email());
+
+		// 인증코드 검사
+		memberDomain.verifyCode(verifyCodeDto.code(), verifyCode);
+
+		// 인증코드 삭제
+		memberRepository.deleteCode(verifyCodeDto.email());
+
+
 	}
 }

@@ -71,4 +71,18 @@ public class MemberRequestVo {
             );
         }
     }
+
+    public record VerifyCodeRequest(
+            String email,
+            String code
+    ) {
+
+        public MemberRequestDto.VerifyCodeDto toVerifyCodeDto() {
+            return new MemberRequestDto.VerifyCodeDto(
+                    this.email,
+                    this.code
+            );
+        }
+
+    }
 }

@@ -39,4 +39,11 @@ public class MemberRequestDto {
             String email
     ) {
     }
+
+    public record VerifyCodeDto(
+            String email,
+            String code
+
+    ) {
+    }
 }

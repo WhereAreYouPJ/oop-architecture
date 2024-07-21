@@ -17,6 +17,7 @@ import way.application.utils.exception.GlobalExceptionHandler;
 import way.presentation.Member.validates.LoginValidator;
 import way.presentation.Member.validates.SaveMemberValidator;
 import way.presentation.Member.validates.SendEmailRequestValidator;
+import way.presentation.Member.validates.VerifyCodeValidator;
 import way.presentation.Member.vo.req.MemberRequestVo;
 import way.presentation.base.BaseResponse;
 
@@ -35,6 +36,7 @@ public class MemberController {
     private final LoginValidator loginValidator;
     private final MemberService memberService;
     private final SendEmailRequestValidator sendEmailRequestValidator;
+    private final VerifyCodeValidator verifyCodeValidator;
 
     @PostMapping(name = "회원가입")
     @Operation(summary = "join Member API", description = "회원가입 API")
@@ -244,6 +246,50 @@ public class MemberController {
         // VO -> DTO 변환
         MailSendRequestDto mailSendRequestDto = request.toMailSendRequestDto();
         memberService.send(mailSendRequestDto);
+
+        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
+    }
+
+    @PostMapping(value = "/email/verify", name = "인증코드 검증 ")
+    @Operation(summary = "Code Verify API", description = "인증코드 검증 API")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청에 성공하였습니다.",
+                    useReturnTypeSchema = true),
+            @ApiResponse(
+                    responseCode = "B001",
+                    description = "400 Invalid DTO Parameter errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "S500",
+                    description = "500 SERVER_ERROR",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "EB009",
+                    description = "400 Invalid Email errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "CB011",
+                    description = "400 Invalid Code errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class)))
+    })
+    public ResponseEntity<BaseResponse<String>> verifyCode(@Valid @RequestBody MemberRequestVo.VerifyCodeRequest request) {
+
+        // DTO 유효성 검사
+        verifyCodeValidator.validate(request);
+
+        // VO -> DTO 변환
+        VerifyCodeDto verifyCodeDto = request.toVerifyCodeDto();
+        memberService.verify(verifyCodeDto);
 
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
     }

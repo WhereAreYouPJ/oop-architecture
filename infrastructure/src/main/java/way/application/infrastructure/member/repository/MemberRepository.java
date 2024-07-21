@@ -22,4 +22,8 @@ public interface MemberRepository {
 	void saveRefreshToken(String refreshToken, String email);
 
     void saveAuthKey(String email, String authKey);
+
+	String getCode(String email);
+
+	void deleteCode(String email);
 }
