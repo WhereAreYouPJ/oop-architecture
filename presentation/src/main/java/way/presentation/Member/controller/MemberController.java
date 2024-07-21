@@ -186,13 +186,13 @@ public class MemberController {
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class))),
             @ApiResponse(
-                    responseCode = "EB005",
+                    responseCode = "EB009",
                     description = "400 EMAIL_BAD_REQUEST_EXCEPTION",
                     content = @Content(
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class))),
             @ApiResponse(
-                    responseCode = "PB006",
+                    responseCode = "PB005",
                     description = "400 PASSWORD_BAD_REQUEST_EXCEPTION",
                     content = @Content(
                             schema = @Schema(
@@ -262,8 +262,8 @@ public class MemberController {
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class))),
             @ApiResponse(
-                    responseCode = "CB007",
-                    description = "400 Invalid Code errors",
+                    responseCode = "CB011",
+                    description = "400 CODE_BAD_REQUEST_EXCEPTION",
                     content = @Content(
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class)))
@@ -300,14 +300,14 @@ public class MemberController {
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class))),
             @ApiResponse(
-                    responseCode = "EB005",
-                    description = "400 Invalid Email errors",
+                    responseCode = "EB009",
+                    description = "400 EMAIL_BAD_REQUEST_EXCEPTION\"",
                     content = @Content(
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class))),
             @ApiResponse(
-                    responseCode = "CB007",
-                    description = "400 Invalid Code errors",
+                    responseCode = "CB011",
+                    description = "400 CODE_BAD_REQUEST_EXCEPTION",
                     content = @Content(
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class)))
@@ -345,19 +345,19 @@ public class MemberController {
                                     implementation = GlobalExceptionHandler.ErrorResponse.class))),
             @ApiResponse(
                     responseCode = "PB005",
-                    description = "400 Invalid Password errors",
+                    description = "400 PASSWORD_BAD_REQUEST_EXCEPTION",
                     content = @Content(
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class))),
             @ApiResponse(
-                    responseCode = "PMB008",
-                    description = "400 Password Mismatch errors",
+                    responseCode = "PMB013",
+                    description = "400 PASSWORD_MISMATCH_BAD_REQUEST_EXCEPTION",
                     content = @Content(
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class))),
             @ApiResponse(
-                    responseCode = "EB005",
-                    description = "400 Invalid Email errors",
+                    responseCode = "EB009",
+                    description = "400 EMAIL_BAD_REQUEST_EXCEPTION",
                     content = @Content(
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class))),
@@ -373,5 +373,52 @@ public class MemberController {
         memberService.resetPassword(passwordResetRequestDto);
 
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
+    }
+
+
+    @GetMapping(value = "/details", name = "회원 상세 정보")
+    @Operation(summary = "Get Member Details API", description = "회원 상세 정보(By MemberSeq) API")
+    @Parameters({
+            @Parameter(
+                    name = "MemberSeq",
+                    description = "Member Sequence",
+                    example = "1")
+    })
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청에 성공하였습니다.",
+                    useReturnTypeSchema = true),
+            @ApiResponse(
+                    responseCode = "B001",
+                    description = "400 Invalid DTO Parameter errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "S500",
+                    description = "500 SERVER_ERROR",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "MSB002",
+                    description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class)))
+    })
+    public ResponseEntity<BaseResponse<GetMemberDetailResponse>> getMemberDetail(@Valid @RequestParam("memberSeq") Long memberSeq) {
+
+        // Param -> VO
+        GetMemberDetailRequest request = new GetMemberDetailRequest(memberSeq);
+
+        // VO -> DTO
+        GetMemberDetailResponseDto getMemberDetailResponseDto = memberService.getMemberDetail(request.toGetMemberDetailDto());
+
+        // DTO -> VO
+        GetMemberDetailResponse getMemberDetailResponse = new GetMemberDetailResponse(getMemberDetailResponseDto.userName(), getMemberDetailResponseDto.email(), getMemberDetailResponseDto.profileImage());
+
+        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(),getMemberDetailResponse));
     }
 }
