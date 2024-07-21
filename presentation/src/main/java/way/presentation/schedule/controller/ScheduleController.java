@@ -169,7 +169,7 @@ public class ScheduleController {
 	@Operation(summary = "일정 삭제 API", description = "일정 삭제 API")
 	@ApiResponses(value = {
 		@ApiResponse(
-			responseCode = "204",
+			responseCode = "200",
 			description = "요청에 성공하였습니다.",
 			content = @Content(
 				mediaType = "application/json",
@@ -217,7 +217,7 @@ public class ScheduleController {
 		DeleteScheduleRequestDto deleteScheduleRequestDto = request.toDeleteScheduleRequestDto();
 		scheduleService.deleteSchedule(deleteScheduleRequestDto);
 
-		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.NO_CONTENT.value(), "SUCCESS"));
+		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
 	}
 
 	@GetMapping(name = "일정 조회")
@@ -345,7 +345,7 @@ public class ScheduleController {
 	@Operation(summary = "일정 초대 수락 API", description = "일정 초대 수락 API")
 	@ApiResponses(value = {
 		@ApiResponse(
-			responseCode = "204",
+			responseCode = "200",
 			description = "요청에 성공하였습니다.",
 			content = @Content(
 				mediaType = "application/json",
@@ -384,7 +384,7 @@ public class ScheduleController {
 		// VO -> DTO
 		scheduleService.acceptSchedule(request.toAcceptScheduleRequestDto());
 
-		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.NO_CONTENT.value(), "SUCCESS"));
+		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
 	}
 
 	@GetMapping(value = "/month-schedule", name = "월별 일정 조회")
