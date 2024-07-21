@@ -24,4 +24,22 @@ public class FeedRequestVo {
 			);
 		}
 	}
+
+	public record ModifyReedRequest(
+		Long feedSeq,
+		Long creatorSeq,
+		String title,
+		String content,
+		List<MultipartFile> images
+	) {
+		public ModifyFeedRequestDto toModifyFeedRequestDto() {
+			return new ModifyFeedRequestDto(
+				this.feedSeq,
+				this.creatorSeq,
+				this.title,
+				this.content,
+				this.images
+			);
+		}
+	}
 }
