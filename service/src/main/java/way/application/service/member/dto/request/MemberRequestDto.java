@@ -34,4 +34,9 @@ public class MemberRequestDto {
     ) {
 
     }
+
+    public record MailSendRequestDto(
+            String email
+    ) {
+    }
 }

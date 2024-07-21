@@ -79,4 +79,16 @@ public class MemberService {
 
 		return new LoginResponseDto(accessToken,refreshToken,memberEntity.getMemberSeq());
 	}
+
+	public void send(MemberRequestDto.MailSendRequestDto mailSendRequestDto) {
+
+		// authKey 생성
+		String authKey = memberDomain.generateAuthKey();
+
+		// 코드 발송
+		memberDomain.sendAuthKey(mailSendRequestDto.email(), authKey);
+
+		// 인증코드 저장
+		memberRepository.saveAuthKey(mailSendRequestDto.email(), authKey);
+	}
 }

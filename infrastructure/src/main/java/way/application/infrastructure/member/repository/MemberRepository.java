@@ -20,4 +20,6 @@ public interface MemberRepository {
 	MemberEntity validateEmail(String email);
 
 	void saveRefreshToken(String refreshToken, String email);
+
+    void saveAuthKey(String email, String authKey);
 }

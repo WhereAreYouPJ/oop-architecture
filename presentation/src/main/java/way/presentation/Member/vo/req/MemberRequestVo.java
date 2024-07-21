@@ -60,4 +60,15 @@ public class MemberRequestVo {
         }
     }
 
+    public record MailSendRequest(
+
+            String email
+
+    ) {
+        public MemberRequestDto.MailSendRequestDto toMailSendRequestDto() {
+            return new MemberRequestDto.MailSendRequestDto(
+                    this.email
+            );
+        }
+    }
 }
