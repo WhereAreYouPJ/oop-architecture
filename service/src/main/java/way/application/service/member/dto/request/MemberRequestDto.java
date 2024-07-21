@@ -27,4 +27,11 @@ public class MemberRequestDto {
     ) {
 
     }
+
+    public record LoginRequestDto (
+            String email,
+            String password
+    ) {
+
+    }
 }

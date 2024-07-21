@@ -1,15 +1,32 @@
 package way.application.domain.member;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import way.application.infrastructure.member.entity.MemberEntity;
+import way.application.utils.exception.BadRequestException;
+import way.application.utils.exception.ErrorResult;
 
 @Component
+@RequiredArgsConstructor
 public class MemberDomain {
+
+	@Value("${jwt.secret}")
+	private String jwtSecret;
+	@Value("${jwt.accessTokenExpiration}")
+	private long accessTokenExpiration;
+	@Value("${jwt.refreshTokenExpiration}")
+	private long refreshTokenExpiration;
+	private final BCryptPasswordEncoder encoder;
 
 	/**
 	 * @param createMemberEntity
@@ -34,5 +51,38 @@ public class MemberDomain {
 	 */
 	public boolean checkIsCreator(MemberEntity invitedMemberEntity, MemberEntity createMemberEntity) {
 		return invitedMemberEntity.getMemberSeq().equals(createMemberEntity.getMemberSeq());
+	}
+
+	public void checkPassword(String password, String encodedPassword) {
+
+		if(!encoder.matches(password, encodedPassword)) {
+			throw new BadRequestException(ErrorResult.PASSWORD_BAD_REQUEST_EXCEPTION);
+		}
+
+	}
+
+	public String generateAccessToken(String email) {
+		Date now = new Date();
+		Date expiryDate = new Date(now.getTime() + accessTokenExpiration);
+
+		return Jwts.builder()
+				.setSubject(email)
+				.setIssuedAt(now)
+				.setExpiration(expiryDate)
+				.signWith(SignatureAlgorithm.HS512, jwtSecret)
+				.compact();
+
+	}
+
+	public String generateRefreshToken(String email) {
+		Date now = new Date();
+		Date expiryDate = new Date(now.getTime() + refreshTokenExpiration);
+
+        return Jwts.builder()
+				.setSubject(email)
+				.setIssuedAt(now)
+				.setExpiration(expiryDate)
+				.signWith(SignatureAlgorithm.HS512, jwtSecret)
+				.compact();
 	}
 }

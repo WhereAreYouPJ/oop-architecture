@@ -2,7 +2,10 @@ package way.application.infrastructure.member.repository;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -15,6 +18,10 @@ import way.application.utils.exception.ErrorResult;
 @RequiredArgsConstructor
 public class MemberRepositoryImpl implements MemberRepository {
 	private final MemberJpaRepository memberJpaRepository;
+	private final RedisTemplate<String, String> redisTemplate;
+	@Value("${jwt.refreshTokenExpiration}")
+	private long refreshTokenExpiration;
+
 
 	@Override
 	public MemberEntity findByMemberSeq(Long memberSeq) {
@@ -55,5 +62,23 @@ public class MemberRepositoryImpl implements MemberRepository {
 				.ifPresent(entity -> {
 					throw new ConflictException(ErrorResult.EMAIL_DUPLICATION_CONFLICT_EXCEPTION);
 				});
+	}
+
+	@Override
+	public MemberEntity validateEmail(String email) {
+		return memberJpaRepository.findByEmail(email)
+				.orElseThrow(() -> new BadRequestException(ErrorResult.EMAIL_BAD_REQUEST_EXCEPTION));
+	}
+
+	@Override
+	public void saveRefreshToken(String refreshToken, String email) {
+
+		redisTemplate.opsForValue()
+				.set(
+						email,
+						refreshToken,
+						refreshTokenExpiration,
+						TimeUnit.MILLISECONDS
+				);
 	}
 }

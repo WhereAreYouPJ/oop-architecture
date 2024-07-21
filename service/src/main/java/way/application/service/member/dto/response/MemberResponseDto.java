@@ -15,4 +15,12 @@ public class MemberResponseDto {
     ) {
 
     }
+
+    public record LoginResponseDto(
+            String accessToken,
+            String refreshToken,
+            Long memberSeq
+    ) {
+
+    }
 }

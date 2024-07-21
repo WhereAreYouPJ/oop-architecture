@@ -16,4 +16,8 @@ public interface MemberRepository {
 	MemberEntity saveMember(MemberEntity memberEntity);
 
 	void isDuplicatedEmail(String email);
+
+	MemberEntity validateEmail(String email);
+
+	void saveRefreshToken(String refreshToken, String email);
 }

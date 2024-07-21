@@ -1,7 +1,6 @@
 package way.presentation.Member.vo.req;
 
 import way.application.service.member.dto.request.MemberRequestDto;
-import way.application.service.schedule.dto.request.ScheduleRequestDto;
 
 import static way.application.service.member.dto.request.MemberRequestDto.*;
 
@@ -44,6 +43,19 @@ public class MemberRequestVo {
         public MemberRequestDto.CheckEmailRequestDto toCheckEmailRequestDto() {
             return new MemberRequestDto.CheckEmailRequestDto(
                     this.email
+            );
+        }
+    }
+
+    public record LoginRequest(
+
+            String email,
+            String password
+    ) {
+        public MemberRequestDto.LoginRequestDto toLoginRequestDto() {
+            return new MemberRequestDto.LoginRequestDto(
+                    this.email,
+                    this.password
             );
         }
     }
