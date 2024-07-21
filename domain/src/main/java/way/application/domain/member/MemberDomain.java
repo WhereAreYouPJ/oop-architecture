@@ -1,14 +1,15 @@
 package way.application.domain.member;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +28,7 @@ public class MemberDomain {
 	@Value("${jwt.refreshTokenExpiration}")
 	private long refreshTokenExpiration;
 	private final BCryptPasswordEncoder encoder;
+	private final JavaMailSender javaMailSender;
 
 	/**
 	 * @param createMemberEntity
@@ -84,5 +86,27 @@ public class MemberDomain {
 				.setExpiration(expiryDate)
 				.signWith(SignatureAlgorithm.HS512, jwtSecret)
 				.compact();
+	}
+
+	public String generateAuthKey() {
+		Random random = new Random();
+		return String.valueOf(random.nextInt(888888) + 111111);
+
+	}
+
+	public void sendAuthKey(String email, String authKey) {
+		String subject = "지금어디 인증번호 입니다.";
+		String text = "인증번호는 " + authKey + "입니다. <br/>";
+
+		try {
+			MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "utf-8");
+			helper.setTo(email);
+			helper.setSubject(subject);
+			helper.setText(text, true);
+			javaMailSender.send(mimeMessage);
+		} catch (MessagingException e) {
+			throw new BadRequestException(ErrorResult.EMAIL_BAD_REQUEST_EXCEPTION);
+		}
 	}
 }

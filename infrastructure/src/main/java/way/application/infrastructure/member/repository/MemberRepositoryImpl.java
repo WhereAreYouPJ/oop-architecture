@@ -81,4 +81,14 @@ public class MemberRepositoryImpl implements MemberRepository {
 						TimeUnit.MILLISECONDS
 				);
 	}
+
+	@Override
+	public void saveAuthKey(String email, String authKey) {
+		redisTemplate.opsForValue().set(
+				email,
+				authKey,
+				300000,
+				TimeUnit.MILLISECONDS
+		);
+	}
 }

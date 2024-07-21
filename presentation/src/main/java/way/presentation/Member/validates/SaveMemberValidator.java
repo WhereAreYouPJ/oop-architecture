@@ -3,9 +3,7 @@ package way.presentation.Member.validates;
 import org.springframework.stereotype.Component;
 import way.application.utils.exception.BadRequestException;
 import way.application.utils.exception.ErrorResult;
-import way.presentation.Member.vo.req.MemberRequestVo;
 import way.presentation.Member.vo.req.MemberRequestVo.SaveMemberRequest;
-import way.presentation.schedule.vo.req.ScheduleRequestVo;
 
 @Component
 public class SaveMemberValidator {

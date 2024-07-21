@@ -16,6 +16,7 @@ import way.application.service.member.service.MemberService;
 import way.application.utils.exception.GlobalExceptionHandler;
 import way.presentation.Member.validates.LoginValidator;
 import way.presentation.Member.validates.SaveMemberValidator;
+import way.presentation.Member.validates.SendEmailRequestValidator;
 import way.presentation.Member.vo.req.MemberRequestVo;
 import way.presentation.base.BaseResponse;
 
@@ -33,6 +34,7 @@ public class MemberController {
     private final SaveMemberValidator saveMemberValidator;
     private final LoginValidator loginValidator;
     private final MemberService memberService;
+    private final SendEmailRequestValidator sendEmailRequestValidator;
 
     @PostMapping(name = "회원가입")
     @Operation(summary = "join Member API", description = "회원가입 API")
@@ -206,5 +208,43 @@ public class MemberController {
         LoginResponseDto loginResponseDto = memberService.login(loginRequestDto);
 
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), loginResponseDto));
+    }
+
+    @PostMapping(value = "/mail/send", name = "메일 전송")
+    @Operation(summary = "Mail Send API", description = "인증 메일 전송 API")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청에 성공하였습니다.",
+                    useReturnTypeSchema = true),
+            @ApiResponse(
+                    responseCode = "B001",
+                    description = "400 Invalid DTO Parameter errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "S500",
+                    description = "500 SERVER_ERROR",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "EB009",
+                    description = "400 Invalid Email errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class)))
+    })
+    public ResponseEntity<BaseResponse<String>> sendMail(@Valid @RequestBody MemberRequestVo.MailSendRequest request) {
+
+        // DTO 유효성 검사
+        sendEmailRequestValidator.validate(request);
+
+        // VO -> DTO 변환
+        MailSendRequestDto mailSendRequestDto = request.toMailSendRequestDto();
+        memberService.send(mailSendRequestDto);
+
+        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
     }
 }
