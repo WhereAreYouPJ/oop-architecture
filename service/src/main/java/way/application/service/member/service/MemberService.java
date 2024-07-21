@@ -104,4 +104,20 @@ public class MemberService {
 
 
 	}
+
+	public void verifyPassword(MemberRequestDto.VerifyCodeDto verifyCodeDto) {
+
+		// 이메일 검사
+		MemberEntity memberEntity = memberRepository.validateEmail(verifyCodeDto.email());
+
+		// 인증코드 조회
+		String verifyCode = memberRepository.getCode(verifyCodeDto.email());
+
+		// 인증코드 검사
+		memberDomain.verifyCode(verifyCodeDto.code(), verifyCode);
+
+		// 인증코드 삭제
+		memberRepository.deleteCode(verifyCodeDto.email());
+
+	}
 }
