@@ -9,8 +9,6 @@ public class MemberRequestVo {
     public record SaveMemberRequest(
             String userName,
 
-            String userId,
-
             String password,
 
             String email
@@ -18,7 +16,6 @@ public class MemberRequestVo {
         public SaveMemberRequestDto toSaveMemberRequestDto() {
             return new SaveMemberRequestDto(
                     this.userName,
-                    this.userId,
                     this.password,
                     this.email
             );

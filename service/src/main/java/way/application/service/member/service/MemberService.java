@@ -34,7 +34,7 @@ public class MemberService {
 	public void saveMember(SaveMemberRequestDto saveMemberRequestDto) {
 
 		//멤버 유효성 검사
-		memberRepository.isDuplicatedUserId(saveMemberRequestDto.userId());
+		memberRepository.isDuplicatedEmail(saveMemberRequestDto.email());
 
 		// Member 저장
 		memberRepository.saveMember(

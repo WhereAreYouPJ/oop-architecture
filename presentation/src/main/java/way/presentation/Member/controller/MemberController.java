@@ -121,7 +121,7 @@ public class MemberController {
     }
 
     @GetMapping(value = "/checkEmail", name = "이메일 중복 체크")
-    @Operation(summary = "Check Email API", description = "아이디ㅠ 중복 체크 API")
+    @Operation(summary = "Check Email API", description = "이메일 중복 체크 API")
     @Parameters({
             @Parameter(
                     name = "email",
