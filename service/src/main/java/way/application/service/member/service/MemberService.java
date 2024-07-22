@@ -44,15 +44,6 @@ public class MemberService {
 
 	}
 
-	public CheckIdResponseDto checkId(MemberRequestDto.CheckIdRequestDto checkIdRequestDto) {
-
-		//userId 중복 검사
-		memberRepository.isDuplicatedUserId(checkIdRequestDto.userId());
-
-		return new CheckIdResponseDto(checkIdRequestDto.userId());
-
-	}
-
 	public CheckEmailResponseDto checkEmail(MemberRequestDto.CheckEmailRequestDto checkEmailRequestDto) {
 
 		//email 중복 검사

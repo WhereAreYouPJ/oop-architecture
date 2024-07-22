@@ -8,8 +8,6 @@ public interface MemberRepository {
 	// Member Seq Validation 메서드
 	MemberEntity findByMemberSeq(Long memberSeq);
 
-	void isDuplicatedUserId(String userId);
-
 	// Member Seqs Validation 메서드
 	List<MemberEntity> findByMemberSeqs(List<Long> memberSeqs);
 
