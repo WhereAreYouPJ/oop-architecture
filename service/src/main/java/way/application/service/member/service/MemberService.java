@@ -34,22 +34,13 @@ public class MemberService {
 	public void saveMember(SaveMemberRequestDto saveMemberRequestDto) {
 
 		//멤버 유효성 검사
-		memberRepository.isDuplicatedUserId(saveMemberRequestDto.userId());
+		memberRepository.isDuplicatedEmail(saveMemberRequestDto.email());
 
 		// Member 저장
 		memberRepository.saveMember(
 				memberMapper.toMemberEntity(saveMemberRequestDto,encoder.encode(saveMemberRequestDto.password()))
 		);
 
-
-	}
-
-	public CheckIdResponseDto checkId(MemberRequestDto.CheckIdRequestDto checkIdRequestDto) {
-
-		//userId 중복 검사
-		memberRepository.isDuplicatedUserId(checkIdRequestDto.userId());
-
-		return new CheckIdResponseDto(checkIdRequestDto.userId());
 
 	}
 

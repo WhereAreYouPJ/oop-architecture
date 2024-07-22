@@ -10,17 +10,10 @@ public class SaveMemberValidator {
 
     public void validate(SaveMemberRequest request) {
 
-        validateUserId(request.userId());
         validateUserName(request.userName());
         validateEmail(request.email());
         validatePassword(request.password());
 
-    }
-
-    private void validateUserId(String userId) {
-        if (userId == null || userId.isEmpty()) {
-            throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
-        }
     }
 
     private void validateUserName(String userName) {

@@ -32,9 +32,6 @@ public class MemberEntity {
 	private String userName;
 
 	@Column(nullable = false)
-	private String userId;
-
-	@Column(nullable = false)
 	private String encodedPassword;
 
 	private String email;

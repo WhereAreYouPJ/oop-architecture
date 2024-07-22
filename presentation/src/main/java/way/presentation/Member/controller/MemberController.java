@@ -74,54 +74,8 @@ public class MemberController {
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
     }
 
-    @GetMapping(value = "/checkId", name = "아이디 중복 체크")
-    @Operation(summary = "Check Id API", description = "아이디 중복 체크 API")
-    @Parameters({
-            @Parameter(
-                    name = "userId",
-                    description = "userId",
-                    example = "dlswns97")
-    })
-    @ApiResponses(value = {
-            @ApiResponse(
-                    responseCode = "200",
-                    description = "요청에 성공하였습니다.",
-                    useReturnTypeSchema = true),
-            @ApiResponse(
-                    responseCode = "B001",
-                    description = "400 Invalid DTO Parameter errors",
-                    content = @Content(
-                            schema = @Schema(
-                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
-            @ApiResponse(
-                    responseCode = "S500",
-                    description = "500 SERVER_ERROR",
-                    content = @Content(
-                            schema = @Schema(
-                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
-            @ApiResponse(
-                    responseCode = "UIDC001",
-                    description = "409 USER_ID_DUPLICATION_EXCEPTION",
-                    content = @Content(
-                            schema = @Schema(
-                                    implementation = GlobalExceptionHandler.ErrorResponse.class)))
-    })
-    public ResponseEntity<BaseResponse<CheckIdResponse>> checkId(@Valid @RequestParam("userId") String userId) {
-
-        // Param -> VO
-        MemberRequestVo.CheckIdRequest request = new MemberRequestVo.CheckIdRequest(userId);
-
-        // VO -> DTO
-        CheckIdResponseDto checkIdResponseDto = memberService.checkId(request.toCheckIdRequestDto());
-
-        // DTO -> VO
-        CheckIdResponse checkIdResponse = new CheckIdResponse(checkIdResponseDto.userId());
-
-        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(),checkIdResponse));
-    }
-
     @GetMapping(value = "/checkEmail", name = "이메일 중복 체크")
-    @Operation(summary = "Check Email API", description = "아이디ㅠ 중복 체크 API")
+    @Operation(summary = "Check Email API", description = "이메일 중복 체크 API")
     @Parameters({
             @Parameter(
                     name = "email",
