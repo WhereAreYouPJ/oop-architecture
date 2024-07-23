@@ -1,5 +1,6 @@
 package way.presentation.Member.vo.req;
 
+import org.springframework.web.multipart.MultipartFile;
 import way.application.service.member.dto.request.MemberRequestDto;
 
 import static way.application.service.member.dto.request.MemberRequestDto.*;
@@ -106,6 +107,18 @@ public class MemberRequestVo {
         public MemberRequestDto.GetMemberDetailDto toGetMemberDetailDto() {
             return new MemberRequestDto.GetMemberDetailDto(
                     this.memberSeq
+            );
+        }
+    }
+
+    public record ModifyProfileImage(
+            Long memberSeq,
+            MultipartFile multipartFile
+    ) {
+        public MemberRequestDto.ModifyProfileImage toModifyProfileImage() {
+            return new MemberRequestDto.ModifyProfileImage(
+                    this.memberSeq,
+                    this.multipartFile
             );
         }
     }

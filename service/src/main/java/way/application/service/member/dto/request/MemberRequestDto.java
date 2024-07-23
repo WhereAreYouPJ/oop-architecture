@@ -1,5 +1,7 @@
 package way.application.service.member.dto.request;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class MemberRequestDto {
 
     public record SaveMemberRequestDto (
@@ -52,6 +54,12 @@ public class MemberRequestDto {
 
     public record GetMemberDetailDto(
             Long memberSeq
+    ) {
+    }
+
+    public record ModifyProfileImage(
+            Long memberSeq,
+            MultipartFile multipartFile
     ) {
     }
 }

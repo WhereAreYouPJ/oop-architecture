@@ -10,6 +10,9 @@ import way.application.service.member.dto.request.MemberRequestDto;
 import way.application.service.member.dto.request.MemberRequestDto.SaveMemberRequestDto;
 import way.application.service.member.mapper.MemberMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import way.application.utils.s3.S3Utils;
+
+import java.io.IOException;
 
 import static way.application.service.member.dto.response.MemberResponseDto.*;
 
@@ -29,6 +32,7 @@ public class MemberService {
 	private final MemberMapper memberMapper;
 	private final BCryptPasswordEncoder encoder;
 	private final MemberDomain memberDomain;
+	private final S3Utils s3Util;
 
 	@Transactional
 	public void saveMember(SaveMemberRequestDto saveMemberRequestDto) {
@@ -136,5 +140,18 @@ public class MemberService {
 
 		return new GetMemberDetailResponseDto(memberEntity.getUserName(), memberEntity.getEmail(), memberEntity.getProfileImage());
 
+	}
+
+	public void modifyProfileImage(MemberRequestDto.ModifyProfileImage modifyProfileImage) throws IOException {
+
+		// memberSeq 검사
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(modifyProfileImage.memberSeq());
+
+		// 프로필 사진 변경
+		String uploadImage = s3Util.uploadMultipartFile(modifyProfileImage.multipartFile());
+		memberEntity.updateProfileImage(uploadImage);
+
+		// 변경 저장
+		memberRepository.saveMember(memberEntity);
 	}
 }
