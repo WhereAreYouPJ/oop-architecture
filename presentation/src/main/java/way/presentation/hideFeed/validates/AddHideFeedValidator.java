@@ -8,7 +8,7 @@ import way.application.utils.exception.BadRequestException;
 import way.application.utils.exception.ErrorResult;
 
 @Component
-public class HideFeedValidator {
+public class AddHideFeedValidator {
 
 	public void validate(HideFeedRequest request) {
 		validateScheduleSeq(request.scheduleSeq());
