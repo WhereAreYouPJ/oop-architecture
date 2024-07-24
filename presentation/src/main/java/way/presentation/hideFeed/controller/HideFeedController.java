@@ -31,7 +31,7 @@ public class HideFeedController {
 
 	private final HideFeedService hideFeedService;
 
-	@PostMapping(name = "피드  숨김", value = "/hide")
+	@PostMapping(name = "피드  숨김")
 	@Operation(summary = "피드 숨김 API", description = "피드 숨김 API")
 	@ApiResponses(value = {
 		@ApiResponse(
