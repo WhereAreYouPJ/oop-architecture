@@ -1,4 +1,4 @@
-package way.presentation.feed.aws.controller;
+package way.presentation.aws.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

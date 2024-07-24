@@ -42,16 +42,4 @@ public class FeedRequestVo {
 			);
 		}
 	}
-
-	public record HideFeedRequest(
-		Long feedSeq,
-		Long creatorSeq
-	) {
-		public HideFeedRequestDto toHideFeedRequestDto() {
-			return new HideFeedRequestDto(
-				this.feedSeq,
-				this.creatorSeq
-			);
-		}
-	}
 }

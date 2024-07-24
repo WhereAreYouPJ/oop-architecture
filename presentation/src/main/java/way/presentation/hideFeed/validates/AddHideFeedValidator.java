@@ -1,25 +1,22 @@
-package way.presentation.feed.validates;
+package way.presentation.hideFeed.validates;
 
-import static way.presentation.feed.vo.req.FeedRequestVo.*;
+import static way.presentation.hideFeed.vo.req.HideFeedRequestVo.*;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import way.application.utils.exception.BadRequestException;
 import way.application.utils.exception.ErrorResult;
 
 @Component
-public class HideFeedValidator {
-	private static final Logger logger = LoggerFactory.getLogger(HideFeedValidator.class);
+public class AddHideFeedValidator {
 
 	public void validate(HideFeedRequest request) {
-		validateFeedSeq(request.feedSeq());
-		validateMemberSeq(request.creatorSeq());
+		validateScheduleSeq(request.scheduleSeq());
+		validateMemberSeq(request.memberSeq());
 	}
 
-	private void validateFeedSeq(Long feedSeq) {
-		if (feedSeq == null) {
+	private void validateScheduleSeq(Long scheduleSeq) {
+		if (scheduleSeq == null) {
 			throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 		}
 	}
