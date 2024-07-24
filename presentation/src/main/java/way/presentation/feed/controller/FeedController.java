@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import way.application.service.feed.service.FeedService;
@@ -31,6 +32,7 @@ import way.presentation.feed.validates.SaveFeedValidator;
 @RestController
 @RequestMapping("/feed")
 @RequiredArgsConstructor
+@Tag(name = "피드", description = "담당자 (박종훈)")
 public class FeedController {
 	private final SaveFeedValidator saveFeedValidator;
 	private final ModifyFeedValidator modifyFeedValidator;
