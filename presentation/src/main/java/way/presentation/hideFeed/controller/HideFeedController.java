@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import way.application.service.hideFeed.service.HideFeedService;
@@ -26,6 +27,7 @@ import way.presentation.hideFeed.validates.DeleteHideFeedValidator;
 @RestController
 @RequestMapping("/hide-feed")
 @RequiredArgsConstructor
+@Tag(name = "피드 숨김", description = "담당자 (박종훈)")
 public class HideFeedController {
 	private final AddHideFeedValidator addHideFeedValidator;
 	private final DeleteHideFeedValidator deleteHideFeedValidator;
