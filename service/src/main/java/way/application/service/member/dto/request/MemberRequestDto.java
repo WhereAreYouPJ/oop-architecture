@@ -62,4 +62,9 @@ public class MemberRequestDto {
             MultipartFile multipartFile
     ) {
     }
+
+    public record LogoutRequestDto(
+            Long memberSeq
+    ) {
+    }
 }

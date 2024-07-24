@@ -93,4 +93,9 @@ public class MemberRepositoryImpl implements MemberRepository {
 	public void deleteCode(String email) {
 		redisTemplate.delete(email);
 	}
+
+	@Override
+	public void deleteJwt(String email) {
+		redisTemplate.delete(email);
+	}
 }
