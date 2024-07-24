@@ -36,6 +36,7 @@ public class MemberController {
     private final SendEmailRequestValidator sendEmailRequestValidator;
     private final VerifyCodeValidator verifyCodeValidator;
     private final ResetPasswordValidator resetPasswordValidator;
+    private final LogoutValidator logoutValidator;
 
     @PostMapping(name = "회원가입")
     @Operation(summary = "join Member API", description = "회원가입 API")
@@ -417,6 +418,44 @@ public class MemberController {
         MemberRequestVo.ModifyProfileImage request = new MemberRequestVo.ModifyProfileImage(memberSeq, multipartFile);
         // VO -> DTO
         memberService.modifyProfileImage(request.toModifyProfileImage());
+
+        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
+    }
+
+    @PostMapping(value = "/logout", name = "로그아웃")
+    @Operation(summary = "Logout API", description = "로그아웃 API")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청에 성공하였습니다.",
+                    useReturnTypeSchema = true),
+            @ApiResponse(
+                    responseCode = "B001",
+                    description = "400 Invalid DTO Parameter errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "S500",
+                    description = "500 SERVER_ERROR",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "MSB002",
+                    description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class)))
+    })
+    public ResponseEntity<BaseResponse<String>> logout(@Valid @RequestBody MemberRequestVo.LogoutRequest request) {
+
+        // DTO 유효성 검사
+        logoutValidator.validate(request);
+
+        // VO -> DTO 변환
+        LogoutRequestDto logoutRequest = request.toLogoutRequest();
+        memberService.logout(logoutRequest);
 
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
     }

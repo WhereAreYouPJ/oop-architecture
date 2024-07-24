@@ -122,4 +122,15 @@ public class MemberRequestVo {
             );
         }
     }
+
+    public record LogoutRequest(
+
+            Long memberSeq
+    ) {
+        public MemberRequestDto.LogoutRequestDto toLogoutRequest() {
+            return new MemberRequestDto.LogoutRequestDto(
+                    this.memberSeq
+            );
+        }
+    }
 }

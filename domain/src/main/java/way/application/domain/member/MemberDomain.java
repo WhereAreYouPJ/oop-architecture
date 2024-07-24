@@ -124,4 +124,9 @@ public class MemberDomain {
 		}
 
 	}
+
+	public void fireBaseTargetToken(MemberEntity memberEntity) {
+
+		memberEntity.deleteFireBaseTargetToken();
+	}
 }

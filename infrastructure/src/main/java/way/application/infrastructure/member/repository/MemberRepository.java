@@ -24,4 +24,6 @@ public interface MemberRepository {
 	String getCode(String email);
 
 	void deleteCode(String email);
+
+	void deleteJwt(String email);
 }

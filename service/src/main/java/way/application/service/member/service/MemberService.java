@@ -97,7 +97,6 @@ public class MemberService {
 		// 인증코드 삭제
 		memberRepository.deleteCode(verifyCodeDto.email());
 
-
 	}
 
 	public void verifyPassword(MemberRequestDto.VerifyCodeDto verifyCodeDto) {
@@ -153,5 +152,21 @@ public class MemberService {
 
 		// 변경 저장
 		memberRepository.saveMember(memberEntity);
+	}
+
+	public void logout(MemberRequestDto.LogoutRequestDto logoutRequest) {
+
+		// memberSeq 검사
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(logoutRequest.memberSeq());
+
+		// 파이어 베이스 토큰 삭제
+		memberDomain.fireBaseTargetToken(memberEntity);
+
+		// jwt 삭제
+		memberRepository.deleteJwt(memberEntity.getEmail());
+
+		// 변경 저장
+		memberRepository.saveMember(memberEntity);
+
 	}
 }

@@ -47,4 +47,8 @@ public class MemberEntity {
 	public void updateProfileImage(String profileImage) {
 		this.profileImage = profileImage;
 	}
+
+	public void deleteFireBaseTargetToken() {
+		this.fireBaseTargetToken = null;
+	}
 }
