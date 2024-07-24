@@ -14,4 +14,16 @@ public class HideFeedRequestVo {
 			);
 		}
 	}
+
+	public record DeleteHideFeedRequest(
+		Long hideScheduleSeq,
+		Long memberSeq
+	) {
+		public DeleteHideFeedRequestDto toDeleteHideFeedRequestDto() {
+			return new DeleteHideFeedRequestDto(
+				this.hideScheduleSeq,
+				this.memberSeq
+			);
+		}
+	}
 }
