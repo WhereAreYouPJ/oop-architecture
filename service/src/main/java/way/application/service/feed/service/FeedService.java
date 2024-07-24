@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
-import way.application.domain.feed.FeedDomain;
 import way.application.infrastructure.feed.entity.FeedEntity;
 import way.application.infrastructure.feed.repository.FeedRepository;
 import way.application.infrastructure.feedImage.repository.FeedImageRepository;
@@ -42,8 +41,6 @@ public class FeedService {
 	private final FeedMapper feedMapper;
 	private final FeedMemberMapper feedMemberMapper;
 	private final FeedImageMapper feedImageMapper;
-
-	private final FeedDomain feedDomain;
 
 	@Transactional
 	public SaveFeedResponseDto saveFeed(SaveFeedRequestDto saveFeedRequestDto) throws IOException {
@@ -116,22 +113,5 @@ public class FeedService {
 		);
 
 		return new ModifyFeedResponseDto(saveFeedResponseDto.feedSeq());
-	}
-
-	@Transactional
-	public void hideFeed(HideFeedRequestDto hideFeedRequestDto) {
-		// 유효성 처리 (Repo 단)
-		MemberEntity creatorMemberEntity = memberRepository.findByMemberSeq(hideFeedRequestDto.creatorSeq());
-		feedRepository.findByFeedSeq(hideFeedRequestDto.feedSeq());
-		FeedEntity savedFeed = feedRepository.findByCreatorMemberAndFeedSeq(
-			creatorMemberEntity,
-			hideFeedRequestDto.feedSeq()
-		);
-
-		// Domain 처리
-		FeedEntity toggledFeedEntity = feedDomain.toggleHide(savedFeed);
-
-		// 저장
-		feedRepository.saveFeedEntity(toggledFeedEntity);
 	}
 }

@@ -49,8 +49,4 @@ public class FeedEntity {
 	@Lob
 	@Column(name = "content", nullable = true, columnDefinition = "TEXT")
 	private String content;
-
-	@Column(name = "hide", nullable = false)
-	@ColumnDefault("false")
-	private Boolean hide;
 }

@@ -33,11 +33,4 @@ public class FeedRequestDto {
 			);
 		}
 	}
-
-	public record HideFeedRequestDto(
-		Long feedSeq,
-		Long creatorSeq
-	) {
-
-	}
 }
