@@ -76,6 +76,13 @@ public enum ErrorResult {
 		"FDCBMB020"
 	),
 
+	// NOT FOUND
+	HIDE_FEED_NOT_FOUND_EXCEPTION(
+		HttpStatus.NOT_FOUND.value(),
+		"HIDE_FEED_NOT_FOUND_EXCEPTION",
+		"HFEN001"
+	),
+
 	// CONFLICT
 	USER_ID_DUPLICATION_CONFLICT_EXCEPTION(
 		HttpStatus.CONFLICT.value(),
