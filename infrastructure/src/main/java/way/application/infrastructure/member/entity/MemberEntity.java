@@ -1,5 +1,6 @@
 package way.application.infrastructure.member.entity;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -38,6 +39,16 @@ public class MemberEntity {
 	private String profileImage;
 
 	private String fireBaseTargetToken;
+
+	@ColumnDefault("'false'")
+	private String apple;
+	@ColumnDefault("'false'")
+	private String kakao;
+	@ColumnDefault("'false'")
+	private String normal;
+
+	private String memberCode;
+
 
 
 	public void updateEncodedPassword(String password) {
