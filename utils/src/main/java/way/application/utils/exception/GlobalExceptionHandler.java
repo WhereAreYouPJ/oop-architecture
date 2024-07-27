@@ -44,7 +44,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	) {
 		log.warn("BadRequest Exception occur: ", exception);
 
-		response.setStatus(exception.getErrorResult().getHttpStatus().value());
+		response.setStatus(exception.getErrorResult().getHttpStatus());
 		return this.makeErrorResponseEntity(exception.getErrorResult());
 	}
 
@@ -55,7 +55,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	) {
 		log.warn("Conflict Exception occur: ", exception);
 
-		response.setStatus(exception.getErrorResult().getHttpStatus().value());
+		response.setStatus(exception.getErrorResult().getHttpStatus());
 		return this.makeErrorResponseEntity(exception.getErrorResult());
 	}
 
@@ -63,7 +63,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		return ResponseEntity.status(errorResult.getHttpStatus())
 			.body(
 				new ErrorResponse(
-					errorResult.getHttpStatus().value(),
+					errorResult.getHttpStatus(),
 					errorResult.getMessage(),
 					errorResult.getCode())
 			);

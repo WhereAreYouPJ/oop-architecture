@@ -58,8 +58,8 @@ public class MemberController {
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class))),
             @ApiResponse(
-                    responseCode = "UIDC001",
-                    description = "409 USER_ID_DUPLICATION_CONFLICT_EXCEPTION",
+                    responseCode = "EDC002",
+                    description = "409 EMAIL_DUPLICATION_CONFLICT_EXCEPTION",
                     content = @Content(
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class)))

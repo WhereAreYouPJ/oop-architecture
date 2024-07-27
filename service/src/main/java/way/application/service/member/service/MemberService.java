@@ -40,9 +40,11 @@ public class MemberService {
 		//멤버 유효성 검사
 		memberRepository.isDuplicatedEmail(saveMemberRequestDto.email());
 
+		String memberCode = memberDomain.generateMemberCode();
+
 		// Member 저장
 		memberRepository.saveMember(
-				memberMapper.toMemberEntity(saveMemberRequestDto,encoder.encode(saveMemberRequestDto.password()))
+				memberMapper.toMemberEntity(saveMemberRequestDto,encoder.encode(saveMemberRequestDto.password()),memberCode)
 		);
 
 
