@@ -6,6 +6,7 @@ import static way.presentation.hideFeed.vo.res.HideFeedResponseVo.*;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +24,7 @@ import way.application.service.hideFeed.service.HideFeedService;
 import way.application.utils.exception.GlobalExceptionHandler;
 import way.presentation.base.BaseResponse;
 import way.presentation.hideFeed.validates.AddHideFeedValidator;
+import way.presentation.hideFeed.validates.DeleteHideFeedValidator;
 
 @RestController
 @RequestMapping("/hide-feed")
@@ -30,6 +32,7 @@ import way.presentation.hideFeed.validates.AddHideFeedValidator;
 @Tag(name = "피드 숨김", description = "담당자 (박종훈)")
 public class HideFeedController {
 	private final AddHideFeedValidator addHideFeedValidator;
+	private final DeleteHideFeedValidator deleteHideFeedValidator;
 
 	private final HideFeedService hideFeedService;
 
@@ -91,5 +94,56 @@ public class HideFeedController {
 		AddHideFeedResponse response = new AddHideFeedResponse(addHideFeedResponseDto.hideFeedSeq());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
+	}
+
+	@DeleteMapping(name = "피드  숨김 복원")
+	@Operation(summary = "피드  숨김 복원 API", description = "피드  숨김 복원 API")
+	@ApiResponses(value = {
+		@ApiResponse(
+			responseCode = "200",
+			description = "요청에 성공하였습니다.",
+			useReturnTypeSchema = true),
+		@ApiResponse(
+			responseCode = "S500",
+			description = "500 SERVER_ERROR (나도 몰라 ..)",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "B001",
+			description = "400 Invalid DTO Parameter errors / 요청 값 형식 요류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "MSB002",
+			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "FSB019",
+			description = "400 FEED_SEQ_BAD_REQUEST_EXCEPTION / FEED_SEQ 오류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "HFEN001",
+			description = "400 HIDE_FEED_NOT_FOUND_EXCEPTION / Member가 숨김한 Hide Feed가 없을 때 오류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class)))
+	})
+	public ResponseEntity<BaseResponse> deleteHideFeed(
+		@Valid
+		@RequestBody DeleteHideFeedRequest request
+	) {
+		// 유효성 검사
+		deleteHideFeedValidator.validate(request);
+
+		// VO -> DTO
+		hideFeedService.deleteHideFeed(request.toDeleteHideFeedRequestDto());
+
+		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
 	}
 }
