@@ -6,5 +6,7 @@ import way.application.infrastructure.member.entity.MemberEntity;
 
 public interface HideFeedRepository {
 	HideFeedEntity saveHideFeedEntity(HideFeedEntity hideFeedEntity);
-	void findHideFeedEntityByFeedEntityAndMemberEntity(FeedEntity feedEntity, MemberEntity memberEntity);
+	void deleteHideFeedEntity(HideFeedEntity hideFeedEntity);
+	void checkHideFeedEntityByFeedEntityAndMemberEntity(FeedEntity feedEntity, MemberEntity memberEntity);
+	HideFeedEntity findHideFeedEntityByFeedEntityAndMemberEntity(FeedEntity feedEntity, MemberEntity memberEntity);
 }

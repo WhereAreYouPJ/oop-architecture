@@ -13,8 +13,6 @@ import way.application.infrastructure.hideFeed.entity.HideFeedEntity;
 import way.application.infrastructure.hideFeed.repository.HideFeedRepository;
 import way.application.infrastructure.member.entity.MemberEntity;
 import way.application.infrastructure.member.repository.MemberRepository;
-import way.application.infrastructure.schedule.repository.ScheduleRepository;
-import way.application.infrastructure.scheduleMember.repository.ScheduleMemberRepository;
 import way.application.service.hideFeed.mapper.HideFeedMapper;
 
 @Service
@@ -29,7 +27,6 @@ public class HideFeedService {
 	@Transactional
 	public AddHideFeedResponseDto addHideFeed(AddHideFeedRequestDto addHideFeedRequestDto) {
 		/*
-		 예외처리 (Repo 단)
 		 1. Member 확인
 		 2. Feed 확인
 		 3. Feed 작성자 확인
@@ -41,7 +38,7 @@ public class HideFeedService {
 			memberEntity,
 			addHideFeedRequestDto.hideFeedSeq()
 		);
-		hideFeedRepository.findHideFeedEntityByFeedEntityAndMemberEntity(
+		hideFeedRepository.checkHideFeedEntityByFeedEntityAndMemberEntity(
 			feedEntity,
 			memberEntity
 		);
@@ -52,5 +49,23 @@ public class HideFeedService {
 		);
 
 		return new AddHideFeedResponseDto(hideFeedEntity.getHideFeedSeq());
+	}
+
+	@Transactional
+	public void deleteHideFeed(DeleteHideFeedRequestDto hideFeedRequestDto) {
+		/*
+		 1. Member 확인
+		 2. Feed 확인
+		 3. Hide Feed 작성자 확인
+		*/
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(hideFeedRequestDto.memberSeq());
+		FeedEntity feedEntity = feedRepository.findByFeedSeq(hideFeedRequestDto.hideFeedSeq());
+		HideFeedEntity hideFeedEntity = hideFeedRepository.findHideFeedEntityByFeedEntityAndMemberEntity(
+			feedEntity,
+			memberEntity
+		);
+
+		// Hide Feed 삭제
+		hideFeedRepository.deleteHideFeedEntity(hideFeedEntity);
 	}
 }

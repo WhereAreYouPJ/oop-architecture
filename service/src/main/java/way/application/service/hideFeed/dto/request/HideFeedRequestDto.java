@@ -7,4 +7,11 @@ public class HideFeedRequestDto {
 	) {
 
 	}
+
+	public record DeleteHideFeedRequestDto(
+		Long hideFeedSeq,
+		Long memberSeq
+	) {
+
+	}
 }
