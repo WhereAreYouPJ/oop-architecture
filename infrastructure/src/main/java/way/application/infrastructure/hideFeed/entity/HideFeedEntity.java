@@ -16,8 +16,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import way.application.infrastructure.feed.entity.FeedEntity;
 import way.application.infrastructure.member.entity.MemberEntity;
-import way.application.infrastructure.schedule.entity.ScheduleEntity;
 
 @Entity
 @Table(name = "HIDE_FEED")
@@ -34,8 +34,8 @@ public class HideFeedEntity {
 	private Long hideFeedSeq;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "hide_schedule_seq")
-	private ScheduleEntity scheduleEntity;
+	@JoinColumn(name = "feed_seq")
+	private FeedEntity feedEntity;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_seq")

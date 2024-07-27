@@ -44,15 +44,19 @@ public class FeedService {
 
 	@Transactional
 	public SaveFeedResponseDto saveFeed(SaveFeedRequestDto saveFeedRequestDto) throws IOException {
-		// 유효성 처리 (Repo 단)
+		/*
+		 1. Member
+		 2. Schedule
+		 3. Schedule 수락 여부
+		 4. Feed 존재 여부
+		*/
 		MemberEntity creatorMemberEntity = memberRepository.findByMemberSeq(saveFeedRequestDto.creatorSeq());
 		ScheduleEntity savedSchedule = scheduleRepository.findByScheduleSeq(saveFeedRequestDto.scheduleSeq());
-
-		// Schedule 수락 여부 확인
 		scheduleMemberRepository.findAcceptedScheduleMemberByScheduleSeqAndMemberSeq(
 			saveFeedRequestDto.scheduleSeq(),
 			saveFeedRequestDto.creatorSeq()
 		);
+		feedRepository.findByCreatorMemberAndSchedule(creatorMemberEntity, savedSchedule);
 
 		// 해당 Schedule 의 Member 추출 -> Schedule accept -> true 인 경우
 		List<ScheduleMemberEntity> scheduleMemberEntities

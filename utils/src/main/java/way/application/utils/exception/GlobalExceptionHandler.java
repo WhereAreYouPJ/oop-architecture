@@ -50,7 +50,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler({ConflictException.class})
 	public ResponseEntity<ErrorResponse> handleConflictException(
-		final BadRequestException exception,
+		final ConflictException exception,
 		HttpServletResponse response
 	) {
 		log.warn("Conflict Exception occur: ", exception);

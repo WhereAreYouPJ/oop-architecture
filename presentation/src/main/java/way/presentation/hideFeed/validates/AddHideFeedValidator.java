@@ -11,12 +11,12 @@ import way.application.utils.exception.ErrorResult;
 public class AddHideFeedValidator {
 
 	public void validate(HideFeedRequest request) {
-		validateScheduleSeq(request.scheduleSeq());
+		validateHideFeedSeq(request.hideFeedSeq());
 		validateMemberSeq(request.memberSeq());
 	}
 
-	private void validateScheduleSeq(Long scheduleSeq) {
-		if (scheduleSeq == null) {
+	private void validateHideFeedSeq(Long hideFeedSeq) {
+		if (hideFeedSeq == null) {
 			throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 		}
 	}

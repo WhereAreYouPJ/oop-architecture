@@ -75,6 +75,12 @@ public class FeedController {
 			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
 			content = @Content(
 				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "FDC004",
+			description = "409 FEED_DUPLICATION_CONFLICT_EXCEPTION / 이미 작성한 피드가 존재할 때 발생 오류",
+			content = @Content(
+				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
 	public ResponseEntity<BaseResponse<SaveFeedResponse>> createFeed(
