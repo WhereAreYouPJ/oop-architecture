@@ -63,7 +63,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		return ResponseEntity.status(errorResult.getHttpStatus())
 			.body(
 				new ErrorResponse(
-					errorResult.getHttpStatus().toString(),
+					errorResult.getHttpStatus().value(),
 					errorResult.getMessage(),
 					errorResult.getCode())
 			);
@@ -72,7 +72,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	@Getter
 	@RequiredArgsConstructor
 	public static class ErrorResponse {
-		private final String status;
+		private final int status;
 		private final String message;
 		private final String code;
 	}
