@@ -8,6 +8,7 @@ import way.application.infrastructure.hideFeed.entity.HideFeedEntity;
 import way.application.infrastructure.member.entity.MemberEntity;
 import way.application.utils.exception.ConflictException;
 import way.application.utils.exception.ErrorResult;
+import way.application.utils.exception.NotFoundRequestException;
 
 @Component
 @RequiredArgsConstructor
@@ -20,10 +21,24 @@ public class HideFeedRepositoryImpl implements HideFeedRepository {
 	}
 
 	@Override
-	public void findHideFeedEntityByFeedEntityAndMemberEntity(FeedEntity feedEntity, MemberEntity memberEntity) {
+	public void deleteHideFeedEntity(HideFeedEntity hideFeedEntity) {
+		hideFeedJpaRepository.delete(hideFeedEntity);
+	}
+
+	@Override
+	public void checkHideFeedEntityByFeedEntityAndMemberEntity(FeedEntity feedEntity, MemberEntity memberEntity) {
 		hideFeedJpaRepository.findHideFeedEntityByFeedEntityAndMemberEntity(feedEntity, memberEntity)
 			.ifPresent(entity -> {
 				throw new ConflictException(ErrorResult.HIDE_FEED_DUPLICATION_CONFLICT_EXCEPTION);
 			});
+	}
+
+	@Override
+	public HideFeedEntity findHideFeedEntityByFeedEntityAndMemberEntity(
+		FeedEntity feedEntity,
+		MemberEntity memberEntity
+	) {
+		return hideFeedJpaRepository.findHideFeedEntityByFeedEntityAndMemberEntity(feedEntity, memberEntity)
+			.orElseThrow(() -> new NotFoundRequestException(ErrorResult.HIDE_FEED_NOT_FOUND_EXCEPTION));
 	}
 }
