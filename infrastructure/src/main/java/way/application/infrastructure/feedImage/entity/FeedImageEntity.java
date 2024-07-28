@@ -34,7 +34,7 @@ public class FeedImageEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "feed_seq")
-	private FeedEntity feed;
+	private FeedEntity feedEntity;
 
 	private String feedImageURL;
 }

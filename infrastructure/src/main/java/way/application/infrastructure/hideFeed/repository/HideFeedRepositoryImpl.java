@@ -1,5 +1,7 @@
 package way.application.infrastructure.hideFeed.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -40,5 +42,10 @@ public class HideFeedRepositoryImpl implements HideFeedRepository {
 	) {
 		return hideFeedJpaRepository.findHideFeedEntityByFeedEntityAndMemberEntity(feedEntity, memberEntity)
 			.orElseThrow(() -> new NotFoundRequestException(ErrorResult.HIDE_FEED_NOT_FOUND_EXCEPTION));
+	}
+
+	@Override
+	public Page<HideFeedEntity> findAllByMemberEntity(MemberEntity memberEntity, Pageable pageable) {
+		return hideFeedJpaRepository.findAllByMemberEntity(memberEntity, pageable);
 	}
 }
