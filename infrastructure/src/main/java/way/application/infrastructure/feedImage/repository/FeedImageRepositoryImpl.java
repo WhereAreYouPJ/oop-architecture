@@ -1,5 +1,7 @@
 package way.application.infrastructure.feedImage.repository;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,11 @@ public class FeedImageRepositoryImpl implements FeedImageRepository {
 
 	@Override
 	public void deleteAllByFeedEntity(FeedEntity feedEntity) {
-		feedImageJpaRepository.deleteAllByFeed(feedEntity);
+		feedImageJpaRepository.deleteAllByFeedEntity(feedEntity);
+	}
+
+	@Override
+	public List<FeedImageEntity> findAllByFeedEntity(FeedEntity feedEntity) {
+		return feedImageJpaRepository.findAllByFeedEntity(feedEntity);
 	}
 }
