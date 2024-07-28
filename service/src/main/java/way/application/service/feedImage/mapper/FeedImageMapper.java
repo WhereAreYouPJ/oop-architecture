@@ -11,7 +11,7 @@ import way.application.infrastructure.feedImage.entity.FeedImageEntity;
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface FeedImageMapper {
 	@Mapping(target = "feedImageSeq", ignore = true)
-	@Mapping(target = "feed", source = "feed")
+	@Mapping(target = "feedEntity", source = "feed")
 	@Mapping(target = "feedImageURL", source = "feedImageURL")
 	FeedImageEntity toFeedImageEntity(FeedEntity feed, String feedImageURL);
 }
