@@ -26,4 +26,6 @@ public interface MemberRepository {
 	void deleteCode(String email);
 
 	void deleteJwt(String email);
+
+    MemberEntity findByMemberCode(String memberCode);
 }

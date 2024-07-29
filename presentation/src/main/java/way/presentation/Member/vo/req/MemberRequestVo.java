@@ -100,13 +100,23 @@ public class MemberRequestVo {
     }
 
     public record GetMemberDetailRequest(
-
             Long memberSeq
     ) {
 
         public MemberRequestDto.GetMemberDetailDto toGetMemberDetailDto() {
             return new MemberRequestDto.GetMemberDetailDto(
                     this.memberSeq
+            );
+        }
+    }
+
+    public record SearchMember(
+            String memberCode
+    ) {
+
+        public MemberRequestDto.SearchMemberDto toSearchMemberDto() {
+            return new MemberRequestDto.SearchMemberDto(
+                    this.memberCode
             );
         }
     }

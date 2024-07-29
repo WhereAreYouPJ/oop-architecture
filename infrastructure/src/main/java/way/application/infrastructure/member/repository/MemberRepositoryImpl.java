@@ -98,4 +98,12 @@ public class MemberRepositoryImpl implements MemberRepository {
 	public void deleteJwt(String email) {
 		redisTemplate.delete(email);
 	}
+
+	@Override
+	public MemberEntity findByMemberCode(String memberCode) {
+
+		return memberJpaRepository.findByMemberCode(memberCode)
+				.orElseThrow(() -> new BadRequestException(ErrorResult.MEMBER_CODE_BAD_REQUEST_EXCEPTION));
+
+	}
 }

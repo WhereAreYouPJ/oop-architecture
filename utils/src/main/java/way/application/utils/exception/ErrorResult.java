@@ -76,6 +76,12 @@ public enum ErrorResult {
 		"FDCBMB020"
 	),
 
+	MEMBER_CODE_BAD_REQUEST_EXCEPTION(
+			HttpStatus.BAD_REQUEST.value(),
+			"MEMBER_CODE_BAD_REQUEST_EXCEPTION",
+			"MCB021"
+	),
+
 	// NOT FOUND
 	HIDE_FEED_NOT_FOUND_EXCEPTION(
 		HttpStatus.NOT_FOUND.value(),

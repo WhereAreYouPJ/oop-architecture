@@ -32,4 +32,12 @@ public class MemberResponseDto {
 
     }
 
+    public record SearchMemberResponseDto(
+            String userName,
+            Long memberSeq,
+            String profileImage
+    ) {
+
+    }
+
 }
