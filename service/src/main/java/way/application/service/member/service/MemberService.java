@@ -73,7 +73,7 @@ public class MemberService {
 		// refreshToken 저장
 		memberRepository.saveRefreshToken(refreshToken, loginRequestDto.email());
 
-		return new LoginResponseDto(accessToken,refreshToken,memberEntity.getMemberSeq());
+		return new LoginResponseDto(accessToken,refreshToken,memberEntity.getMemberSeq(),memberEntity.getMemberCode());
 	}
 
 	public void send(MemberRequestDto.MailSendRequestDto mailSendRequestDto) {
