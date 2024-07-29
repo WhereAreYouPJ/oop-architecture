@@ -45,6 +45,15 @@ public class FirebaseNotificationDomain {
 		}
 	}
 
+	public void sendFriendRequestNotification(MemberEntity targetMemberEntity, MemberEntity sendMemberEntity) {
+		try {
+			String body = sendMemberEntity.getUserName() + "이(가) 친구 요청을 보냈습니다.";
+			sendMessageTo(targetMemberEntity.getFireBaseTargetToken(), "친구 요청이 들어왔습니다.", body);
+		} catch (IOException e) {
+			throw new ServerException(ErrorResult.FIREBASE_CLOUD_MESSAGING_EXCEPTION);
+		}
+	}
+
 	private void sendMessageTo(String targetToken, String title, String body) throws IOException {
 		String message = makeMessage(targetToken, title, body);
 
