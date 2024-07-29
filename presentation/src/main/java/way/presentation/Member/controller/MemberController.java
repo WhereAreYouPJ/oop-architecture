@@ -380,6 +380,52 @@ public class MemberController {
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(),getMemberDetailResponse));
     }
 
+    @GetMapping(value = "/search", name = "회원 검색")
+    @Operation(summary = "Get Member Details API", description = "회원 검색(By MemberCode) API")
+    @Parameters({
+            @Parameter(
+                    name = "memberCode",
+                    description = "Member Code",
+                    example = "1A2B3C")
+    })
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청에 성공하였습니다.",
+                    useReturnTypeSchema = true),
+            @ApiResponse(
+                    responseCode = "B001",
+                    description = "400 Invalid DTO Parameter errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "S500",
+                    description = "500 SERVER_ERROR",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "MCB021",
+                    description = "400 MEMBER_CODE_BAD_REQUEST_EXCEPTION ",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class)))
+    })
+    public ResponseEntity<BaseResponse<SearchMemberResponse>> searchMember(@Valid @RequestParam("memberCode") String memberCode) {
+
+        // Param -> VO
+        SearchMember request = new SearchMember(memberCode);
+
+        // VO -> DTO
+        SearchMemberResponseDto searchMemberResponseDto = memberService.searchMember(request.toSearchMemberDto());
+
+        // DTO -> VO
+        SearchMemberResponse searchMemberResponse = new SearchMemberResponse(searchMemberResponseDto.userName(), searchMemberResponseDto.memberSeq(), searchMemberResponseDto.profileImage());
+
+        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(),searchMemberResponse));
+    }
+
     @PutMapping(value = "/modify/profileImage", name = "회원 사진 변경")
     @Operation(summary = "Modify profileImage API", description = "프로필 사진 변경 API")
     @ApiResponses(value = {

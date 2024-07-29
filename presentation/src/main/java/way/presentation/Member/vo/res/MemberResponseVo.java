@@ -24,4 +24,12 @@ public class MemberResponseVo {
 
     }
 
+    public record SearchMemberResponse(
+            String userName,
+            Long memberSeq,
+            String profileImage
+    ) {
+
+    }
+
 }

@@ -67,4 +67,11 @@ public class MemberRequestDto {
             Long memberSeq
     ) {
     }
+
+    public record SearchMemberDto(
+
+            String memberCode
+    ) {
+
+    }
 }

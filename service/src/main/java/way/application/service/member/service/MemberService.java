@@ -171,4 +171,14 @@ public class MemberService {
 		memberRepository.saveMember(memberEntity);
 
 	}
+
+	public SearchMemberResponseDto searchMember(MemberRequestDto.SearchMemberDto searchMemberDto) {
+
+		//memberCode 조회
+		MemberEntity memberEntity = memberRepository.findByMemberCode(searchMemberDto.memberCode());
+
+		return new SearchMemberResponseDto(memberEntity.getUserName(), memberEntity.getMemberSeq(), memberEntity.getProfileImage());
+
+
+	}
 }
