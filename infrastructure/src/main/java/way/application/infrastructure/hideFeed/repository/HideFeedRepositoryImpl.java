@@ -45,7 +45,7 @@ public class HideFeedRepositoryImpl implements HideFeedRepository {
 	}
 
 	@Override
-	public Page<HideFeedEntity> findAllByMemberEntity(MemberEntity memberEntity, Pageable pageable) {
-		return hideFeedJpaRepository.findAllByMemberEntity(memberEntity, pageable);
+	public Page<HideFeedEntity> findAllByMemberEntityOrderByScheduleStartTimeDesc(MemberEntity memberEntity, Pageable pageable) {
+		return hideFeedJpaRepository.findAllByMemberEntityOrderByScheduleStartTimeDesc(memberEntity, pageable);
 	}
 }

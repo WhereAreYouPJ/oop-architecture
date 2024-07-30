@@ -85,7 +85,8 @@ public class HideFeedService {
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
 		// 2. HideFeedEntity 가져오기
-		Page<HideFeedEntity> hideFeedEntityPage = hideFeedRepository.findAllByMemberEntity(memberEntity, pageable);
+		Page<HideFeedEntity> hideFeedEntityPage
+			= hideFeedRepository.findAllByMemberEntityOrderByScheduleStartTimeDesc(memberEntity, pageable);
 
 		// 3. HideFeedEntity를 GetHideFeedResponseDto로 변환
 		return hideFeedEntityPage.map(hideFeedEntity -> {
