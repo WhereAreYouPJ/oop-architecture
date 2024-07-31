@@ -55,7 +55,7 @@ public class ScheduleController {
 	private final ScheduleService scheduleService;
 
 	@PostMapping(name = "일정 생성")
-	@Operation(summary = "일정 생성 API", description = "일정 생성 API")
+	@Operation(summary = "일정 생성 API", description = "Request: SaveScheduleRequest, Response: SaveScheduleResponse")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "201",
@@ -106,7 +106,7 @@ public class ScheduleController {
 	}
 
 	@PutMapping(name = "일정 수정")
-	@Operation(summary = "일정 수정 API", description = "일정 수정 API")
+	@Operation(summary = "일정 수정 API", description = "Request: ModifyScheduleRequest, Response: ModifyScheduleResponse")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -168,7 +168,7 @@ public class ScheduleController {
 	}
 
 	@DeleteMapping(name = "일정 삭제")
-	@Operation(summary = "일정 삭제 API", description = "일정 삭제 API")
+	@Operation(summary = "일정 삭제 API", description = "Request: DeleteScheduleRequest")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -223,7 +223,7 @@ public class ScheduleController {
 	}
 
 	@GetMapping(name = "일정 조회")
-	@Operation(summary = "일정 상세 조회 API", description = "일정 상세 조회 API")
+	@Operation(summary = "일정 상세 조회 API", description = "Response: GetScheduleResponse")
 	@Parameters({
 		@Parameter(
 			name = "scheduleSeq",
@@ -289,7 +289,7 @@ public class ScheduleController {
 	}
 
 	@GetMapping(value = "/date", name = "해당 날짜 일정 조회")
-	@Operation(summary = "해당 날짜 일정 조회 API", description = "해당 날짜 일정 조회 API")
+	@Operation(summary = "해당 날짜 일정 조회 API", description = "Response: GetScheduleByDateResponse")
 	@Parameters({
 		@Parameter(
 			name = "date",
@@ -344,7 +344,7 @@ public class ScheduleController {
 	}
 
 	@PostMapping(value = "/accept-schedule", name = "일정 초대 수락")
-	@Operation(summary = "일정 초대 수락 API", description = "일정 초대 수락 API")
+	@Operation(summary = "일정 초대 수락 API", description = "Request: AcceptScheduleRequest")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -380,8 +380,7 @@ public class ScheduleController {
 	})
 	public ResponseEntity<BaseResponse> acceptSchedule(
 		@Valid
-		@RequestBody
-		AcceptScheduleRequest request
+		@RequestBody AcceptScheduleRequest request
 	) {
 		// VO -> DTO
 		scheduleService.acceptSchedule(request.toAcceptScheduleRequestDto());
@@ -390,7 +389,7 @@ public class ScheduleController {
 	}
 
 	@GetMapping(value = "/month-schedule", name = "월별 일정 조회")
-	@Operation(summary = "월별 일정 조회 API", description = "월별 일정 조회 API")
+	@Operation(summary = "월별 일정 조회 API", description = "Response: GetScheduleByMonthResponse")
 	@Parameters({
 		@Parameter(
 			name = "yearMonth",
@@ -406,11 +405,6 @@ public class ScheduleController {
 			responseCode = "200",
 			description = "요청에 성공하였습니다.",
 			useReturnTypeSchema = true
-			// content = @Content(
-			// 	mediaType = "application/json",
-			// 	schema = @Schema(
-			// 		implementation = Schedule.GetScheduleByMonthResponse.class,
-			// 		type = "array"))
 		),
 		@ApiResponse(
 			responseCode = "S500",

@@ -48,7 +48,7 @@ public class BookMarkController {
 	private final BookMarkService bookMarkService;
 
 	@PostMapping(name = "책갈피 추가")
-	@Operation(summary = "책갈피 추가 API", description = "책갈피 추가 API")
+	@Operation(summary = "책갈피 추가 API", description = "Request: AddBookMarRequest, Response: AddBookMarkResponse")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -109,7 +109,7 @@ public class BookMarkController {
 	}
 
 	@DeleteMapping(name = "피드 책갈피 복원")
-	@Operation(summary = "피드 책갈피 복원 API", description = "피드 책갈피 복원 API")
+	@Operation(summary = "피드 책갈피 복원 API", description = "Request: DeleteBookMarkRequest")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -160,6 +160,7 @@ public class BookMarkController {
 	}
 
 	@GetMapping(name = "책갈피 조회")
+	@Operation(summary = "피드 책갈피 조회 API", description = "Response: GetBookMarkResponse")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -189,7 +190,7 @@ public class BookMarkController {
 		@Parameter(name = "page", description = "페이지 처리 페이지 수", example = "0"),
 		@Parameter(name = "size", description = "페이지 당 응답 받을 데이터 개수", example = "10"),
 	})
-	public ResponseEntity<BaseResponse<Page<GetBookMarkResponse>>> getHideFeed(
+	public ResponseEntity<BaseResponse<Page<GetBookMarkResponse>>> getBookMark(
 		@Valid
 		@RequestParam(value = "memberSeq") Long memberSeq,
 		@RequestParam(defaultValue = "0") int page,
