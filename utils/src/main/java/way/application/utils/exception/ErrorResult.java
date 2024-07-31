@@ -112,6 +112,12 @@ public enum ErrorResult {
 			"REB023"
 	),
 
+	BOOK_MARK_SEQ_BAD_REQUEST_EXCEPTION(
+		HttpStatus.BAD_REQUEST.value(),
+		"BOOK_MARK_SEQ_BAD_REQUEST_EXCEPTION",
+		"BMSB024"
+	),
+
 	// NOT FOUND
 	HIDE_FEED_NOT_FOUND_EXCEPTION(
 		HttpStatus.NOT_FOUND.value(),
