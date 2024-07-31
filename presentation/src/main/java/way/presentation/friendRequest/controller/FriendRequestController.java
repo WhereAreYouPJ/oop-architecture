@@ -1,6 +1,8 @@
 package way.presentation.friendRequest.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -9,19 +11,26 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import way.application.service.friendRequest.dto.request.FriendRequestDto;
+import way.application.service.friendRequest.dto.response.FriendRequestResponseDto;
 import way.application.service.friendRequest.service.FriendRequestService;
 import way.application.service.member.dto.request.MemberRequestDto;
+import way.application.service.member.dto.response.MemberResponseDto;
 import way.application.utils.exception.GlobalExceptionHandler;
+import way.presentation.Member.vo.req.MemberRequestVo;
+import way.presentation.Member.vo.res.MemberResponseVo;
 import way.presentation.base.BaseResponse;
 import way.presentation.friendRequest.validates.SaveFriendRequestValidator;
 import way.presentation.friendRequest.vo.req.FriendRequestVo;
+import way.presentation.friendRequest.vo.res.FriendRequestResponseVo;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static way.application.service.friendRequest.dto.response.FriendRequestResponseDto.*;
+import static way.presentation.friendRequest.vo.res.FriendRequestResponseVo.*;
 
 @RestController
 @RequestMapping("/friendRequest")
@@ -93,5 +102,58 @@ public class FriendRequestController {
         friendRequestService.saveFriendRequest(saveFriendRequestDto);
 
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
+    }
+
+    @GetMapping(name = "친구 요청 리스트 조회")
+    @Operation(summary = "friend Request List API", description = "친구 요청 리스트 조회 API")
+    @Parameters({
+            @Parameter(
+                    name = "memberSeq",
+                    description = "memberSeq",
+                    example = "1")
+    })
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청에 성공하였습니다.",
+                    useReturnTypeSchema = true),
+            @ApiResponse(
+                    responseCode = "S500",
+                    description = "500 SERVER_ERROR",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "B001",
+                    description = "400 Invalid DTO Parameter errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "MSB002",
+                    description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class)))
+    })
+    public ResponseEntity<BaseResponse<List<GetFriendRequestListResponse>>> getFriendRequestList(@Valid @RequestParam("memberSeq") Long memberSeq) {
+
+        // Param -> VO
+        FriendRequestVo.GetFriendRequestList request = new FriendRequestVo.GetFriendRequestList(memberSeq);
+
+        // VO -> DTO
+        List<FriendRequestList> friendRequestList
+                = friendRequestService.getFriendRequestList(request.toGetFriendRequestList());
+
+        // DTO -> VO
+        List<GetFriendRequestListResponse> response = friendRequestList.stream()
+                .map(dto -> new GetFriendRequestListResponse(
+                        dto.friendRequestSeq(),
+                        dto.senderSeq(),
+                        dto.createTime()))
+                .toList();
+
+
+        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
     }
 }

@@ -12,4 +12,10 @@ public class FriendRequestDto {
     ) {
 
     }
+
+    public record GetFriendRequestList(
+            Long memberSeq
+    ) {
+
+    }
 }

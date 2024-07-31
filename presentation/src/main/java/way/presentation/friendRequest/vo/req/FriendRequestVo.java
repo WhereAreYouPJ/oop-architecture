@@ -23,4 +23,14 @@ public class FriendRequestVo {
         }
     }
 
+    public record GetFriendRequestList(
+            Long memberSeq
+    ) {
+        public FriendRequestDto.GetFriendRequestList toGetFriendRequestList() {
+            return new FriendRequestDto.GetFriendRequestList(
+                    this.memberSeq
+            );
+        }
+    }
+
 }
