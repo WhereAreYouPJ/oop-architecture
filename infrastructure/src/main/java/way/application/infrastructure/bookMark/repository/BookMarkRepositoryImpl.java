@@ -1,5 +1,7 @@
 package way.application.infrastructure.bookMark.repository;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -37,5 +39,10 @@ public class BookMarkRepositoryImpl implements BookMarkRepository {
 	public BookMarkEntity findByFeedEntityAndMemberEntity(FeedEntity feedEntity, MemberEntity memberEntity) {
 		return bookMarkJpaRepository.findByFeedEntityAndMemberEntity(feedEntity, memberEntity)
 			.orElseThrow(() -> new BadRequestException(ErrorResult.FEED_DIDNT_CREATED_BY_MEMBER_BAD_REQUEST_EXCEPTION));
+	}
+
+	@Override
+	public Boolean existsByFeedEntityAndMemberEntity(FeedEntity feedEntity, MemberEntity memberEntity) {
+		return bookMarkJpaRepository.existsByFeedEntityAndMemberEntity(feedEntity, memberEntity);
 	}
 }

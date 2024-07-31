@@ -206,7 +206,8 @@ public class HideFeedController {
 			dto.location(),
 			dto.title(),
 			dto.feedImageUrl(),
-			dto.content()
+			dto.content(),
+			dto.bookMark()
 		));
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), responses));

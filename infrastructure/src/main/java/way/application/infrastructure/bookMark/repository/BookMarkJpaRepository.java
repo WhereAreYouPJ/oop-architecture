@@ -1,5 +1,6 @@
 package way.application.infrastructure.bookMark.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,4 +18,6 @@ public interface BookMarkJpaRepository extends JpaRepository<BookMarkEntity, Lon
 	);
 
 	Optional<BookMarkEntity> findByFeedEntityAndMemberEntity(FeedEntity feedEntity, MemberEntity memberEntity);
+
+	Boolean existsByFeedEntityAndMemberEntity(FeedEntity feedEntity, MemberEntity memberEntity);
 }
