@@ -1,7 +1,7 @@
 package way.application.infrastructure.bookMark.repository;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -44,5 +44,13 @@ public class BookMarkRepositoryImpl implements BookMarkRepository {
 	@Override
 	public Boolean existsByFeedEntityAndMemberEntity(FeedEntity feedEntity, MemberEntity memberEntity) {
 		return bookMarkJpaRepository.existsByFeedEntityAndMemberEntity(feedEntity, memberEntity);
+	}
+
+	@Override
+	public Page<BookMarkEntity> findAllByMemberEntityOrderByScheduleStartTimeDesc(
+		MemberEntity memberEntity,
+		Pageable pageable
+	) {
+		return bookMarkJpaRepository.findAllByMemberEntityOrderByScheduleStartTimeDesc(memberEntity, pageable);
 	}
 }

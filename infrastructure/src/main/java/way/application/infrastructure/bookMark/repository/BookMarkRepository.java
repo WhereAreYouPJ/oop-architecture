@@ -1,6 +1,7 @@
 package way.application.infrastructure.bookMark.repository;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import way.application.infrastructure.bookMark.entity.BookMarkEntity;
 import way.application.infrastructure.feed.entity.FeedEntity;
@@ -16,4 +17,9 @@ public interface BookMarkRepository {
 	BookMarkEntity findByFeedEntityAndMemberEntity(FeedEntity feedEntity, MemberEntity memberEntity);
 
 	Boolean existsByFeedEntityAndMemberEntity(FeedEntity feedEntity, MemberEntity memberEntity);
+
+	Page<BookMarkEntity> findAllByMemberEntityOrderByScheduleStartTimeDesc(
+		MemberEntity memberEntity,
+		Pageable pageable
+	);
 }

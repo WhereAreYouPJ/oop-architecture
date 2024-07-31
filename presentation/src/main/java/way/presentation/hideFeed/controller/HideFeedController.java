@@ -157,7 +157,7 @@ public class HideFeedController {
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
 	}
 
-	@GetMapping(name = "피드 숨김 조회", value = "/{memberSeq}")
+	@GetMapping(name = "피드 숨김 조회")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -189,7 +189,7 @@ public class HideFeedController {
 	})
 	public ResponseEntity<BaseResponse<Page<GetHideFeedResponse>>> getHideFeed(
 		@Valid
-		@PathVariable(value = "memberSeq") Long memberSeq,
+		@RequestParam(value = "memberSeq") Long memberSeq,
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "10") int size
 	) {
