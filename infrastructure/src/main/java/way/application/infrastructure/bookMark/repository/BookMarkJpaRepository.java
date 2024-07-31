@@ -15,4 +15,6 @@ public interface BookMarkJpaRepository extends JpaRepository<BookMarkEntity, Lon
 		FeedEntity feedEntity,
 		MemberEntity memberEntity
 	);
+
+	Optional<BookMarkEntity> findByFeedEntityAndMemberEntity(FeedEntity feedEntity, MemberEntity memberEntity);
 }
