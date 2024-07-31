@@ -139,7 +139,7 @@ public class HideFeedController {
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "HFEN001",
-			description = "400 HIDE_FEED_NOT_FOUND_EXCEPTION / Member가 숨김한 Hide Feed가 없을 때 오류",
+			description = "400 FEED_DIDNT_CREATED_BY_MEMBER_BAD_REQUEST_EXCEPTION / Feed는 존재하지만 HIDE_FEED에 존재하지 않을 때 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
