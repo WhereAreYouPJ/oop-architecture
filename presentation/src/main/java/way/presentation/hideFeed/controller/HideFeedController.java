@@ -47,7 +47,7 @@ public class HideFeedController {
 	private final HideFeedService hideFeedService;
 
 	@PostMapping(name = "피드  숨김")
-	@Operation(summary = "피드 숨김 API", description = "피드 숨김 API")
+	@Operation(summary = "피드 숨김 API", description = "Request: HideFeedRequest, Response: AddHideFeedResponse")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -107,7 +107,7 @@ public class HideFeedController {
 	}
 
 	@DeleteMapping(name = "피드  숨김 복원")
-	@Operation(summary = "피드  숨김 복원 API", description = "피드  숨김 복원 API")
+	@Operation(summary = "피드  숨김 복원 API", description = "Request: DeleteHideFeedRequest")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -158,6 +158,7 @@ public class HideFeedController {
 	}
 
 	@GetMapping(name = "피드 숨김 조회")
+	@Operation(summary = "피드 숨김 조회 API", description = "Response: GetHideFeedResponse")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
