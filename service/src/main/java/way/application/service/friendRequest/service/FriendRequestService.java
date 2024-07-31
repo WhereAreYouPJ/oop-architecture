@@ -4,12 +4,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import way.application.domain.firebase.FirebaseNotificationDomain;
+import way.application.infrastructure.friendRequest.entity.FriendRequestEntity;
 import way.application.infrastructure.friendRequest.respository.FriendRequestRepository;
 import way.application.infrastructure.member.entity.MemberEntity;
 import way.application.service.friendRequest.dto.request.FriendRequestDto;
+import way.application.service.friendRequest.dto.response.FriendRequestResponseDto;
 import way.application.service.friendRequest.mapper.FriendRequestMapper;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -49,4 +53,18 @@ public class FriendRequestService {
 
     }
 
+    public List<FriendRequestResponseDto.FriendRequestList> getFriendRequestList(FriendRequestDto.GetFriendRequestList getFriendRequestList) {
+
+        // 멤버 조회
+        MemberEntity memberEntity = friendRequestRepository.validateMemberSeq(getFriendRequestList.memberSeq());
+
+        // 친구 요청 조회
+        List<FriendRequestEntity> friendRequestList = friendRequestRepository.findFriendRequestByMemberSeq(memberEntity);
+
+        return friendRequestList.stream().map(friendRequestEntity -> new FriendRequestResponseDto.FriendRequestList(
+                friendRequestEntity.getFriendRequestSeq(),
+                friendRequestEntity.getSenderSeq().getMemberSeq(),
+                friendRequestEntity.getCreateTime())).collect(Collectors.toList());
+
+    }
 }

@@ -8,6 +8,8 @@ import way.application.infrastructure.member.repository.MemberJpaRepository;
 import way.application.utils.exception.BadRequestException;
 import way.application.utils.exception.ErrorResult;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class FriendRequestRepositoryImpl implements FriendRequestRepository{
@@ -60,5 +62,17 @@ public class FriendRequestRepositoryImpl implements FriendRequestRepository{
     @Override
     public void saveFriendRequest(FriendRequestEntity friendRequestEntity) {
         friendRequestJpaRepository.save(friendRequestEntity);
+    }
+
+    @Override
+    public MemberEntity validateMemberSeq(Long memberSeq) {
+        return memberJpaRepository.findById(memberSeq)
+                .orElseThrow(() -> new BadRequestException(ErrorResult.MEMBER_SEQ_BAD_REQUEST_EXCEPTION));
+    }
+
+    @Override
+    public List<FriendRequestEntity> findFriendRequestByMemberSeq(MemberEntity memberEntity) {
+        return friendRequestJpaRepository.findByReceiverSeq(memberEntity);
+
     }
 }
