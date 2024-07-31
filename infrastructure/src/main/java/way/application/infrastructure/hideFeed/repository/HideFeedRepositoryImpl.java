@@ -8,9 +8,9 @@ import lombok.RequiredArgsConstructor;
 import way.application.infrastructure.feed.entity.FeedEntity;
 import way.application.infrastructure.hideFeed.entity.HideFeedEntity;
 import way.application.infrastructure.member.entity.MemberEntity;
+import way.application.utils.exception.BadRequestException;
 import way.application.utils.exception.ConflictException;
 import way.application.utils.exception.ErrorResult;
-import way.application.utils.exception.NotFoundRequestException;
 
 @Component
 @RequiredArgsConstructor
@@ -41,7 +41,7 @@ public class HideFeedRepositoryImpl implements HideFeedRepository {
 		MemberEntity memberEntity
 	) {
 		return hideFeedJpaRepository.findHideFeedEntityByFeedEntityAndMemberEntity(feedEntity, memberEntity)
-			.orElseThrow(() -> new NotFoundRequestException(ErrorResult.HIDE_FEED_NOT_FOUND_EXCEPTION));
+			.orElseThrow(() -> new BadRequestException(ErrorResult.FEED_DIDNT_CREATED_BY_MEMBER_BAD_REQUEST_EXCEPTION));
 	}
 
 	@Override
