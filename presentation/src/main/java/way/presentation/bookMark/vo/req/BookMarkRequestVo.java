@@ -14,4 +14,16 @@ public class BookMarkRequestVo {
 			);
 		}
 	}
+
+	public record DeleteBookMarkRequest(
+		Long bookMarkFeedSeq,
+		Long memberSeq
+	) {
+		public DeleteBookMarkRequestDto toDeleteBookMarkRequestDto() {
+			return new DeleteBookMarkRequestDto(
+				this.bookMarkFeedSeq,
+				this.memberSeq
+			);
+		}
+	}
 }

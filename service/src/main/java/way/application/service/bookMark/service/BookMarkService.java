@@ -50,4 +50,22 @@ public class BookMarkService {
 
 		return new AddBookMarkResponseDto(bookMarkEntity.getBookMarkSeq());
 	}
+
+	@Transactional
+	public void deleteBookMarkFeed(DeleteBookMarkRequestDto deleteBookMarkRequestDto) {
+		/*
+		 1. Member 확인
+		 2. Feed 확인
+		 3. Book Mark Feed 확인
+		*/
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(deleteBookMarkRequestDto.memberSeq());
+		FeedEntity feedEntity = feedRepository.findByFeedSeq(deleteBookMarkRequestDto.bookMarkFeedSeq());
+		BookMarkEntity bookMarkEntity = bookMarkRepository.findByFeedEntityAndMemberEntity(
+			feedEntity,
+			memberEntity
+		);
+
+		// Book Mark Feed 삭제
+		bookMarkRepository.deleteBookMarkEntity(bookMarkEntity);
+	}
 }
