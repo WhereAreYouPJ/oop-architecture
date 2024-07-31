@@ -189,7 +189,7 @@ public class HideFeedController {
 	})
 	public ResponseEntity<BaseResponse<Page<GetHideFeedResponse>>> getHideFeed(
 		@Valid
-		@PathVariable(value = "memberSeq") Long memberSeq,
+		@RequestParam(value = "memberSeq") Long memberSeq,
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "10") int size
 	) {
