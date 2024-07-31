@@ -157,7 +157,7 @@ public class HideFeedController {
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
 	}
 
-	@GetMapping(name = "피드 숨김 조회", value = "/{memberSeq}")
+	@GetMapping(name = "피드 숨김 조회")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
