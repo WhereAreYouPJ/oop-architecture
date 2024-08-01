@@ -118,6 +118,12 @@ public enum ErrorResult {
 		"BMSB024"
 	),
 
+	LOCATION_SEQ_BAD_REQUEST_EXCEPTION(
+		HttpStatus.BAD_REQUEST.value(),
+		"LOCATION_SEQ_BAD_REQUEST_EXCEPTION",
+		"LSB025"
+	),
+
 	// NOT FOUND
 	HIDE_FEED_NOT_FOUND_EXCEPTION(
 		HttpStatus.NOT_FOUND.value(),
