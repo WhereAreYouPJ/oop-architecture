@@ -3,6 +3,8 @@ package way.application.service.location.service;
 import static way.application.service.location.dto.request.LocationRequestDto.*;
 import static way.application.service.location.dto.response.LocationResponseDto.*;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,5 +40,20 @@ public class LocationService {
 		);
 
 		return new AddLocationResponseDto(locationEntity.getLocationSeq());
+	}
+
+	@Transactional
+	public void deleteLocation(DeleteLocationRequestDto deleteLocationRequestDto) {
+		/*
+		 1. Member 존재 확인
+		 2. Location 존재 확인
+		*/
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(deleteLocationRequestDto.memberSeq());
+		List<LocationEntity> locationEntities = locationRepository.findAllByMemberEntityAndLocationSeqs(
+			memberEntity,
+			deleteLocationRequestDto.locationSeqs()
+		);
+
+		locationRepository.deleteAll(locationEntities);
 	}
 }
