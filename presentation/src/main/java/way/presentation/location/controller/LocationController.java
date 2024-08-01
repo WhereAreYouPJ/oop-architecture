@@ -8,6 +8,7 @@ import java.io.IOException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,7 @@ import way.application.service.location.service.LocationService;
 import way.application.utils.exception.GlobalExceptionHandler;
 import way.presentation.base.BaseResponse;
 import way.presentation.location.validates.AddLocationValidator;
+import way.presentation.location.validates.DeleteLocationValidator;
 
 @RestController
 @RequestMapping("/location")
@@ -32,6 +34,7 @@ import way.presentation.location.validates.AddLocationValidator;
 @Tag(name = "위치 즐겨찾기", description = "담당자 (박종훈)")
 public class LocationController {
 	private final AddLocationValidator addLocationValidator;
+	private final DeleteLocationValidator deleteLocationValidator;
 
 	private final LocationService locationService;
 
@@ -75,5 +78,49 @@ public class LocationController {
 		AddLocationResponse response = new AddLocationResponse(addLocationResponseDto.locationSeq());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
+	}
+
+	@DeleteMapping(name = "위치 즐겨찾기 삭제")
+	@Operation(summary = "위치 즐겨찾기 삭제", description = "Request: DeleteLocationRequest, Response: AddLocationResponse")
+	@ApiResponses(value = {
+		@ApiResponse(
+			responseCode = "200",
+			description = "요청에 성공하였습니다.",
+			useReturnTypeSchema = true),
+		@ApiResponse(
+			responseCode = "S500",
+			description = "500 SERVER_ERROR (나도 몰라 ..)",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "B001",
+			description = "400 Invalid DTO Parameter errors / 요청 값 형식 요류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "MSB002",
+			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / 존재하지 않는 MemberSeq 오류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "LSB025",
+			description = "400 LOCATION_SEQ_BAD_REQUEST_EXCEPTION / 존재하지 않는 locationSeq 오류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+	})
+	public ResponseEntity<BaseResponse> deleteLocation(
+		@Valid
+		@RequestBody DeleteLocationRequest request
+	) {
+		// 유효성 검사
+		deleteLocationValidator.validate(request);
+
+		locationService.deleteLocation(request.toDeleteLocationRequestDto());
+
+		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
 	}
 }
