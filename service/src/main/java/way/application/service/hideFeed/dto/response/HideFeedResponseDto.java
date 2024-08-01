@@ -16,10 +16,9 @@ public class HideFeedResponseDto {
 		String location,
 		String title,
 		List<String> feedImageUrl,
-		String content
+		String content,
 
-		// TODO: bookMark 기능 추가
-		// Boolean bookMark
+		Boolean bookMark
 	) {
 
 	}

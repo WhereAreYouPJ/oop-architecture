@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import way.application.infrastructure.bookMark.entity.BookMarkEntity;
+import way.application.infrastructure.bookMark.repository.BookMarkRepository;
 import way.application.infrastructure.feed.entity.FeedEntity;
 import way.application.infrastructure.feed.repository.FeedRepository;
 import way.application.infrastructure.feedImage.entity.FeedImageEntity;
@@ -27,6 +29,7 @@ import way.application.service.hideFeed.mapper.HideFeedMapper;
 @RequiredArgsConstructor
 public class HideFeedService {
 	private final HideFeedRepository hideFeedRepository;
+	private final BookMarkRepository bookMarkRepository;
 	private final MemberRepository memberRepository;
 	private final FeedRepository feedRepository;
 	private final FeedImageRepository feedImageRepository;
@@ -85,7 +88,8 @@ public class HideFeedService {
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
 		// 2. HideFeedEntity 가져오기
-		Page<HideFeedEntity> hideFeedEntityPage = hideFeedRepository.findAllByMemberEntity(memberEntity, pageable);
+		Page<HideFeedEntity> hideFeedEntityPage
+			= hideFeedRepository.findAllByMemberEntityOrderByScheduleStartTimeDesc(memberEntity, pageable);
 
 		// 3. HideFeedEntity를 GetHideFeedResponseDto로 변환
 		return hideFeedEntityPage.map(hideFeedEntity -> {
@@ -98,8 +102,10 @@ public class HideFeedService {
 				.map(FeedImageEntity::getFeedImageURL)
 				.collect(Collectors.toList());
 
-			// TODO: 북마크 상태 확인 (구현에 따라 수정 필요)
-			// Boolean bookMark = checkBookMarkStatus(feedEntity, hideFeedEntity.getMemberEntity());
+			Boolean bookMark = bookMarkRepository.existsByFeedEntityAndMemberEntity(
+				feedEntity,
+				hideFeedEntity.getMemberEntity()
+			);
 
 			return new GetHideFeedResponseDto(
 				hideFeedEntity.getMemberEntity().getProfileImage(),
@@ -107,7 +113,8 @@ public class HideFeedService {
 				scheduleEntity.getLocation(),
 				feedEntity.getTitle(),
 				feedImageUrl,
-				feedEntity.getContent()
+				feedEntity.getContent(),
+				bookMark
 			);
 		});
 	}

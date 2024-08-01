@@ -47,7 +47,7 @@ public class HideFeedController {
 	private final HideFeedService hideFeedService;
 
 	@PostMapping(name = "피드  숨김")
-	@Operation(summary = "피드 숨김 API", description = "피드 숨김 API")
+	@Operation(summary = "피드 숨김 API", description = "Request: HideFeedRequest, Response: AddHideFeedResponse")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -107,7 +107,7 @@ public class HideFeedController {
 	}
 
 	@DeleteMapping(name = "피드  숨김 복원")
-	@Operation(summary = "피드  숨김 복원 API", description = "피드  숨김 복원 API")
+	@Operation(summary = "피드  숨김 복원 API", description = "Request: DeleteHideFeedRequest")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -139,7 +139,7 @@ public class HideFeedController {
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "HFEN001",
-			description = "400 HIDE_FEED_NOT_FOUND_EXCEPTION / Member가 숨김한 Hide Feed가 없을 때 오류",
+			description = "400 FEED_DIDNT_CREATED_BY_MEMBER_BAD_REQUEST_EXCEPTION / Feed는 존재하지만 HIDE_FEED에 존재하지 않을 때 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
@@ -157,7 +157,8 @@ public class HideFeedController {
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
 	}
 
-	@GetMapping(name = "피드 숨김 조회", value = "/{memberSeq}")
+	@GetMapping(name = "피드 숨김 조회")
+	@Operation(summary = "피드 숨김 조회 API", description = "Response: GetHideFeedResponse")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -189,7 +190,7 @@ public class HideFeedController {
 	})
 	public ResponseEntity<BaseResponse<Page<GetHideFeedResponse>>> getHideFeed(
 		@Valid
-		@PathVariable(value = "memberSeq") Long memberSeq,
+		@RequestParam(value = "memberSeq") Long memberSeq,
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "10") int size
 	) {
@@ -206,7 +207,8 @@ public class HideFeedController {
 			dto.location(),
 			dto.title(),
 			dto.feedImageUrl(),
-			dto.content()
+			dto.content(),
+			dto.bookMark()
 		));
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), responses));
