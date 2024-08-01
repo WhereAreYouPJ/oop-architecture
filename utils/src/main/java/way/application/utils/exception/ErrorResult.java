@@ -112,6 +112,13 @@ public enum ErrorResult {
 			"REB023"
 	),
 
+	FRIENDREQUEST_SEQ_BAD_REQUEST_EXCEPTION(
+			HttpStatus.BAD_REQUEST.value(),
+			"FRIENDREQUEST_SEQ_BAD_REQUEST_EXCEPTION",
+			"FSB024"
+	),
+
+
 	// NOT FOUND
 	HIDE_FEED_NOT_FOUND_EXCEPTION(
 		HttpStatus.NOT_FOUND.value(),

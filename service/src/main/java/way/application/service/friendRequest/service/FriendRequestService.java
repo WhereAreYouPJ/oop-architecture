@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import way.application.domain.firebase.FirebaseNotificationDomain;
+import way.application.infrastructure.friend.respository.FriendRepository;
 import way.application.infrastructure.friendRequest.entity.FriendRequestEntity;
 import way.application.infrastructure.friendRequest.respository.FriendRequestRepository;
 import way.application.infrastructure.member.entity.MemberEntity;
+import way.application.service.friend.mapper.FriendMapper;
 import way.application.service.friendRequest.dto.request.FriendRequestDto;
 import way.application.service.friendRequest.dto.response.FriendRequestResponseDto;
 import way.application.service.friendRequest.mapper.FriendRequestMapper;
@@ -20,8 +22,10 @@ import java.util.stream.Collectors;
 public class FriendRequestService {
 
     private final FriendRequestMapper friendRequestMapper;
+    private final FriendMapper friendMapper;
     private final FriendRequestRepository friendRequestRepository;
     private final FirebaseNotificationDomain firebaseNotificationDomain;
+    private final FriendRepository friendRepository;
 
     @Transactional
     public void saveFriendRequest(FriendRequestDto.SaveFriendRequestDto saveFriendRequestDto) {
@@ -53,10 +57,10 @@ public class FriendRequestService {
 
     }
 
-    public List<FriendRequestResponseDto.FriendRequestList> getFriendRequestList(FriendRequestDto.GetFriendRequestList getFriendRequestList) {
+    public List<FriendRequestResponseDto.FriendRequestList> getFriendRequestList(FriendRequestDto.GetFriendRequestListDto getFriendRequestListDto) {
 
         // 멤버 조회
-        MemberEntity memberEntity = friendRequestRepository.validateMemberSeq(getFriendRequestList.memberSeq());
+        MemberEntity memberEntity = friendRequestRepository.validateMemberSeq(getFriendRequestListDto.memberSeq());
 
         // 친구 요청 조회
         List<FriendRequestEntity> friendRequestList = friendRequestRepository.findFriendRequestByMemberSeq(memberEntity);
@@ -65,6 +69,32 @@ public class FriendRequestService {
                 friendRequestEntity.getFriendRequestSeq(),
                 friendRequestEntity.getSenderSeq().getMemberSeq(),
                 friendRequestEntity.getCreateTime())).collect(Collectors.toList());
+
+    }
+
+    public void accept(FriendRequestDto.AcceptDto acceptDto) {
+
+        // 조회
+        MemberEntity member = friendRequestRepository.validateMemberSeq(acceptDto.memberSeq());
+        MemberEntity sender = friendRequestRepository.validateMemberSeq(acceptDto.senderSeq());
+
+        // 친구 요청 확인
+        FriendRequestEntity friendRequest = friendRequestRepository.findFriendRequestById(acceptDto.friendRequestSeq());
+
+        //친구 저장
+        friendRepository.saveFriend(
+                friendMapper.toFriendEntity(member,sender)
+        );
+
+        friendRepository.saveFriend(
+                friendMapper.toFriendEntity(sender,member)
+        );
+
+        //친구 요청 삭제
+        friendRequestRepository.delete(friendRequest);
+
+        // 푸시 알림
+        firebaseNotificationDomain.sendFriendRequestNotification(sender,member);
 
     }
 }
