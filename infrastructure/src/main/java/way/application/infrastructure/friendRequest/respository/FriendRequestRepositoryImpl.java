@@ -75,4 +75,15 @@ public class FriendRequestRepositoryImpl implements FriendRequestRepository{
         return friendRequestJpaRepository.findByReceiverSeq(memberEntity);
 
     }
+
+    @Override
+    public FriendRequestEntity findFriendRequestById(Long friendRequestSeq) {
+        return friendRequestJpaRepository.findById(friendRequestSeq)
+                .orElseThrow(() -> new BadRequestException(ErrorResult.FRIENDREQUEST_SEQ_BAD_REQUEST_EXCEPTION));
+    }
+
+    @Override
+    public void delete(FriendRequestEntity friendRequest) {
+        friendRequestJpaRepository.delete(friendRequest);
+    }
 }

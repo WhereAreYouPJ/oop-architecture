@@ -13,8 +13,16 @@ public class FriendRequestDto {
 
     }
 
-    public record GetFriendRequestList(
+    public record GetFriendRequestListDto(
             Long memberSeq
+    ) {
+
+    }
+
+    public record AcceptDto(
+            Long friendRequestSeq,
+            Long memberSeq,
+            Long senderSeq
     ) {
 
     }

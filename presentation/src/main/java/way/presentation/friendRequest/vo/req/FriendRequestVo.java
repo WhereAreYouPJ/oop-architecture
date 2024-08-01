@@ -1,7 +1,6 @@
 package way.presentation.friendRequest.vo.req;
 
 import way.application.service.friendRequest.dto.request.FriendRequestDto;
-import way.application.service.member.dto.request.MemberRequestDto;
 
 import java.time.LocalDateTime;
 
@@ -26,11 +25,27 @@ public class FriendRequestVo {
     public record GetFriendRequestList(
             Long memberSeq
     ) {
-        public FriendRequestDto.GetFriendRequestList toGetFriendRequestList() {
-            return new FriendRequestDto.GetFriendRequestList(
+        public FriendRequestDto.GetFriendRequestListDto toGetFriendRequestList() {
+            return new FriendRequestDto.GetFriendRequestListDto(
                     this.memberSeq
             );
         }
+    }
+
+    public record Accept(
+            Long friendRequestSeq,
+            Long memberSeq,
+            Long senderSeq
+
+    ) {
+        public FriendRequestDto.AcceptDto toAccept() {
+            return new FriendRequestDto.AcceptDto(
+                    this.friendRequestSeq,
+                    this.memberSeq,
+                    this.senderSeq
+            );
+        }
+
     }
 
 }

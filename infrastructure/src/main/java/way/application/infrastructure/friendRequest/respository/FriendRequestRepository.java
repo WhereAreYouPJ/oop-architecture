@@ -21,4 +21,8 @@ public interface FriendRequestRepository {
     MemberEntity validateMemberSeq(Long memberSeq);
 
     List<FriendRequestEntity> findFriendRequestByMemberSeq(MemberEntity memberEntity);
+
+    FriendRequestEntity findFriendRequestById(Long friendRequestSeq);
+
+    void delete(FriendRequestEntity friendRequest);
 }
