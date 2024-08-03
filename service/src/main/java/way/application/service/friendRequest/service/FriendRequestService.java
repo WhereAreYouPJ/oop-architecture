@@ -74,6 +74,7 @@ public class FriendRequestService {
 
     }
 
+    @Transactional
     public void accept(FriendRequestDto.AcceptDto acceptDto) {
 
         // 조회
@@ -103,6 +104,17 @@ public class FriendRequestService {
 
         // 푸시 알림
         firebaseNotificationDomain.sendFriendRequestNotification(sender,member);
+
+    }
+
+    @Transactional
+    public void refuse(FriendRequestDto.RefuseDto refuseDto) {
+
+        // 친구 요청 확인
+        FriendRequestEntity friendRequest = friendRequestRepository.findFriendRequestById(refuseDto.friendRequestSeq());
+
+        // 친규 요청 삭제
+        friendRequestRepository.delete(friendRequest);
 
     }
 }
