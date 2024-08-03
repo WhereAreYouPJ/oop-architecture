@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import way.application.domain.firebase.FirebaseNotificationDomain;
+import way.application.domain.friendRequest.FriendRequestDomain;
 import way.application.infrastructure.friend.respository.FriendRepository;
 import way.application.infrastructure.friendRequest.entity.FriendRequestEntity;
 import way.application.infrastructure.friendRequest.respository.FriendRequestRepository;
@@ -26,6 +27,7 @@ public class FriendRequestService {
     private final FriendRequestRepository friendRequestRepository;
     private final FirebaseNotificationDomain firebaseNotificationDomain;
     private final FriendRepository friendRepository;
+    private final FriendRequestDomain friendRequestDomain;
 
     @Transactional
     public void saveFriendRequest(FriendRequestDto.SaveFriendRequestDto saveFriendRequestDto) {
@@ -80,6 +82,12 @@ public class FriendRequestService {
 
         // 친구 요청 확인
         FriendRequestEntity friendRequest = friendRequestRepository.findFriendRequestById(acceptDto.friendRequestSeq());
+
+        // SENDER 확인
+        friendRequestDomain.validateSenderSeq(friendRequest.getSenderSeq(), sender);
+
+        // RECEIVER 확인
+        friendRequestDomain.validateReceiverSeq(friendRequest.getReceiverSeq(), member);
 
         //친구 저장
         friendRepository.saveFriend(

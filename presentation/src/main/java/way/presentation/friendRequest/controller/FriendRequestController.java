@@ -172,20 +172,20 @@ public class FriendRequestController {
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class))),
             @ApiResponse(
-                    responseCode = "SFRB015",
-                    description = "400 SELF_FRIEND_REQUEST_BAD_REQUEST_EXCEPTION / 본인 한테 친구 요청 보낼 수 없음",
+                    responseCode = "FSB026",
+                    description = "400 FRIENDREQUEST_SEQ_BAD_REQUEST_EXCEPTION / FRIENDREQUEST_SEQ 오류",
                     content = @Content(
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class))),
             @ApiResponse(
-                    responseCode = "ASB017",
-                    description = "400 ALREADY_SENT_BAD_REQUEST_EXCEPTION / 이미 친구 요청 전송됨",
+                    responseCode = "SMB027",
+                    description = "400 SENDER_SEQ_MISMATCH_REQUEST_EXCEPTION / 친구 요청 Sender와 불일치 ",
                     content = @Content(
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class))),
             @ApiResponse(
-                    responseCode = "ASBFB018",
-                    description = "400 ALREADY_SENT_BY_FRIEND_BAD_REQUEST_EXCEPTION / 친구가 친구 요청을 이미 보냄",
+                    responseCode = "RMB028",
+                    description = "400 RECEIVER_SEQ_MISMATCH_REQUEST_EXCEPTION / 친구 요청 Receiver와 불일치",
                     content = @Content(
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class))),
@@ -210,7 +210,6 @@ public class FriendRequestController {
         // VO -> DTO 변환
         FriendRequestDto.AcceptDto acceptDto = request.toAccept();
 
-//        friendRequestService.saveFriendRequest(saveFriendRequestDto);
         friendRequestService.accept(acceptDto);
 
 
