@@ -26,4 +26,10 @@ public class FriendRequestDto {
     ) {
 
     }
+
+    public record RefuseDto(
+            Long friendRequestSeq
+    ) {
+
+    }
 }

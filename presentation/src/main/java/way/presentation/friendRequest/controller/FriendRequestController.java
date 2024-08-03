@@ -17,6 +17,7 @@ import way.application.service.friendRequest.service.FriendRequestService;
 import way.application.utils.exception.GlobalExceptionHandler;
 import way.presentation.base.BaseResponse;
 import way.presentation.friendRequest.validates.AcceptValidator;
+import way.presentation.friendRequest.validates.RefuseValidator;
 import way.presentation.friendRequest.validates.SaveFriendRequestValidator;
 import way.presentation.friendRequest.vo.req.FriendRequestVo;
 
@@ -34,6 +35,7 @@ public class FriendRequestController {
     private final SaveFriendRequestValidator saveFriendRequestValidator;
     private final FriendRequestService friendRequestService;
     private final AcceptValidator acceptValidator;
+    private final RefuseValidator refuseValidator;
 
 
     @PostMapping(name = "친구 요청")
@@ -152,8 +154,8 @@ public class FriendRequestController {
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
     }
 
-    @PostMapping(value = "/accept",name = "친구 요청")
-    @Operation(summary = "friend Request API", description = "친구 요청 API")
+    @PostMapping(value = "/accept",name = "친구 요청 수락")
+    @Operation(summary = "friend Request Accept API", description = "친구 요청 수락 API")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
@@ -212,6 +214,45 @@ public class FriendRequestController {
 
         friendRequestService.accept(acceptDto);
 
+
+        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
+    }
+
+    @DeleteMapping(value = "/refuse",name = "친구 요청 거절")
+    @Operation(summary = "friend Request Refuse API", description = "친구 요청 거절 API")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청에 성공하였습니다.",
+                    useReturnTypeSchema = true),
+            @ApiResponse(
+                    responseCode = "S500",
+                    description = "500 SERVER_ERROR",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "B001",
+                    description = "400 Invalid DTO Parameter errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "FSB026",
+                    description = "400 FRIENDREQUEST_SEQ_BAD_REQUEST_EXCEPTION / FRIENDREQUEST_SEQ 오류",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class)))
+    })
+    public ResponseEntity<BaseResponse<String>> refuse(@Valid @RequestBody FriendRequestVo.Refuse request) {
+
+        // DTO 유효성 검사
+        refuseValidator.validate(request);
+
+        // VO -> DTO 변환
+        FriendRequestDto.RefuseDto refuseDto = request.toRefuse();
+
+        friendRequestService.refuse(refuseDto);
 
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
     }

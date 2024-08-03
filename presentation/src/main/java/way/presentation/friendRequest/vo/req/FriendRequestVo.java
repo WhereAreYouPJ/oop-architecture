@@ -48,4 +48,15 @@ public class FriendRequestVo {
 
     }
 
+    public record Refuse(
+            Long friendRequestSeq
+    ) {
+        public FriendRequestDto.RefuseDto toRefuse() {
+            return new FriendRequestDto.RefuseDto(
+                    this.friendRequestSeq
+            );
+        }
+
+    }
+
 }
