@@ -40,7 +40,7 @@ public class FeedController {
 	private final FeedService feedService;
 
 	@PostMapping(name = "피드 생성")
-	@Operation(summary = "피드 생성 API", description = "피드 생성 API")
+	@Operation(summary = "피드 생성 API", description = "Request: SaveFeedRequest, Response: SaveFeedResponse")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
