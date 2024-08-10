@@ -6,7 +6,7 @@ services:
     image: mysql:8.0
     restart: always
     environment:
-      MYSQL_DATABASE: paratrip
+      MYSQL_DATABASE: way
       MYSQL_ROOT_PASSWORD: 1234
       TZ: Asia/Seoul
     ports:
