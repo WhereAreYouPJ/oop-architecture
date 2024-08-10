@@ -84,7 +84,13 @@ public class ScheduleController {
 			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
 			content = @Content(
 				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class)))
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "FN002",
+			description = "404 FRIEND_NOT_FOUND_EXCEPTION / 친구 목록에 없을 때 오류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 	})
 	public ResponseEntity<BaseResponse<SaveScheduleResponse>> saveSchedule(
 		@Valid
