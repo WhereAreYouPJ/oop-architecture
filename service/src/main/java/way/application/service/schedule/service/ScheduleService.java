@@ -4,7 +4,6 @@ import static way.application.service.schedule.dto.request.ScheduleRequestDto.*;
 import static way.application.service.schedule.dto.response.ScheduleResponseDto.*;
 
 import java.time.LocalDateTime;
-import java.time.YearMonth;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -15,17 +14,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import way.application.domain.firebase.FirebaseNotificationDomain;
+import way.application.domain.friend.FriendDomain;
 import way.application.domain.member.MemberDomain;
 import way.application.domain.schedule.ScheduleDomain;
 import way.application.domain.scheduleMember.ScheduleMemberDomain;
+import way.application.infrastructure.friend.entity.FriendEntity;
+import way.application.infrastructure.friend.respository.FriendRepository;
 import way.application.infrastructure.member.entity.MemberEntity;
 import way.application.infrastructure.member.repository.MemberRepository;
 import way.application.infrastructure.schedule.entity.ScheduleEntity;
 import way.application.infrastructure.schedule.repository.ScheduleRepository;
 import way.application.infrastructure.scheduleMember.entity.ScheduleMemberEntity;
 import way.application.infrastructure.scheduleMember.repository.ScheduleMemberRepository;
-import way.application.service.schedule.dto.request.ScheduleRequestDto;
-import way.application.service.schedule.dto.response.ScheduleResponseDto;
 import way.application.service.schedule.mapper.ScheduleMapper;
 import way.application.service.scheduleMember.mapper.ScheduleMemberMapper;
 
@@ -35,11 +35,13 @@ public class ScheduleService {
 	private final ScheduleRepository scheduleRepository;
 	private final ScheduleMemberRepository scheduleMemberRepository;
 	private final MemberRepository memberRepository;
+	private final FriendRepository friendRepository;
 
 	private final MemberDomain memberDomain;
 	private final ScheduleMemberDomain scheduleMemberDomain;
 	private final ScheduleDomain scheduleDomain;
 	private final FirebaseNotificationDomain firebaseNotificationDomain;
+	private final FriendDomain friendDomain;
 
 	private final ScheduleMapper scheduleMapper;
 	private final ScheduleMemberMapper scheduleMemberMapper;
@@ -54,11 +56,16 @@ public class ScheduleService {
 
 	@Transactional
 	public SaveScheduleResponseDto createSchedule(SaveScheduleRequestDto saveScheduleRequestDto) {
-		// Member 유효성 검사 (Repository 에서 처리)
+		/*
+		 1. Member 유효성 검사 (Repository 에서 처리)
+		 2. 친구 목록 검사
+		*/
 		MemberEntity createMemberEntity = memberRepository.findByMemberSeq(saveScheduleRequestDto.createMemberSeq());
 		List<MemberEntity> invitedMemberEntity = memberRepository.findByMemberSeqs(
 			saveScheduleRequestDto.invitedMemberSeqs()
 		);
+		List<FriendEntity> friendEntities = friendRepository.findByOwner(createMemberEntity);
+		friendDomain.checkFriends(invitedMemberEntity, friendEntities);
 
 		// Schedule 저장
 		ScheduleEntity savedSchedule = scheduleRepository.saveSchedule(
