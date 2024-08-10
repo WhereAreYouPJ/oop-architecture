@@ -12,7 +12,7 @@ import way.application.infrastructure.member.entity.MemberEntity;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "FRIENDREQUEST")
+@Table(name = "FRIEND_REQUEST")
 @AllArgsConstructor
 @NoArgsConstructor
 @DynamicInsert
