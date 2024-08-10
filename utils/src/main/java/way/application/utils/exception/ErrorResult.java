@@ -150,6 +150,12 @@ public enum ErrorResult {
 		"HFEN001"
 	),
 
+	FRIEND_NOT_FOUND_EXCEPTION(
+		HttpStatus.NOT_FOUND.value(),
+		"FRIEND_NOT_FOUND_EXCEPTION",
+		"FN002"
+	),
+
 	// CONFLICT
 	USER_ID_DUPLICATION_CONFLICT_EXCEPTION(
 		HttpStatus.CONFLICT.value(),
