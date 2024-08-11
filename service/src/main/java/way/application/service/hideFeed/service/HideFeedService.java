@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import way.application.infrastructure.bookMark.entity.BookMarkEntity;
 import way.application.infrastructure.bookMark.repository.BookMarkRepository;
 import way.application.infrastructure.feed.entity.FeedEntity;
 import way.application.infrastructure.feed.repository.FeedRepository;
@@ -45,7 +44,7 @@ public class HideFeedService {
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(addHideFeedRequestDto.memberSeq());
 		FeedEntity feedEntity = feedRepository.findByFeedSeq(addHideFeedRequestDto.hideFeedSeq());
-		hideFeedRepository.checkHideFeedEntityByFeedEntityAndMemberEntity(
+		hideFeedRepository.verifyHideFeedNotExists(
 			feedEntity,
 			memberEntity
 		);
@@ -67,7 +66,7 @@ public class HideFeedService {
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(hideFeedRequestDto.memberSeq());
 		FeedEntity feedEntity = feedRepository.findByFeedSeq(hideFeedRequestDto.hideFeedSeq());
-		HideFeedEntity hideFeedEntity = hideFeedRepository.findHideFeedEntityByFeedEntityAndMemberEntity(
+		HideFeedEntity hideFeedEntity = hideFeedRepository.findHideFeedEntityByFeedAndMember(
 			feedEntity,
 			memberEntity
 		);

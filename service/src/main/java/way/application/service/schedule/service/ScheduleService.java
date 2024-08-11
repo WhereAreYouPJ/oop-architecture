@@ -92,15 +92,15 @@ public class ScheduleService {
 
 	@Transactional
 	public ModifyScheduleResponseDto modifySchedule(ModifyScheduleRequestDto modifyScheduleRequestDto) {
-		// 유효성 검사 (Repository 에서 처리)
-		MemberEntity createMemberEntity = memberRepository.findByMemberSeq(
-			modifyScheduleRequestDto.createMemberSeq()
-		);
-		List<MemberEntity> invitedMemberEntity = memberRepository.findByMemberSeqs(
-			modifyScheduleRequestDto.invitedMemberSeqs()
-		);
-		ScheduleEntity savedSchedule = scheduleRepository.findByScheduleSeq(modifyScheduleRequestDto.scheduleSeq());
-		ScheduleEntity scheduleEntity = scheduleMemberRepository.findScheduleByCreator(
+		/*
+		 1. Member 유효성 검사
+		 2. 초대 Member 유효성 검사
+		 2. Schedule 유효성 검사
+		*/
+		memberRepository.findByMemberSeq(modifyScheduleRequestDto.createMemberSeq());
+		memberRepository.findByMemberSeqs(modifyScheduleRequestDto.invitedMemberSeqs());
+		scheduleRepository.findByScheduleSeq(modifyScheduleRequestDto.scheduleSeq());
+		ScheduleEntity scheduleEntity = scheduleMemberRepository.findScheduleIfCreatedByMember(
 			modifyScheduleRequestDto.scheduleSeq(),
 			modifyScheduleRequestDto.createMemberSeq()
 		);
@@ -122,7 +122,7 @@ public class ScheduleService {
 		// 유효성 검사 (Repository 에서 처리)
 		memberRepository.findByMemberSeq(deleteScheduleRequestDto.creatorSeq());
 		scheduleRepository.findByScheduleSeq(deleteScheduleRequestDto.scheduleSeq());
-		ScheduleEntity scheduleEntity = scheduleMemberRepository.findScheduleByCreator(
+		ScheduleEntity scheduleEntity = scheduleMemberRepository.findScheduleIfCreatedByMember(
 			deleteScheduleRequestDto.scheduleSeq(),
 			deleteScheduleRequestDto.creatorSeq()
 		);
@@ -138,12 +138,12 @@ public class ScheduleService {
 		// 유효성 검사 (Repository 에서 처리)
 		memberRepository.findByMemberSeq(memberSeq);
 		ScheduleEntity scheduleEntity = scheduleRepository.findByScheduleSeq(scheduleSeq);
-		scheduleMemberRepository.findAcceptedScheduleMemberByScheduleSeqAndMemberSeq(scheduleSeq, memberSeq);
+		scheduleMemberRepository.findAcceptedScheduleMemberInSchedule(scheduleSeq, memberSeq);
 
 		// ScheduleEntity 에서 ScheduleMemberEntity 추출
 		// Schedule accept = true 인 경우만
 		List<ScheduleMemberEntity> scheduleEntities
-			= scheduleMemberRepository.findAcceptedScheduleMemberByScheduleEntity(scheduleEntity);
+			= scheduleMemberRepository.findAllAcceptedScheduleMembersInSchedule(scheduleEntity);
 
 		// userName 추출 (Domain Layer)
 		List<String> userName = scheduleMemberDomain.extractUserNameFromScheduleMemberEntities(scheduleEntities);
@@ -187,7 +187,7 @@ public class ScheduleService {
 
 		// ScheduleEntity 추출
 		ScheduleMemberEntity scheduleMemberEntity
-			= scheduleMemberRepository.findScheduleMemberEntityByMemberSeqAndScheduleSeq(
+			= scheduleMemberRepository.findScheduleMemberInSchedule(
 			request.memberSeq(),
 			request.scheduleSeq()
 		);

@@ -10,7 +10,7 @@ import way.application.infrastructure.member.entity.MemberEntity;
 public interface HideFeedRepository {
 	HideFeedEntity saveHideFeedEntity(HideFeedEntity hideFeedEntity);
 	void deleteHideFeedEntity(HideFeedEntity hideFeedEntity);
-	void checkHideFeedEntityByFeedEntityAndMemberEntity(FeedEntity feedEntity, MemberEntity memberEntity);
-	HideFeedEntity findHideFeedEntityByFeedEntityAndMemberEntity(FeedEntity feedEntity, MemberEntity memberEntity);
+	void verifyHideFeedNotExists(FeedEntity feedEntity, MemberEntity memberEntity);
+	HideFeedEntity findHideFeedEntityByFeedAndMember(FeedEntity feedEntity, MemberEntity memberEntity);
 	Page<HideFeedEntity> findAllByMemberEntityOrderByScheduleStartTimeDesc(MemberEntity memberEntity, Pageable pageable);
 }

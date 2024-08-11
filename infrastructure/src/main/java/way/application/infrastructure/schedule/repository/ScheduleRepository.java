@@ -4,7 +4,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
 import way.application.infrastructure.schedule.entity.ScheduleEntity;
+import way.application.infrastructure.scheduleMember.entity.ScheduleMemberEntity;
 
 public interface ScheduleRepository {
 	// Schedule Entity 저장
@@ -21,4 +24,6 @@ public interface ScheduleRepository {
 
 	// YearMonth 로 Schedule 조회
 	List<ScheduleEntity> findSchedulesByYearMonth(LocalDateTime startOfMonth, LocalDateTime endOfMonth, Long memberSeq);
+
+	Page<ScheduleEntity> getScheduleEntityFromScheduleMember(Page<ScheduleMemberEntity> scheduleMemberEntityPage);
 }
