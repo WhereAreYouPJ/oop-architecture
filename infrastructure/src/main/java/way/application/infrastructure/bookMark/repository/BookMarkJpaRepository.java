@@ -24,16 +24,4 @@ public interface BookMarkJpaRepository extends JpaRepository<BookMarkEntity, Lon
 	Optional<BookMarkEntity> findByFeedEntityAndMemberEntity(FeedEntity feedEntity, MemberEntity memberEntity);
 
 	Boolean existsByFeedEntityAndMemberEntity(FeedEntity feedEntity, MemberEntity memberEntity);
-
-	@Query("""
-		SELECT b FROM BookMarkEntity b
-		JOIN b.feedEntity f
-		JOIN f.schedule s
-		WHERE b.memberEntity = :memberEntity
-		ORDER BY s.startTime DESC
-		""")
-	Page<BookMarkEntity> findAllByMemberEntityOrderByScheduleStartTimeDesc(
-		@Param("memberEntity") MemberEntity memberEntity,
-		Pageable pageable
-	);
 }

@@ -21,6 +21,7 @@ import way.application.domain.feed.FeedDomain;
 import way.application.domain.feedImage.FeedImageDomain;
 import way.application.domain.schedule.ScheduleDomain;
 import way.application.domain.scheduleMember.ScheduleMemberDomain;
+import way.application.infrastructure.bookMark.repository.BookMarkRepository;
 import way.application.infrastructure.feed.entity.FeedEntity;
 import way.application.infrastructure.feed.repository.FeedRepository;
 import way.application.infrastructure.feedImage.repository.FeedImageRepository;
@@ -41,6 +42,7 @@ public class FeedService {
 	private final ScheduleMemberRepository scheduleMemberRepository;
 	private final FeedRepository feedRepository;
 	private final FeedImageRepository feedImageRepository;
+	private final BookMarkRepository bookMarkRepository;
 
 	private final S3Utils s3Utils;
 
@@ -51,7 +53,6 @@ public class FeedService {
 	private final ScheduleMemberDomain scheduleMemberDomain;
 	private final FeedDomain feedDomain;
 	private final FeedImageDomain feedImageDomain;
-	private final BookMarkDomain bookMarkDomain;
 
 	@Transactional
 	public SaveFeedResponseDto saveFeed(SaveFeedRequestDto saveFeedRequestDto) throws IOException {
@@ -63,7 +64,7 @@ public class FeedService {
 		*/
 		MemberEntity creatorMemberEntity = memberRepository.findByMemberSeq(saveFeedRequestDto.creatorSeq());
 		ScheduleEntity savedSchedule = scheduleRepository.findByScheduleSeq(saveFeedRequestDto.scheduleSeq());
-		scheduleMemberRepository.findAcceptedScheduleMemberByScheduleSeqAndMemberSeq(
+		scheduleMemberRepository.findAcceptedScheduleMemberInSchedule(
 			saveFeedRequestDto.scheduleSeq(),
 			saveFeedRequestDto.creatorSeq()
 		);
@@ -122,8 +123,8 @@ public class FeedService {
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
 
 		// ScheduleMemberEntity 조회 -> Schedule 추출
-		Page<ScheduleEntity> scheduleEntityPage = scheduleDomain.getScheduleEntityFromScheduleMember(
-			scheduleMemberDomain.findByMemberEntity(memberEntity, pageable)
+		Page<ScheduleEntity> scheduleEntityPage = scheduleRepository.getScheduleEntityFromScheduleMember(
+			scheduleMemberRepository.findByMemberEntity(memberEntity, pageable)
 		);
 
 		// Schedule 별 Feed 조회 및 응답 생성
@@ -136,7 +137,7 @@ public class FeedService {
 				scheduleEntity.getLocation()
 			);
 
-			feedDomain.findByScheduleExcludingHidden(scheduleEntity, memberEntity, pageable)
+			feedRepository.findByScheduleExcludingHidden(scheduleEntity, memberEntity, pageable)
 				.forEach(feedEntity -> {
 					FeedInfo feedInfo = new FeedInfo(
 						feedEntity.getFeedSeq(),
@@ -145,11 +146,11 @@ public class FeedService {
 					);
 
 					FeedImageInfo feedImageInfo = new FeedImageInfo(
-						feedImageDomain.findFeedImageURLsByFeedEntity(feedEntity)
+						feedImageRepository.findFeedImageURLsByFeedEntity(feedEntity)
 					);
 
 					BookMarkInfo bookMarkInfo = new BookMarkInfo(
-						bookMarkDomain.isFeedBookMarkedByMember(feedEntity, memberEntity)
+						bookMarkRepository.isFeedBookMarkedByMember(feedEntity, memberEntity)
 					);
 
 					MemberInfo memberInfo = new MemberInfo(
@@ -159,7 +160,9 @@ public class FeedService {
 					);
 
 					List<ScheduleFeedInfo> scheduleFeedInfos = new ArrayList<>();
-					scheduleFeedInfos.add(new ScheduleFeedInfo(memberInfo, scheduleInfo, feedInfo, feedImageInfo, bookMarkInfo));
+					scheduleFeedInfos.add(
+						new ScheduleFeedInfo(memberInfo, scheduleInfo, feedInfo, feedImageInfo, bookMarkInfo)
+					);
 
 					response.add(new GetAllFeedResponseDto(scheduleFeedInfos));
 				});

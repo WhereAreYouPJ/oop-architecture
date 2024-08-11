@@ -7,6 +7,10 @@ import way.application.infrastructure.feedImage.entity.FeedImageEntity;
 
 public interface FeedImageRepository {
 	FeedImageEntity saveFeedImageEntity(FeedImageEntity feedImageEntity);
+
 	void deleteAllByFeedEntity(FeedEntity feedEntity);
+
 	List<FeedImageEntity> findAllByFeedEntity(FeedEntity feedEntity);
+
+	List<String> findFeedImageURLsByFeedEntity(FeedEntity feedEntity);
 }

@@ -22,4 +22,6 @@ public interface BookMarkRepository {
 		MemberEntity memberEntity,
 		Pageable pageable
 	);
+
+	boolean isFeedBookMarkedByMember(FeedEntity feedEntity, MemberEntity memberEntity);
 }

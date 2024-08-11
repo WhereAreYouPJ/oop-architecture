@@ -2,25 +2,25 @@ package way.application.infrastructure.scheduleMember.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import way.application.infrastructure.member.entity.MemberEntity;
 import way.application.infrastructure.schedule.entity.ScheduleEntity;
 import way.application.infrastructure.scheduleMember.entity.ScheduleMemberEntity;
 
 public interface ScheduleMemberRepository {
-	// ScheduleMemberEntity 저장
 	ScheduleMemberEntity saveScheduleMemberEntity(ScheduleMemberEntity scheduleMemberEntity);
 
-	// ScheduleEntity 가 해당 memberSeq 가 creator 인지 확인
-	ScheduleEntity findScheduleByCreator(Long scheduleSeq, Long memberSeq);
+	ScheduleEntity findScheduleIfCreatedByMember(Long scheduleSeq, Long memberSeq);
 
-	// ScheduleEntity 전체 삭제
 	void deleteAllBySchedule(ScheduleEntity scheduleEntity);
 
-	// Schedule 수락 O, 해당 Schedule 에 Member O -> ScheduleMemberEntity 반환
-	ScheduleMemberEntity findAcceptedScheduleMemberByScheduleSeqAndMemberSeq(Long scheduleSeq, Long memberSeq);
+	ScheduleMemberEntity findAcceptedScheduleMemberInSchedule(Long scheduleSeq, Long memberSeq);
 
-	// 해당 Schedule 을 수락한 모든 ScheduleEntity 반환
-	List<ScheduleMemberEntity> findAcceptedScheduleMemberByScheduleEntity(ScheduleEntity scheduleEntity);
+	List<ScheduleMemberEntity> findAllAcceptedScheduleMembersInSchedule(ScheduleEntity scheduleEntity);
 
-	// Schedule 수락 X, memberSeq + scheduleSeq -> 반환
-	ScheduleMemberEntity findScheduleMemberEntityByMemberSeqAndScheduleSeq(Long memberSeq, Long scheduleSeq);
+	ScheduleMemberEntity findScheduleMemberInSchedule(Long memberSeq, Long scheduleSeq);
+
+	Page<ScheduleMemberEntity> findByMemberEntity(MemberEntity memberEntity, Pageable pageable);
 }

@@ -19,16 +19,4 @@ public interface HideFeedJpaRepository extends JpaRepository<HideFeedEntity, Lon
 		FeedEntity feedEntity,
 		MemberEntity memberEntity
 	);
-
-	@Query("""
-		SELECT h FROM HideFeedEntity h
-		JOIN h.feedEntity f
-		JOIN f.schedule s
-		WHERE h.memberEntity = :memberEntity
-		ORDER BY s.startTime DESC
-		""")
-	Page<HideFeedEntity> findAllByMemberEntityOrderByScheduleStartTimeDesc(
-		@Param("memberEntity") MemberEntity memberEntity,
-		Pageable pageable
-	);
 }
