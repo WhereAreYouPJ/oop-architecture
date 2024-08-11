@@ -11,4 +11,6 @@ public interface FriendRepository {
     MemberEntity validateMemberSeq(Long memberSeq);
 
     List<FriendEntity> findByOwner(MemberEntity member);
+
+    void delete(MemberEntity member, MemberEntity friend);
 }

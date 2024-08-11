@@ -7,4 +7,10 @@ public class FriendDto {
     ) {
 
     }
+
+    public record DeleteFriendDto(
+            Long memberSeq,
+            Long friendSeq
+    ) {
+    }
 }

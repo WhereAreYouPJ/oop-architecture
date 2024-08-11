@@ -15,5 +15,21 @@ public class FriendVo {
         }
     }
 
+    public record DeleteFriend(
+
+            Long memberSeq,
+
+            Long friendSeq
+
+    ) {
+
+        public FriendDto.DeleteFriendDto toDeleteFriend() {
+            return new FriendDto.DeleteFriendDto(
+                    this.memberSeq,
+                    this.friendSeq
+            );
+        }
+    }
+
 
 }
