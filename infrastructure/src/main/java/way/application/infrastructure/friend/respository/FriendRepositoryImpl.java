@@ -33,4 +33,9 @@ public class FriendRepositoryImpl implements FriendRepository {
         return friendJpaRepository.findByOwner(member);
 
     }
+
+    @Override
+    public void delete(MemberEntity member, MemberEntity friend) {
+        friendJpaRepository.deleteByOwnerAndFriends(member,friend);
+    }
 }
