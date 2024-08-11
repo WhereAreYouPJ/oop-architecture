@@ -41,15 +41,10 @@ public class HideFeedService {
 		/*
 		 1. Member 확인
 		 2. Feed 확인
-		 3. Feed 작성자 확인
 		 3. Hide Feed 존재 여부 확인 (존재 시 Exception)
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(addHideFeedRequestDto.memberSeq());
-		feedRepository.findByFeedSeq(addHideFeedRequestDto.hideFeedSeq());
-		FeedEntity feedEntity = feedRepository.findByCreatorMemberAndFeedSeq(
-			memberEntity,
-			addHideFeedRequestDto.hideFeedSeq()
-		);
+		FeedEntity feedEntity = feedRepository.findByFeedSeq(addHideFeedRequestDto.hideFeedSeq());
 		hideFeedRepository.checkHideFeedEntityByFeedEntityAndMemberEntity(
 			feedEntity,
 			memberEntity

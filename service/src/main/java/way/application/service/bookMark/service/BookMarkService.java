@@ -39,15 +39,10 @@ public class BookMarkService {
 		/*
 		 1. Member 확인
 		 2. Feed 확인
-		 3. Feed 작성자 확인
 		 3. Book Mark Feed 존재 여부 확인 (존재 시 Exception)
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(addBookMarkResponseDto.memberSeq());
-		feedRepository.findByFeedSeq(addBookMarkResponseDto.bookMarkFeedSeq());
-		FeedEntity feedEntity = feedRepository.findByCreatorMemberAndFeedSeq(
-			memberEntity,
-			addBookMarkResponseDto.bookMarkFeedSeq()
-		);
+		FeedEntity feedEntity = feedRepository.findByFeedSeq(addBookMarkResponseDto.bookMarkFeedSeq());
 		bookMarkRepository.checkBookMarkFeedEntityByFeedEntityAndMemberEntity(
 			feedEntity,
 			memberEntity

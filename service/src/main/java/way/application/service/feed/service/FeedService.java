@@ -2,14 +2,25 @@ package way.application.service.feed.service;
 
 import static way.application.service.feed.dto.request.FeedRequestDto.*;
 import static way.application.service.feed.dto.response.FeedResponseDto.*;
+import static way.application.service.feed.dto.response.FeedResponseDto.GetAllFeedResponseDto.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
+import way.application.domain.bookMark.BookMarkDomain;
+import way.application.domain.feed.FeedDomain;
+import way.application.domain.feedImage.FeedImageDomain;
+import way.application.domain.schedule.ScheduleDomain;
+import way.application.domain.scheduleMember.ScheduleMemberDomain;
 import way.application.infrastructure.feed.entity.FeedEntity;
 import way.application.infrastructure.feed.repository.FeedRepository;
 import way.application.infrastructure.feedImage.repository.FeedImageRepository;
@@ -35,6 +46,12 @@ public class FeedService {
 
 	private final FeedMapper feedMapper;
 	private final FeedImageMapper feedImageMapper;
+
+	private final ScheduleDomain scheduleDomain;
+	private final ScheduleMemberDomain scheduleMemberDomain;
+	private final FeedDomain feedDomain;
+	private final FeedImageDomain feedImageDomain;
+	private final BookMarkDomain bookMarkDomain;
 
 	@Transactional
 	public SaveFeedResponseDto saveFeed(SaveFeedRequestDto saveFeedRequestDto) throws IOException {
@@ -97,5 +114,57 @@ public class FeedService {
 		);
 
 		return new ModifyFeedResponseDto(saveFeedResponseDto.feedSeq());
+	}
+
+	@Transactional(readOnly = true)
+	public Page<GetAllFeedResponseDto> getAllFeed(Long memberSeq, Pageable pageable) {
+		// 1. Member 유효성 검사
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
+
+		// ScheduleMemberEntity 조회 -> Schedule 추출
+		Page<ScheduleEntity> scheduleEntityPage = scheduleDomain.getScheduleEntityFromScheduleMember(
+			scheduleMemberDomain.findByMemberEntity(memberEntity, pageable)
+		);
+
+		// Schedule 별 Feed 조회 및 응답 생성
+		List<GetAllFeedResponseDto> response = new ArrayList<>();
+
+		scheduleEntityPage.forEach(scheduleEntity -> {
+			ScheduleInfo scheduleInfo = new ScheduleInfo(
+				scheduleEntity.getScheduleSeq(),
+				scheduleEntity.getStartTime(),
+				scheduleEntity.getLocation()
+			);
+
+			feedDomain.findByScheduleExcludingHidden(scheduleEntity, memberEntity, pageable)
+				.forEach(feedEntity -> {
+					FeedInfo feedInfo = new FeedInfo(
+						feedEntity.getFeedSeq(),
+						feedEntity.getTitle(),
+						feedEntity.getContent()
+					);
+
+					FeedImageInfo feedImageInfo = new FeedImageInfo(
+						feedImageDomain.findFeedImageURLsByFeedEntity(feedEntity)
+					);
+
+					BookMarkInfo bookMarkInfo = new BookMarkInfo(
+						bookMarkDomain.isFeedBookMarkedByMember(feedEntity, memberEntity)
+					);
+
+					MemberInfo memberInfo = new MemberInfo(
+						feedEntity.getCreatorMember().getMemberSeq(),
+						feedEntity.getCreatorMember().getUserName(),
+						feedEntity.getCreatorMember().getProfileImage()
+					);
+
+					List<ScheduleFeedInfo> scheduleFeedInfos = new ArrayList<>();
+					scheduleFeedInfos.add(new ScheduleFeedInfo(memberInfo, scheduleInfo, feedInfo, feedImageInfo, bookMarkInfo));
+
+					response.add(new GetAllFeedResponseDto(scheduleFeedInfos));
+				});
+		});
+
+		return new PageImpl<>(response, pageable, response.size());
 	}
 }
