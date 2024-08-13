@@ -14,6 +14,7 @@ import way.application.infrastructure.hideFeed.entity.HideFeedEntity;
 import way.application.infrastructure.hideFeed.entity.QHideFeedEntity;
 import way.application.infrastructure.member.entity.MemberEntity;
 import way.application.infrastructure.schedule.entity.QScheduleEntity;
+import way.application.infrastructure.schedule.entity.ScheduleEntity;
 import way.application.utils.exception.BadRequestException;
 import way.application.utils.exception.ConflictException;
 import way.application.utils.exception.ErrorResult;
@@ -69,5 +70,17 @@ public class HideFeedRepositoryImpl implements HideFeedRepository {
 			.fetchResults();
 
 		return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+	}
+
+	@Override
+	public void deleteByScheduleEntity(ScheduleEntity scheduleEntity) {
+		QHideFeedEntity hideFeed = QHideFeedEntity.hideFeedEntity;
+
+		queryFactory
+			.delete(hideFeed)
+			.where(
+				hideFeed.feedEntity.schedule.eq(scheduleEntity)
+			)
+			.execute();
 	}
 }
