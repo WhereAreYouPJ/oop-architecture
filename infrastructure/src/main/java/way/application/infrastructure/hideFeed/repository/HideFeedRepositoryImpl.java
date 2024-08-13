@@ -83,4 +83,16 @@ public class HideFeedRepositoryImpl implements HideFeedRepository {
 			)
 			.execute();
 	}
+
+	@Override
+	public void deleteByFeedEntity(FeedEntity feedEntity) {
+		QHideFeedEntity hideFeed = QHideFeedEntity.hideFeedEntity;
+
+		queryFactory
+			.delete(hideFeed)
+			.where(
+				hideFeed.feedEntity.eq(feedEntity)
+			)
+			.execute();
+	}
 }

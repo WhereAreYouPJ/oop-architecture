@@ -23,4 +23,6 @@ public interface HideFeedRepository {
 	);
 
 	void deleteByScheduleEntity(ScheduleEntity scheduleEntity);
+
+	void deleteByFeedEntity(FeedEntity feedEntity);
 }
