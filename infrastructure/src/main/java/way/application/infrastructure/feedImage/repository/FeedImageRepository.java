@@ -16,4 +16,6 @@ public interface FeedImageRepository {
 	List<String> findFeedImageURLsByFeedEntity(FeedEntity feedEntity);
 
 	void deleteByScheduleEntity(ScheduleEntity scheduleEntity);
+
+	void deleteByFeedEntity(FeedEntity feedEntity);
 }

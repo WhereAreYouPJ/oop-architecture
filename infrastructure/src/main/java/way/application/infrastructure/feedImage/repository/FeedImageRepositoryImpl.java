@@ -55,4 +55,16 @@ public class FeedImageRepositoryImpl implements FeedImageRepository {
 			)
 			.execute();
 	}
+
+	@Override
+	public void deleteByFeedEntity(FeedEntity feedEntity) {
+		QFeedImageEntity feedImage = QFeedImageEntity.feedImageEntity;
+
+		queryFactory
+			.delete(feedImage)
+			.where(
+				feedImage.feedEntity.eq(feedEntity)
+			)
+			.execute();
+	}
 }
