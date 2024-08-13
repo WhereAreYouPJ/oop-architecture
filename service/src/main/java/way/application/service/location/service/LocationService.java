@@ -4,6 +4,7 @@ import static way.application.service.location.dto.request.LocationRequestDto.*;
 import static way.application.service.location.dto.response.LocationResponseDto.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,5 +56,23 @@ public class LocationService {
 		);
 
 		locationRepository.deleteAll(locationEntities);
+	}
+
+	@Transactional(readOnly = true)
+	public List<GetLocationResponseDto> getLocation(Long memberSeq) {
+		/*
+		 1. Member 유효성 확인
+		*/
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
+
+		// Location 조회 -> member
+		return locationRepository.findByMemberEntity(memberEntity)
+			.stream()
+			.map(locationEntity -> new GetLocationResponseDto(
+				locationEntity.getLocationSeq(),
+				locationEntity.getLocation(),
+				locationEntity.getStreetName()
+			))
+			.collect(Collectors.toList());
 	}
 }
