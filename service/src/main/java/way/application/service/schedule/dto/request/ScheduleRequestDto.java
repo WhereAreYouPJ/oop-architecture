@@ -76,7 +76,7 @@ public class ScheduleRequestDto {
 
 	public record DeleteScheduleRequestDto(
 		Long scheduleSeq,
-		Long creatorSeq
+		Long memberSeq
 	) {
 
 	}

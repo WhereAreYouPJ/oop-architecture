@@ -8,7 +8,6 @@ import java.time.YearMonth;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import way.application.service.schedule.dto.request.ScheduleRequestDto;
 
 public class ScheduleRequestVo {
 	public record SaveScheduleRequest(
@@ -122,12 +121,12 @@ public class ScheduleRequestVo {
 		Long scheduleSeq,
 
 		@Schema(description = "Schedule 생성 Member Seq")
-		Long creatorSeq
+		Long memberSeq
 	) {
 		public DeleteScheduleRequestDto toDeleteScheduleRequestDto() {
 			return new DeleteScheduleRequestDto(
 				this.scheduleSeq,
-				this.creatorSeq
+				this.memberSeq
 			);
 		}
 	}
