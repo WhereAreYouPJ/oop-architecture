@@ -18,8 +18,12 @@ import way.application.domain.friend.FriendDomain;
 import way.application.domain.member.MemberDomain;
 import way.application.domain.schedule.ScheduleDomain;
 import way.application.domain.scheduleMember.ScheduleMemberDomain;
+import way.application.infrastructure.bookMark.repository.BookMarkRepository;
+import way.application.infrastructure.feed.repository.FeedRepository;
+import way.application.infrastructure.feedImage.repository.FeedImageRepository;
 import way.application.infrastructure.friend.entity.FriendEntity;
 import way.application.infrastructure.friend.respository.FriendRepository;
+import way.application.infrastructure.hideFeed.repository.HideFeedRepository;
 import way.application.infrastructure.member.entity.MemberEntity;
 import way.application.infrastructure.member.repository.MemberRepository;
 import way.application.infrastructure.schedule.entity.ScheduleEntity;
@@ -36,6 +40,10 @@ public class ScheduleService {
 	private final ScheduleMemberRepository scheduleMemberRepository;
 	private final MemberRepository memberRepository;
 	private final FriendRepository friendRepository;
+	private final FeedRepository feedRepository;
+	private final HideFeedRepository hideFeedRepository;
+	private final BookMarkRepository bookMarkRepository;
+	private final FeedImageRepository feedImageRepository;
 
 	private final MemberDomain memberDomain;
 	private final ScheduleMemberDomain scheduleMemberDomain;
@@ -120,18 +128,38 @@ public class ScheduleService {
 	}
 
 	@Transactional
-	public void deleteSchedule(DeleteScheduleRequestDto deleteScheduleRequestDto) {
-		// 유효성 검사 (Repository 에서 처리)
-		memberRepository.findByMemberSeq(deleteScheduleRequestDto.creatorSeq());
+	public void deleteScheduleByCreator(DeleteScheduleRequestDto deleteScheduleRequestDto) {
+		/*
+		 1. Member 유효성 검사
+		 2. Schedule 유효성 검사
+		 3. 생성자 여부 확인
+		*/
+		memberRepository.findByMemberSeq(deleteScheduleRequestDto.memberSeq());
 		scheduleRepository.findByScheduleSeq(deleteScheduleRequestDto.scheduleSeq());
 		ScheduleEntity scheduleEntity = scheduleMemberRepository.findScheduleIfCreatedByMember(
 			deleteScheduleRequestDto.scheduleSeq(),
-			deleteScheduleRequestDto.creatorSeq()
+			deleteScheduleRequestDto.memberSeq()
 		);
 
-		// 전체 데이터 삭제: 연관관계 매핑으로 인해 ScheduleMember -> Schedule 삭제
-		scheduleMemberRepository.deleteAllBySchedule(scheduleEntity);
-		scheduleRepository.deleteById(scheduleEntity.getScheduleSeq());
+		/*
+		 해당 일정의 모든 Feed 삭제
+		 1. Feed Entity
+		 2. Hide Feed Entity
+		 3. Book Mark Feed Entity
+		 4. Feed Image Entity
+		*/
+		hideFeedRepository.deleteByScheduleEntity(scheduleEntity);
+		bookMarkRepository.deleteByScheduleEntity(scheduleEntity);
+		feedImageRepository.deleteByScheduleEntity(scheduleEntity);
+		feedRepository.deleteByScheduleEntity(scheduleEntity);
+
+		/*
+		 해당 일정의 모든 Schedule 삭제
+		 1. Schedule Member
+		 2. Schedule
+		*/
+		scheduleMemberRepository.deleteByScheduleEntity(scheduleEntity);
+		scheduleRepository.deleteScheduleEntity(scheduleEntity);
 	}
 
 	@Cacheable(value = "schedules", key = "#scheduleSeq + '-' + #memberSeq")
