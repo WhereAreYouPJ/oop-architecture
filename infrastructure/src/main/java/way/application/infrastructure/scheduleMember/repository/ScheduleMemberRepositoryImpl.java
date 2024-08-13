@@ -136,4 +136,17 @@ public class ScheduleMemberRepositoryImpl implements ScheduleMemberRepository {
 			)
 			.execute();
 	}
+
+	@Override
+	public void deleteByScheduleEntityAndMemberEntity(ScheduleEntity scheduleEntity, MemberEntity memberEntity) {
+		QScheduleMemberEntity scheduleMember = QScheduleMemberEntity.scheduleMemberEntity;
+
+		queryFactory
+			.delete(scheduleMember)
+			.where(
+				scheduleMember.schedule.eq(scheduleEntity)
+					.and(scheduleMember.invitedMember.eq(memberEntity))
+			)
+			.execute();
+	}
 }
