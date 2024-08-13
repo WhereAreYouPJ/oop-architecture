@@ -49,11 +49,6 @@ public class FeedService {
 	private final FeedMapper feedMapper;
 	private final FeedImageMapper feedImageMapper;
 
-	private final ScheduleDomain scheduleDomain;
-	private final ScheduleMemberDomain scheduleMemberDomain;
-	private final FeedDomain feedDomain;
-	private final FeedImageDomain feedImageDomain;
-
 	@Transactional
 	public SaveFeedResponseDto saveFeed(SaveFeedRequestDto saveFeedRequestDto) throws IOException {
 		/*
