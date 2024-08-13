@@ -81,4 +81,21 @@ public class FeedRepositoryImpl implements FeedRepository {
 
 		return new PageImpl<>(content, pageable, total);
 	}
+
+	@Override
+	public void deleteFeedEntity(FeedEntity feedEntity) {
+		feedJpaRepository.delete(feedEntity);
+	}
+
+	@Override
+	public void deleteByScheduleEntity(ScheduleEntity scheduleEntity) {
+		QFeedEntity feed = QFeedEntity.feedEntity;
+
+		queryFactory
+			.delete(feed)
+			.where(
+				feed.schedule.eq(scheduleEntity)
+			)
+			.execute();
+	}
 }

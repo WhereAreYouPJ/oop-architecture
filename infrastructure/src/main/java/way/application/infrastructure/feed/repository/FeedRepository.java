@@ -23,4 +23,8 @@ public interface FeedRepository {
 		MemberEntity memberEntity,
 		Pageable pageable
 	);
+
+	void deleteFeedEntity(FeedEntity feedEntity);
+
+	void deleteByScheduleEntity(ScheduleEntity scheduleEntity);
 }
