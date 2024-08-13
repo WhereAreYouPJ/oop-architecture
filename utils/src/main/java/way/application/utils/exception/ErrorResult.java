@@ -143,6 +143,12 @@ public enum ErrorResult {
 			"RMB028"
 	),
 
+	START_TIME_BAD_REQUEST_EXCEPTION(
+		HttpStatus.BAD_REQUEST.value(),
+		"START_TIME_BAD_REQUEST_EXCEPTION",
+		"STB029"
+	),
+
 	// NOT FOUND
 	HIDE_FEED_NOT_FOUND_EXCEPTION(
 		HttpStatus.NOT_FOUND.value(),
