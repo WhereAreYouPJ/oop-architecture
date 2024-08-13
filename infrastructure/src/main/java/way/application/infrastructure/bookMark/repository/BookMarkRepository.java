@@ -27,4 +27,6 @@ public interface BookMarkRepository {
 	boolean isFeedBookMarkedByMember(FeedEntity feedEntity, MemberEntity memberEntity);
 
 	void deleteByScheduleEntity(ScheduleEntity scheduleEntity);
+
+	void deleteByFeedEntity(FeedEntity feedEntity);
 }

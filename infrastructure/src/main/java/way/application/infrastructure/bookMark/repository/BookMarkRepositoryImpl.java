@@ -104,4 +104,16 @@ public class BookMarkRepositoryImpl implements BookMarkRepository {
 			)
 			.execute();
 	}
+
+	@Override
+	public void deleteByFeedEntity(FeedEntity feedEntity) {
+		QBookMarkEntity bookMark = QBookMarkEntity.bookMarkEntity;
+
+		queryFactory
+			.delete(bookMark)
+			.where(
+				bookMark.feedEntity.eq(feedEntity)
+			)
+			.execute();
+	}
 }
