@@ -153,6 +153,12 @@ public class ScheduleController {
 			description = "400 SCHEDULE_DIDNT_CREATED_BY_MEMBER_BAD_REQUEST_EXCEPTION / SCHEDULE_ID 오류",
 			content = @Content(
 				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "STB029",
+			description = "400 START_TIME_BAD_REQUEST_EXCEPTION / 수정 시간 (시작시간 기준 전후 1시간) 오류",
+			content = @Content(
+				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
 	public ResponseEntity<BaseResponse<ModifyScheduleResponse>> modifySchedule(
