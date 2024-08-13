@@ -119,4 +119,21 @@ public class ScheduleMemberRepositoryImpl implements ScheduleMemberRepository {
 
 		return new PageImpl<>(content, pageable, total);
 	}
+
+	@Override
+	public void deleteScheduleMemberEntity(ScheduleMemberEntity scheduleMemberEntity) {
+		scheduleMemberJpaRepository.delete(scheduleMemberEntity);
+	}
+
+	@Override
+	public void deleteByScheduleEntity(ScheduleEntity scheduleEntity) {
+		QScheduleMemberEntity scheduleMember = QScheduleMemberEntity.scheduleMemberEntity;
+
+		queryFactory
+			.delete(scheduleMember)
+			.where(
+				scheduleMember.schedule.eq(scheduleEntity)
+			)
+			.execute();
+	}
 }
