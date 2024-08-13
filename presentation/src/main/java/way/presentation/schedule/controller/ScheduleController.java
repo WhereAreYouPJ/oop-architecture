@@ -176,7 +176,7 @@ public class ScheduleController {
 	}
 
 	@DeleteMapping(value = "creator", name = "일정 삭제(일정 생성자인 경우)")
-	@Operation(summary = "일정 삭제 API", description = "Request: DeleteScheduleRequest")
+	@Operation(summary = "일정 삭제(일정 생성자인 경우) API", description = "Request: DeleteScheduleRequest")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -231,7 +231,7 @@ public class ScheduleController {
 	}
 
 	@DeleteMapping(value = "invited", name = "일정 삭제(일정 초대자인 경우)")
-	@Operation(summary = "일정 삭제 API", description = "Request: DeleteScheduleRequest")
+	@Operation(summary = "일정 삭제(일정 초대자인 경우) API", description = "Request: DeleteScheduleRequest")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -271,7 +271,7 @@ public class ScheduleController {
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
-	public ResponseEntity<BaseResponse> tmp(
+	public ResponseEntity<BaseResponse> deleteInvitedScheduleMember(
 		@Valid
 		@RequestBody DeleteScheduleRequest request
 	) {
