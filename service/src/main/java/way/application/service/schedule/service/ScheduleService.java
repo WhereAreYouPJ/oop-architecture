@@ -5,6 +5,7 @@ import static way.application.service.schedule.dto.response.ScheduleResponseDto.
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,7 @@ import way.application.domain.member.MemberDomain;
 import way.application.domain.schedule.ScheduleDomain;
 import way.application.domain.scheduleMember.ScheduleMemberDomain;
 import way.application.infrastructure.bookMark.repository.BookMarkRepository;
+import way.application.infrastructure.feed.entity.FeedEntity;
 import way.application.infrastructure.feed.repository.FeedRepository;
 import way.application.infrastructure.feedImage.repository.FeedImageRepository;
 import way.application.infrastructure.friend.entity.FriendEntity;
@@ -160,6 +162,48 @@ public class ScheduleService {
 		*/
 		scheduleMemberRepository.deleteByScheduleEntity(scheduleEntity);
 		scheduleRepository.deleteScheduleEntity(scheduleEntity);
+	}
+
+	@Transactional
+	public void deleteScheduleMemberByInvitor(DeleteScheduleRequestDto deleteScheduleRequestDto) {
+		/*
+		 1. Member 유효성 검사
+		 2. Schedule 유효성 검사
+		 3. Schedule 초대자 확인
+		*/
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(deleteScheduleRequestDto.memberSeq());
+		scheduleRepository.findByScheduleSeq(deleteScheduleRequestDto.scheduleSeq());
+		ScheduleEntity scheduleEntity = scheduleMemberRepository.findAcceptedScheduleMemberInSchedule(
+			deleteScheduleRequestDto.scheduleSeq(),
+			deleteScheduleRequestDto.memberSeq()
+		).getSchedule();
+
+		// 해당 Schedule 의 작성한 Feed 조회
+		Optional<FeedEntity> feedEntity
+			= feedRepository.findByScheduleEntityAndMemberEntity(scheduleEntity, memberEntity);
+
+		// 작성한 Feed 존재 유무에 따라
+		if (feedEntity.isEmpty()) {
+			scheduleMemberRepository.deleteByScheduleEntityAndMemberEntity(scheduleEntity, memberEntity);
+		} else {
+			/*
+			 해당 일정의 모든 Feed 삭제
+			 1. Feed Entity
+			 2. Hide Feed Entity
+			 3. Book Mark Feed Entity
+			 4. Feed Image Entity
+			*/
+			hideFeedRepository.deleteByFeedEntity(feedEntity.get());
+			bookMarkRepository.deleteByFeedEntity(feedEntity.get());
+			feedImageRepository.deleteByFeedEntity(feedEntity.get());
+			feedRepository.deleteFeedEntity(feedEntity.get());
+
+			/*
+			 해당 일정의 모든 Schedule Member 삭제
+			 1. Schedule Member
+			*/
+			scheduleMemberRepository.deleteByScheduleEntityAndMemberEntity(scheduleEntity, memberEntity);
+		}
 	}
 
 	@Cacheable(value = "schedules", key = "#scheduleSeq + '-' + #memberSeq")
