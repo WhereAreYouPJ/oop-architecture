@@ -95,7 +95,8 @@ public class ScheduleService {
 		/*
 		 1. Member 유효성 검사
 		 2. 초대 Member 유효성 검사
-		 2. Schedule 유효성 검사
+		 3. Schedule 유효성 검사
+		 4. 시작 시간 확인 (전 후 1시간 기준)
 		*/
 		memberRepository.findByMemberSeq(modifyScheduleRequestDto.createMemberSeq());
 		memberRepository.findByMemberSeqs(modifyScheduleRequestDto.invitedMemberSeqs());
@@ -104,6 +105,7 @@ public class ScheduleService {
 			modifyScheduleRequestDto.scheduleSeq(),
 			modifyScheduleRequestDto.createMemberSeq()
 		);
+		scheduleDomain.validateScheduleStartTime(scheduleEntity.getStartTime());
 
 		// 삭제 (Repository 에서 처리)
 		scheduleRepository.deleteById(modifyScheduleRequestDto.scheduleSeq());
