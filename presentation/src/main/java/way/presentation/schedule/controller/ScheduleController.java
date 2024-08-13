@@ -173,60 +173,60 @@ public class ScheduleController {
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
 
-	@DeleteMapping(name = "일정 삭제")
-	@Operation(summary = "일정 삭제 API", description = "Request: DeleteScheduleRequest")
-	@ApiResponses(value = {
-		@ApiResponse(
-			responseCode = "200",
-			description = "요청에 성공하였습니다.",
-			content = @Content(
-				mediaType = "application/json",
-				schema = @Schema(
-					implementation = BaseResponse.class))),
-		@ApiResponse(
-			responseCode = "S500",
-			description = "500 SERVER_ERROR (나도 몰라 ..)",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class))),
-		@ApiResponse(
-			responseCode = "B001",
-			description = "400 Invalid DTO Parameter errors / 요청 값 형식 요류",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class))),
-		@ApiResponse(
-			responseCode = "SSB003",
-			description = "400 SCHEDULE_SEQ_BAD_REQUEST_EXCEPTION / SCHEDULE_ID 오류",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class))),
-		@ApiResponse(
-			responseCode = "MSB002",
-			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class))),
-		@ApiResponse(
-			responseCode = "SDCBMB008",
-			description = "400 SCHEDULE_DIDNT_CREATED_BY_MEMBER_BAD_REQUEST_EXCEPTION / SCHEDULE_ID 오류",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class)))
-	})
-	public ResponseEntity<BaseResponse> deleteSchedule(
-		@Valid
-		@RequestBody DeleteScheduleRequest request
-	) {
-		// DTO 유효성 검사
-		deleteScheduleValidator.validate(request);
-
-		// VO -> DTO
-		DeleteScheduleRequestDto deleteScheduleRequestDto = request.toDeleteScheduleRequestDto();
-		scheduleService.deleteSchedule(deleteScheduleRequestDto);
-
-		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
-	}
+	// @DeleteMapping(name = "일정 삭제")
+	// @Operation(summary = "일정 삭제 API", description = "Request: DeleteScheduleRequest")
+	// @ApiResponses(value = {
+	// 	@ApiResponse(
+	// 		responseCode = "200",
+	// 		description = "요청에 성공하였습니다.",
+	// 		content = @Content(
+	// 			mediaType = "application/json",
+	// 			schema = @Schema(
+	// 				implementation = BaseResponse.class))),
+	// 	@ApiResponse(
+	// 		responseCode = "S500",
+	// 		description = "500 SERVER_ERROR (나도 몰라 ..)",
+	// 		content = @Content(
+	// 			schema = @Schema(
+	// 				implementation = GlobalExceptionHandler.ErrorResponse.class))),
+	// 	@ApiResponse(
+	// 		responseCode = "B001",
+	// 		description = "400 Invalid DTO Parameter errors / 요청 값 형식 요류",
+	// 		content = @Content(
+	// 			schema = @Schema(
+	// 				implementation = GlobalExceptionHandler.ErrorResponse.class))),
+	// 	@ApiResponse(
+	// 		responseCode = "SSB003",
+	// 		description = "400 SCHEDULE_SEQ_BAD_REQUEST_EXCEPTION / SCHEDULE_ID 오류",
+	// 		content = @Content(
+	// 			schema = @Schema(
+	// 				implementation = GlobalExceptionHandler.ErrorResponse.class))),
+	// 	@ApiResponse(
+	// 		responseCode = "MSB002",
+	// 		description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+	// 		content = @Content(
+	// 			schema = @Schema(
+	// 				implementation = GlobalExceptionHandler.ErrorResponse.class))),
+	// 	@ApiResponse(
+	// 		responseCode = "SDCBMB008",
+	// 		description = "400 SCHEDULE_DIDNT_CREATED_BY_MEMBER_BAD_REQUEST_EXCEPTION / SCHEDULE_ID 오류",
+	// 		content = @Content(
+	// 			schema = @Schema(
+	// 				implementation = GlobalExceptionHandler.ErrorResponse.class)))
+	// })
+	// public ResponseEntity<BaseResponse> deleteSchedule(
+	// 	@Valid
+	// 	@RequestBody DeleteScheduleRequest request
+	// ) {
+	// 	// DTO 유효성 검사
+	// 	deleteScheduleValidator.validate(request);
+	//
+	// 	// VO -> DTO
+	// 	DeleteScheduleRequestDto deleteScheduleRequestDto = request.toDeleteScheduleRequestDto();
+	// 	scheduleService.deleteSchedule(deleteScheduleRequestDto);
+	//
+	// 	return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
+	// }
 
 	@GetMapping(name = "일정 조회")
 	@Operation(summary = "일정 상세 조회 API", description = "Response: GetScheduleResponse")
