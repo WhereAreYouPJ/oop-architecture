@@ -45,12 +45,6 @@ public class BookMarkRepositoryImpl implements BookMarkRepository {
 	}
 
 	@Override
-	public BookMarkEntity findByFeedEntityAndMemberEntity(FeedEntity feedEntity, MemberEntity memberEntity) {
-		return bookMarkJpaRepository.findByFeedEntityAndMemberEntity(feedEntity, memberEntity)
-			.orElseThrow(() -> new BadRequestException(ErrorResult.FEED_DIDNT_CREATED_BY_MEMBER_BAD_REQUEST_EXCEPTION));
-	}
-
-	@Override
 	public Boolean existsByFeedEntityAndMemberEntity(FeedEntity feedEntity, MemberEntity memberEntity) {
 		return bookMarkJpaRepository.existsByFeedEntityAndMemberEntity(feedEntity, memberEntity);
 	}
@@ -115,5 +109,11 @@ public class BookMarkRepositoryImpl implements BookMarkRepository {
 				bookMark.feedEntity.eq(feedEntity)
 			)
 			.execute();
+	}
+
+	@Override
+	public BookMarkEntity findByBookMarkSeq(Long bookMarkSeq) {
+		return bookMarkJpaRepository.findById(bookMarkSeq)
+			.orElseThrow(() -> new BadRequestException(ErrorResult.BOOK_MARK_SEQ_BAD_REQUEST_EXCEPTION));
 	}
 }

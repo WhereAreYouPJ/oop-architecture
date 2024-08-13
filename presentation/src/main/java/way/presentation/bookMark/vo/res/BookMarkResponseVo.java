@@ -7,13 +7,16 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public class BookMarkResponseVo {
 	public record AddBookMarkResponse(
-		@Schema(description = "Book Mark DB에 저장한 이후 반환되는 Seq 값 (복원에 사용되는 Seq 값 아닙니다.)")
+		@Schema(description = "Book Mark DB에 저장한 이후 반환되는 Seq 값")
 		Long bookMarkSeq
 	) {
 
 	}
 
 	public record GetBookMarkResponse(
+		@Schema(description = "피드 작성자 SEQ")
+		Long memberSeq,
+
 		@Schema(description = "회원 PROFILE 이미지 URL")
 		String profileImage,
 

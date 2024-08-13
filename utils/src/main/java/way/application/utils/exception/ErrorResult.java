@@ -149,6 +149,12 @@ public enum ErrorResult {
 		"STB029"
 	),
 
+	HIDE_FEED_BAD_REQUEST_EXCEPTION(
+		HttpStatus.BAD_REQUEST.value(),
+		"HIDE_FEED_BAD_REQUEST_EXCEPTION",
+		"HFB030"
+	),
+
 	// NOT FOUND
 	HIDE_FEED_NOT_FOUND_EXCEPTION(
 		HttpStatus.NOT_FOUND.value(),

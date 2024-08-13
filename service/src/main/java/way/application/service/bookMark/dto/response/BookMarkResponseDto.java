@@ -11,6 +11,7 @@ public class BookMarkResponseDto {
 	}
 
 	public record GetBookMarkResponseDto(
+		Long memberSeq,
 		String profileImage,
 		LocalDateTime startTime,
 		String location,

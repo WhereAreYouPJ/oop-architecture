@@ -126,14 +126,8 @@ public class HideFeedController {
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
-			responseCode = "FSB019",
-			description = "400 FEED_SEQ_BAD_REQUEST_EXCEPTION / FEED_SEQ 오류",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class))),
-		@ApiResponse(
-			responseCode = "HFEN001",
-			description = "400 FEED_DIDNT_CREATED_BY_MEMBER_BAD_REQUEST_EXCEPTION / Feed는 존재하지만 HIDE_FEED에 존재하지 않을 때 오류",
+			responseCode = "HFB030",
+			description = "400 HIDE_FEED_BAD_REQUEST_EXCEPTION / HIDE_FEED_SEQ 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))

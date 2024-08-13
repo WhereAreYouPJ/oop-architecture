@@ -15,8 +15,6 @@ public interface HideFeedRepository {
 
 	void verifyHideFeedNotExists(FeedEntity feedEntity, MemberEntity memberEntity);
 
-	HideFeedEntity findHideFeedEntityByFeedAndMember(FeedEntity feedEntity, MemberEntity memberEntity);
-
 	Page<HideFeedEntity> findAllByMemberEntityOrderByScheduleStartTimeDesc(
 		MemberEntity memberEntity,
 		Pageable pageable
@@ -25,4 +23,6 @@ public interface HideFeedRepository {
 	void deleteByScheduleEntity(ScheduleEntity scheduleEntity);
 
 	void deleteByFeedEntity(FeedEntity feedEntity);
+
+	HideFeedEntity findByHideFeedSeq(Long hideFeedSeq);
 }

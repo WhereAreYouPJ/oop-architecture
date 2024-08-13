@@ -128,14 +128,8 @@ public class BookMarkController {
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
-			responseCode = "FSB019",
-			description = "400 FEED_SEQ_BAD_REQUEST_EXCEPTION / FEED_SEQ 오류",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class))),
-		@ApiResponse(
-			responseCode = "HFEN001",
-			description = "400 FEED_DIDNT_CREATED_BY_MEMBER_BAD_REQUEST_EXCEPTION / Feed는 존재하지만 BOOK MARK에 존재하지 않을 때 오류",
+			responseCode = "BMSB024",
+			description = "400 BOOK_MARK_SEQ_BAD_REQUEST_EXCEPTION / Book Mark Seq 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
@@ -198,6 +192,7 @@ public class BookMarkController {
 
 		// DTO를 VO로 변환
 		Page<GetBookMarkResponse> responses = getBookMarkResponseDtos.map(dto -> new GetBookMarkResponse(
+			dto.memberSeq(),
 			dto.profileImage(),
 			dto.startTime(),
 			dto.location(),
