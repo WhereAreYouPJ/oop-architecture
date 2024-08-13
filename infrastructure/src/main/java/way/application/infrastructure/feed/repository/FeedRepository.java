@@ -1,5 +1,7 @@
 package way.application.infrastructure.feed.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -23,4 +25,10 @@ public interface FeedRepository {
 		MemberEntity memberEntity,
 		Pageable pageable
 	);
+
+	void deleteFeedEntity(FeedEntity feedEntity);
+
+	void deleteByScheduleEntity(ScheduleEntity scheduleEntity);
+
+	Optional<FeedEntity> findByScheduleEntityAndMemberEntity(ScheduleEntity scheduleEntity, MemberEntity memberEntity);
 }

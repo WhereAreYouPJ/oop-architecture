@@ -26,4 +26,6 @@ public interface ScheduleRepository {
 	List<ScheduleEntity> findSchedulesByYearMonth(LocalDateTime startOfMonth, LocalDateTime endOfMonth, Long memberSeq);
 
 	Page<ScheduleEntity> getScheduleEntityFromScheduleMember(Page<ScheduleMemberEntity> scheduleMemberEntityPage);
+
+	void deleteScheduleEntity(ScheduleEntity scheduleEntity);
 }

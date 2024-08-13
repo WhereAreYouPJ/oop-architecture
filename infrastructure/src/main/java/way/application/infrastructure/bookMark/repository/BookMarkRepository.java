@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import way.application.infrastructure.bookMark.entity.BookMarkEntity;
 import way.application.infrastructure.feed.entity.FeedEntity;
 import way.application.infrastructure.member.entity.MemberEntity;
+import way.application.infrastructure.schedule.entity.ScheduleEntity;
 
 public interface BookMarkRepository {
 	BookMarkEntity saveBookMarkEntity(BookMarkEntity bookMarkEntity);
@@ -24,4 +25,8 @@ public interface BookMarkRepository {
 	);
 
 	boolean isFeedBookMarkedByMember(FeedEntity feedEntity, MemberEntity memberEntity);
+
+	void deleteByScheduleEntity(ScheduleEntity scheduleEntity);
+
+	void deleteByFeedEntity(FeedEntity feedEntity);
 }

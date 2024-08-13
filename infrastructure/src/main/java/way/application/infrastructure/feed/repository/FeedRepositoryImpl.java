@@ -1,6 +1,7 @@
 package way.application.infrastructure.feed.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -80,5 +81,38 @@ public class FeedRepositoryImpl implements FeedRepository {
 		long total = results.getTotal();
 
 		return new PageImpl<>(content, pageable, total);
+	}
+
+	@Override
+	public void deleteFeedEntity(FeedEntity feedEntity) {
+		feedJpaRepository.delete(feedEntity);
+	}
+
+	@Override
+	public void deleteByScheduleEntity(ScheduleEntity scheduleEntity) {
+		QFeedEntity feed = QFeedEntity.feedEntity;
+
+		queryFactory
+			.delete(feed)
+			.where(
+				feed.schedule.eq(scheduleEntity)
+			)
+			.execute();
+	}
+
+	@Override
+	public Optional<FeedEntity> findByScheduleEntityAndMemberEntity(ScheduleEntity scheduleEntity,
+		MemberEntity memberEntity) {
+		QFeedEntity feed = QFeedEntity.feedEntity;
+
+		return Optional.ofNullable(queryFactory
+			.select(feed)
+			.from(feed)
+			.where(
+				feed.schedule.eq(scheduleEntity)
+					.and(feed.creatorMember.eq(memberEntity))
+			)
+			.fetchOne()
+		);
 	}
 }

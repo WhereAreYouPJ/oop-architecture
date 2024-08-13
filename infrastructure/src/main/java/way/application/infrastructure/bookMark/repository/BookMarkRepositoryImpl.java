@@ -15,6 +15,7 @@ import way.application.infrastructure.feed.entity.FeedEntity;
 import way.application.infrastructure.feed.entity.QFeedEntity;
 import way.application.infrastructure.member.entity.MemberEntity;
 import way.application.infrastructure.schedule.entity.QScheduleEntity;
+import way.application.infrastructure.schedule.entity.ScheduleEntity;
 import way.application.utils.exception.BadRequestException;
 import way.application.utils.exception.ConflictException;
 import way.application.utils.exception.ErrorResult;
@@ -90,5 +91,29 @@ public class BookMarkRepositoryImpl implements BookMarkRepository {
 			.fetchFirst();
 
 		return count != null;
+	}
+
+	@Override
+	public void deleteByScheduleEntity(ScheduleEntity scheduleEntity) {
+		QBookMarkEntity bookMark = QBookMarkEntity.bookMarkEntity;
+
+		queryFactory
+			.delete(bookMark)
+			.where(
+				bookMark.feedEntity.schedule.eq(scheduleEntity)
+			)
+			.execute();
+	}
+
+	@Override
+	public void deleteByFeedEntity(FeedEntity feedEntity) {
+		QBookMarkEntity bookMark = QBookMarkEntity.bookMarkEntity;
+
+		queryFactory
+			.delete(bookMark)
+			.where(
+				bookMark.feedEntity.eq(feedEntity)
+			)
+			.execute();
 	}
 }
