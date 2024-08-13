@@ -44,15 +44,6 @@ public class HideFeedRepositoryImpl implements HideFeedRepository {
 	}
 
 	@Override
-	public HideFeedEntity findHideFeedEntityByFeedAndMember(
-		FeedEntity feedEntity,
-		MemberEntity memberEntity
-	) {
-		return hideFeedJpaRepository.findHideFeedEntityByFeedEntityAndMemberEntity(feedEntity, memberEntity)
-			.orElseThrow(() -> new BadRequestException(ErrorResult.FEED_DIDNT_CREATED_BY_MEMBER_BAD_REQUEST_EXCEPTION));
-	}
-
-	@Override
 	public Page<HideFeedEntity> findAllByMemberEntityOrderByScheduleStartTimeDesc(
 		MemberEntity memberEntity,
 		Pageable pageable
@@ -94,5 +85,11 @@ public class HideFeedRepositoryImpl implements HideFeedRepository {
 				hideFeed.feedEntity.eq(feedEntity)
 			)
 			.execute();
+	}
+
+	@Override
+	public HideFeedEntity findByHideFeedSeq(Long hideFeedSeq) {
+		return hideFeedJpaRepository.findById(hideFeedSeq)
+			.orElseThrow(() -> new BadRequestException(ErrorResult.HIDE_FEED_BAD_REQUEST_EXCEPTION));
 	}
 }

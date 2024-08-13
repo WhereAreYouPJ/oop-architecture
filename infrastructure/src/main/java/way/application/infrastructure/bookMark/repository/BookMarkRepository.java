@@ -15,8 +15,6 @@ public interface BookMarkRepository {
 
 	void checkBookMarkFeedEntityByFeedEntityAndMemberEntity(FeedEntity feedEntity, MemberEntity memberEntity);
 
-	BookMarkEntity findByFeedEntityAndMemberEntity(FeedEntity feedEntity, MemberEntity memberEntity);
-
 	Boolean existsByFeedEntityAndMemberEntity(FeedEntity feedEntity, MemberEntity memberEntity);
 
 	Page<BookMarkEntity> findAllByMemberEntityOrderByScheduleStartTimeDesc(
@@ -29,4 +27,6 @@ public interface BookMarkRepository {
 	void deleteByScheduleEntity(ScheduleEntity scheduleEntity);
 
 	void deleteByFeedEntity(FeedEntity feedEntity);
+
+	BookMarkEntity findByBookMarkSeq(Long bookMarkSeq);
 }

@@ -43,7 +43,7 @@ public class HideFeedService {
 		 3. Hide Feed 존재 여부 확인 (존재 시 Exception)
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(addHideFeedRequestDto.memberSeq());
-		FeedEntity feedEntity = feedRepository.findByFeedSeq(addHideFeedRequestDto.hideFeedSeq());
+		FeedEntity feedEntity = feedRepository.findByFeedSeq(addHideFeedRequestDto.feedSeq());
 		hideFeedRepository.verifyHideFeedNotExists(
 			feedEntity,
 			memberEntity
@@ -61,15 +61,10 @@ public class HideFeedService {
 	public void deleteHideFeed(DeleteHideFeedRequestDto hideFeedRequestDto) {
 		/*
 		 1. Member 확인
-		 2. Feed 확인
-		 3. Hide Feed 작성자 확인
+		 2. Hide Feed 확인
 		*/
-		MemberEntity memberEntity = memberRepository.findByMemberSeq(hideFeedRequestDto.memberSeq());
-		FeedEntity feedEntity = feedRepository.findByFeedSeq(hideFeedRequestDto.hideFeedSeq());
-		HideFeedEntity hideFeedEntity = hideFeedRepository.findHideFeedEntityByFeedAndMember(
-			feedEntity,
-			memberEntity
-		);
+		memberRepository.findByMemberSeq(hideFeedRequestDto.memberSeq());
+		HideFeedEntity hideFeedEntity = hideFeedRepository.findByHideFeedSeq(hideFeedRequestDto.hideFeedSeq());
 
 		// Hide Feed 삭제
 		hideFeedRepository.deleteHideFeedEntity(hideFeedEntity);

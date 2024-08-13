@@ -22,7 +22,6 @@ import way.application.infrastructure.member.entity.MemberEntity;
 import way.application.infrastructure.member.repository.MemberRepository;
 import way.application.infrastructure.schedule.entity.ScheduleEntity;
 import way.application.service.bookMark.mapper.BookMarkMapper;
-import way.application.service.hideFeed.dto.response.HideFeedResponseDto;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +41,7 @@ public class BookMarkService {
 		 3. Book Mark Feed 존재 여부 확인 (존재 시 Exception)
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(addBookMarkResponseDto.memberSeq());
-		FeedEntity feedEntity = feedRepository.findByFeedSeq(addBookMarkResponseDto.bookMarkFeedSeq());
+		FeedEntity feedEntity = feedRepository.findByFeedSeq(addBookMarkResponseDto.feedSeq());
 		bookMarkRepository.checkBookMarkFeedEntityByFeedEntityAndMemberEntity(
 			feedEntity,
 			memberEntity
@@ -60,15 +59,11 @@ public class BookMarkService {
 	public void deleteBookMarkFeed(DeleteBookMarkRequestDto deleteBookMarkRequestDto) {
 		/*
 		 1. Member 확인
-		 2. Feed 확인
-		 3. Book Mark Feed 확인
+		 2. Book Mark 확인
 		*/
-		MemberEntity memberEntity = memberRepository.findByMemberSeq(deleteBookMarkRequestDto.memberSeq());
-		FeedEntity feedEntity = feedRepository.findByFeedSeq(deleteBookMarkRequestDto.bookMarkFeedSeq());
-		BookMarkEntity bookMarkEntity = bookMarkRepository.findByFeedEntityAndMemberEntity(
-			feedEntity,
-			memberEntity
-		);
+		memberRepository.findByMemberSeq(deleteBookMarkRequestDto.memberSeq());
+		BookMarkEntity bookMarkEntity
+			= bookMarkRepository.findByBookMarkSeq(deleteBookMarkRequestDto.bookMarkFeedSeq());
 
 		// Book Mark Feed 삭제
 		bookMarkRepository.deleteBookMarkEntity(bookMarkEntity);
@@ -87,6 +82,7 @@ public class BookMarkService {
 		return bookMarkEntityPage.map(bookMarkEntity -> {
 			FeedEntity feedEntity = bookMarkEntity.getFeedEntity();
 			ScheduleEntity scheduleEntity = feedEntity.getSchedule();
+			MemberEntity creatorMemberEntity = feedEntity.getCreatorMember();
 
 			// Feed 이미지 가져오기
 			List<String> feedImageUrl = feedImageRepository.findAllByFeedEntity(feedEntity)
@@ -95,6 +91,7 @@ public class BookMarkService {
 				.collect(Collectors.toList());
 
 			return new GetBookMarkResponseDto(
+				creatorMemberEntity.getMemberSeq(),
 				bookMarkEntity.getMemberEntity().getProfileImage(),
 				scheduleEntity.getStartTime(),
 				scheduleEntity.getLocation(),

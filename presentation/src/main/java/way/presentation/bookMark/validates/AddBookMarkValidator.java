@@ -10,12 +10,12 @@ import way.application.utils.exception.ErrorResult;
 @Component
 public class AddBookMarkValidator {
 	public void validate(AddBookMarRequest request) {
-		validateBookMarkFeedSeq(request.bookMarkFeedSeq());
+		validateBookMarkFeedSeq(request.feedSeq());
 		validateMemberSeq(request.memberSeq());
 	}
 
-	private void validateBookMarkFeedSeq(Long bookMarkFeedSeq) {
-		if (bookMarkFeedSeq == null) {
+	private void validateBookMarkFeedSeq(Long feedSeq) {
+		if (feedSeq == null) {
 			throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 		}
 	}
