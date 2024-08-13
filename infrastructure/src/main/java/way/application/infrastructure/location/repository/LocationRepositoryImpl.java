@@ -29,14 +29,15 @@ public class LocationRepositoryImpl implements LocationRepository {
 		MemberEntity memberEntity,
 		List<Long> locationSeqs
 	) {
-		List<Long> locationSeqsByMemberEntity = locationJpaRepository.findLocationSeqsByMemberEntity(memberEntity);
-		List<Long> locationSeqsByLocationSeqs = locationJpaRepository.findLocationSeqsByLocationSeqs(locationSeqs);
+		QLocationEntity location = QLocationEntity.locationEntity;
 
-		if (locationSeqsByMemberEntity.size() != locationSeqsByLocationSeqs.size()) {
-			throw new BadRequestException(ErrorResult.LOCATION_SEQ_BAD_REQUEST_EXCEPTION);
-		}
-
-		return locationJpaRepository.findAllByMemberEntityAndLocationSeqs(memberEntity, locationSeqs);
+		return queryFactory
+			.selectFrom(location)
+			.where(
+				location.memberEntity.eq(memberEntity)
+					.and(location.locationSeq.in(locationSeqs))
+			)
+			.fetch();
 	}
 
 	@Override
