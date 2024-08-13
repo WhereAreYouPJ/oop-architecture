@@ -202,7 +202,7 @@ public class FeedController {
 			description = "페이지당 항목 수 (기본값: 10)",
 			example = "10")
 	})
-	public ResponseEntity<BaseResponse> getAllFeed(
+	public ResponseEntity<BaseResponse<Page<GetAllFeedResponseDto>>> getAllFeed(
 		@Valid
 		@RequestParam(value = "memberSeq") Long memberSeq,
 		@RequestParam(value = "page", defaultValue = "0") int page,
