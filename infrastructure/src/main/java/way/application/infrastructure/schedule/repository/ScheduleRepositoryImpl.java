@@ -86,4 +86,9 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 			scheduleMemberEntityPage.getTotalElements()
 		);
 	}
+
+	@Override
+	public void deleteScheduleEntity(ScheduleEntity scheduleEntity) {
+		scheduleJpaRepository.delete(scheduleEntity);
+	}
 }
