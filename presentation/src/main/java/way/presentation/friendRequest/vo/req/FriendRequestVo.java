@@ -10,14 +10,12 @@ public class FriendRequestVo {
             // 친추 보낼 아이디
             Long memberSeq,
             // 친추 보낸 아이디
-            Long friendSeq,
-            LocalDateTime localDateTime
+            Long friendSeq
     ) {
         public FriendRequestDto.SaveFriendRequestDto toSaveFriendRequestDto() {
             return new FriendRequestDto.SaveFriendRequestDto(
                     this.memberSeq,
-                    this.friendSeq,
-                    this.localDateTime
+                    this.friendSeq
             );
         }
     }
