@@ -18,7 +18,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import way.application.domain.firebase.vo.FcmMessageVo;
-import way.application.infrastructure.member.entity.MemberEntity;
+import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.utils.exception.ErrorResult;
 import way.application.utils.exception.ServerException;
 

@@ -4,7 +4,7 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import way.application.infrastructure.member.entity.MemberEntity;
+import way.application.infrastructure.jpa.member.entity.MemberEntity;
 
 import static way.application.service.member.dto.request.MemberRequestDto.*;
 
