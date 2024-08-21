@@ -1,0 +1,240 @@
+2024-08-19 10:51:08.985111+00:00 [notice] <0.254.0> Logging: configured log handlers are now ACTIVE
+2024-08-19 10:51:09.006338+00:00 [info] <0.254.0> ra: starting system quorum_queues
+2024-08-19 10:51:09.006447+00:00 [info] <0.254.0> starting Ra system: quorum_queues in directory: /var/lib/rabbitmq/mnesia/rabbit@5030d707b14b/quorum/rabbit@5030d707b14b
+2024-08-19 10:51:09.191140+00:00 [info] <0.269.0> ra system 'quorum_queues' running pre init for 0 registered servers
+2024-08-19 10:51:09.221259+00:00 [info] <0.270.0> ra: meta data store initialised for system quorum_queues. 0 record(s) recovered
+2024-08-19 10:51:09.252426+00:00 [notice] <0.275.0> WAL: ra_log_wal init, open tbls: ra_log_open_mem_tables, closed tbls: ra_log_closed_mem_tables
+2024-08-19 10:51:09.315163+00:00 [info] <0.254.0> ra: starting system coordination
+2024-08-19 10:51:09.315262+00:00 [info] <0.254.0> starting Ra system: coordination in directory: /var/lib/rabbitmq/mnesia/rabbit@5030d707b14b/coordination/rabbit@5030d707b14b
+2024-08-19 10:51:09.350148+00:00 [info] <0.283.0> ra system 'coordination' running pre init for 0 registered servers
+2024-08-19 10:51:09.361875+00:00 [info] <0.284.0> ra: meta data store initialised for system coordination. 0 record(s) recovered
+2024-08-19 10:51:09.362191+00:00 [notice] <0.289.0> WAL: ra_coordination_log_wal init, open tbls: ra_coordination_log_open_mem_tables, closed tbls: ra_coordination_log_closed_mem_tables
+2024-08-19 10:51:09.387951+00:00 [info] <0.254.0> ra: starting system coordination
+2024-08-19 10:51:09.388023+00:00 [info] <0.254.0> starting Ra system: coordination in directory: /var/lib/rabbitmq/mnesia/rabbit@5030d707b14b/coordination/rabbit@5030d707b14b
+2024-08-19 10:51:09.640191+00:00 [info] <0.254.0> Waiting for Khepri leader for 30000 ms, 9 retries left
+2024-08-19 10:51:09.653461+00:00 [notice] <0.293.0> RabbitMQ metadata store: candidate -> leader in term: 1 machine version: 1
+2024-08-19 10:51:09.673509+00:00 [info] <0.254.0> Khepri leader elected
+2024-08-19 10:51:10.274509+00:00 [info] <0.254.0> 
+2024-08-19 10:51:10.274509+00:00 [info] <0.254.0>  Starting RabbitMQ 3.13.6 on Erlang 26.2.5.2 [jit]
+2024-08-19 10:51:10.274509+00:00 [info] <0.254.0>  Copyright (c) 2007-2024 Broadcom Inc and/or its subsidiaries
+2024-08-19 10:51:10.274509+00:00 [info] <0.254.0>  Licensed under the MPL 2.0. Website: https://rabbitmq.com
+2024-08-19 10:51:10.277635+00:00 [info] <0.254.0> 
+2024-08-19 10:51:10.277635+00:00 [info] <0.254.0>  node           : rabbit@5030d707b14b
+2024-08-19 10:51:10.277635+00:00 [info] <0.254.0>  home dir       : /var/lib/rabbitmq
+2024-08-19 10:51:10.277635+00:00 [info] <0.254.0>  config file(s) : (none)
+2024-08-19 10:51:10.277635+00:00 [info] <0.254.0>  cookie hash    : 1V1J/ertw5CTEa7mlizq4w==
+2024-08-19 10:51:10.277635+00:00 [info] <0.254.0>  log(s)         : /var/log/rabbitmq/rabbit@5030d707b14b.log
+2024-08-19 10:51:10.277635+00:00 [info] <0.254.0>                 : <stdout>
+2024-08-19 10:51:10.277635+00:00 [info] <0.254.0>  data dir       : /var/lib/rabbitmq/mnesia/rabbit@5030d707b14b
+2024-08-19 10:51:10.437906+00:00 [info] <0.254.0> Running boot step pre_boot defined by app rabbit
+2024-08-19 10:51:10.438030+00:00 [info] <0.254.0> Running boot step rabbit_global_counters defined by app rabbit
+2024-08-19 10:51:10.439221+00:00 [info] <0.254.0> Running boot step rabbit_osiris_metrics defined by app rabbit
+2024-08-19 10:51:10.439454+00:00 [info] <0.254.0> Running boot step rabbit_core_metrics defined by app rabbit
+2024-08-19 10:51:10.440949+00:00 [info] <0.254.0> Running boot step rabbit_alarm defined by app rabbit
+2024-08-19 10:51:10.464415+00:00 [info] <0.329.0> Memory high watermark set to 3142 MiB (3295526912 bytes) of 7857 MiB (8238817280 bytes) total
+2024-08-19 10:51:10.471953+00:00 [info] <0.331.0> Enabling free disk space monitoring (disk free space: 323805052928, total memory: 8238817280)
+2024-08-19 10:51:10.472031+00:00 [info] <0.331.0> Disk free limit set to 50MB
+2024-08-19 10:51:10.476319+00:00 [info] <0.254.0> Running boot step code_server_cache defined by app rabbit
+2024-08-19 10:51:10.476508+00:00 [info] <0.254.0> Running boot step file_handle_cache defined by app rabbit
+2024-08-19 10:51:10.494232+00:00 [info] <0.334.0> Limiting to approx 1048479 file handles (943629 sockets)
+2024-08-19 10:51:10.494497+00:00 [info] <0.335.0> FHC read buffering: OFF
+2024-08-19 10:51:10.494530+00:00 [info] <0.335.0> FHC write buffering: ON
+2024-08-19 10:51:10.495341+00:00 [info] <0.254.0> Running boot step worker_pool defined by app rabbit
+2024-08-19 10:51:10.495407+00:00 [info] <0.316.0> Will use 12 processes for default worker pool
+2024-08-19 10:51:10.495429+00:00 [info] <0.316.0> Starting worker pool 'worker_pool' with 12 processes in it
+2024-08-19 10:51:10.495941+00:00 [info] <0.254.0> Running boot step database defined by app rabbit
+2024-08-19 10:51:10.499379+00:00 [info] <0.254.0> Peer discovery: configured backend: rabbit_peer_discovery_classic_config
+2024-08-19 10:51:10.515494+00:00 [notice] <0.317.0> Feature flags: attempt to enable `quorum_queue_non_voters`...
+2024-08-19 10:51:10.639564+00:00 [notice] <0.317.0> Feature flags: `quorum_queue_non_voters` enabled
+2024-08-19 10:51:10.639719+00:00 [notice] <0.317.0> Feature flags: attempt to enable `stream_update_config_command`...
+2024-08-19 10:51:10.740117+00:00 [notice] <0.317.0> Feature flags: `stream_update_config_command` enabled
+2024-08-19 10:51:10.740242+00:00 [notice] <0.317.0> Feature flags: attempt to enable `stream_filtering`...
+2024-08-19 10:51:10.827222+00:00 [notice] <0.317.0> Feature flags: `stream_filtering` enabled
+2024-08-19 10:51:10.827661+00:00 [notice] <0.317.0> Feature flags: attempt to enable `stream_sac_coordinator_unblock_group`...
+2024-08-19 10:51:10.920438+00:00 [notice] <0.317.0> Feature flags: `stream_sac_coordinator_unblock_group` enabled
+2024-08-19 10:51:10.920553+00:00 [notice] <0.317.0> Feature flags: attempt to enable `restart_streams`...
+2024-08-19 10:51:11.014007+00:00 [notice] <0.317.0> Feature flags: `restart_streams` enabled
+2024-08-19 10:51:11.014292+00:00 [notice] <0.317.0> Feature flags: attempt to enable `message_containers`...
+2024-08-19 10:51:11.102067+00:00 [notice] <0.317.0> Feature flags: `message_containers` enabled
+2024-08-19 10:51:11.102372+00:00 [notice] <0.317.0> Feature flags: attempt to enable `message_containers_deaths_v2`...
+2024-08-19 10:51:11.203009+00:00 [notice] <0.317.0> Feature flags: `message_containers_deaths_v2` enabled
+2024-08-19 10:51:11.203685+00:00 [info] <0.254.0> DB: virgin node -> run peer discovery
+2024-08-19 10:51:11.240976+00:00 [notice] <0.44.0> Application mnesia exited with reason: stopped
+2024-08-19 10:51:12.300499+00:00 [info] <0.254.0> Waiting for Mnesia tables for 30000 ms, 9 retries left
+2024-08-19 10:51:12.300841+00:00 [info] <0.254.0> Successfully synced tables from a peer
+2024-08-19 10:51:12.300976+00:00 [info] <0.254.0> Waiting for Mnesia tables for 30000 ms, 9 retries left
+2024-08-19 10:51:12.301171+00:00 [info] <0.254.0> Successfully synced tables from a peer
+2024-08-19 10:51:12.335828+00:00 [info] <0.254.0> Waiting for Mnesia tables for 30000 ms, 9 retries left
+2024-08-19 10:51:12.336139+00:00 [info] <0.254.0> Successfully synced tables from a peer
+2024-08-19 10:51:12.336408+00:00 [info] <0.254.0> Running boot step tracking_metadata_store defined by app rabbit
+2024-08-19 10:51:12.336855+00:00 [info] <0.559.0> Setting up a table for connection tracking on this node: tracked_connection
+2024-08-19 10:51:12.336961+00:00 [info] <0.559.0> Setting up a table for per-vhost connection counting on this node: tracked_connection_per_vhost
+2024-08-19 10:51:12.337361+00:00 [info] <0.559.0> Setting up a table for per-user connection counting on this node: tracked_connection_per_user
+2024-08-19 10:51:12.337709+00:00 [info] <0.559.0> Setting up a table for channel tracking on this node: tracked_channel
+2024-08-19 10:51:12.337858+00:00 [info] <0.559.0> Setting up a table for channel tracking on this node: tracked_channel_per_user
+2024-08-19 10:51:12.337994+00:00 [info] <0.254.0> Running boot step networking_metadata_store defined by app rabbit
+2024-08-19 10:51:12.338088+00:00 [info] <0.254.0> Running boot step feature_flags defined by app rabbit
+2024-08-19 10:51:12.341116+00:00 [info] <0.254.0> Running boot step codec_correctness_check defined by app rabbit
+2024-08-19 10:51:12.341218+00:00 [info] <0.254.0> Running boot step external_infrastructure defined by app rabbit
+2024-08-19 10:51:12.341305+00:00 [info] <0.254.0> Running boot step rabbit_event defined by app rabbit
+2024-08-19 10:51:12.341438+00:00 [info] <0.254.0> Running boot step rabbit_registry defined by app rabbit
+2024-08-19 10:51:12.341501+00:00 [info] <0.254.0> Running boot step rabbit_auth_mechanism_amqplain defined by app rabbit
+2024-08-19 10:51:12.341565+00:00 [info] <0.254.0> Running boot step rabbit_auth_mechanism_cr_demo defined by app rabbit
+2024-08-19 10:51:12.341598+00:00 [info] <0.254.0> Running boot step rabbit_auth_mechanism_plain defined by app rabbit
+2024-08-19 10:51:12.341623+00:00 [info] <0.254.0> Running boot step rabbit_exchange_type_direct defined by app rabbit
+2024-08-19 10:51:12.341659+00:00 [info] <0.254.0> Running boot step rabbit_exchange_type_fanout defined by app rabbit
+2024-08-19 10:51:12.341685+00:00 [info] <0.254.0> Running boot step rabbit_exchange_type_headers defined by app rabbit
+2024-08-19 10:51:12.341749+00:00 [info] <0.254.0> Running boot step rabbit_exchange_type_topic defined by app rabbit
+2024-08-19 10:51:12.341813+00:00 [info] <0.254.0> Running boot step rabbit_mirror_queue_mode_all defined by app rabbit
+2024-08-19 10:51:12.341964+00:00 [info] <0.254.0> Running boot step rabbit_mirror_queue_mode_exactly defined by app rabbit
+2024-08-19 10:51:12.342074+00:00 [info] <0.254.0> Running boot step rabbit_mirror_queue_mode_nodes defined by app rabbit
+2024-08-19 10:51:12.342176+00:00 [info] <0.254.0> Running boot step rabbit_priority_queue defined by app rabbit
+2024-08-19 10:51:12.342211+00:00 [info] <0.254.0> Priority queues enabled, real BQ is rabbit_variable_queue
+2024-08-19 10:51:12.342335+00:00 [info] <0.254.0> Running boot step rabbit_queue_location_client_local defined by app rabbit
+2024-08-19 10:51:12.342480+00:00 [info] <0.254.0> Running boot step rabbit_queue_location_min_masters defined by app rabbit
+2024-08-19 10:51:12.342651+00:00 [info] <0.254.0> Running boot step rabbit_queue_location_random defined by app rabbit
+2024-08-19 10:51:12.342830+00:00 [info] <0.254.0> Running boot step kernel_ready defined by app rabbit
+2024-08-19 10:51:12.342864+00:00 [info] <0.254.0> Running boot step rabbit_sysmon_minder defined by app rabbit
+2024-08-19 10:51:12.343277+00:00 [info] <0.254.0> Running boot step rabbit_epmd_monitor defined by app rabbit
+2024-08-19 10:51:12.345258+00:00 [info] <0.567.0> epmd monitor knows us, inter-node communication (distribution) port: 25672
+2024-08-19 10:51:12.345618+00:00 [info] <0.254.0> Running boot step guid_generator defined by app rabbit
+2024-08-19 10:51:12.358245+00:00 [info] <0.254.0> Running boot step rabbit_node_monitor defined by app rabbit
+2024-08-19 10:51:12.358609+00:00 [info] <0.571.0> Starting rabbit_node_monitor (in ignore mode)
+2024-08-19 10:51:12.358814+00:00 [info] <0.254.0> Running boot step delegate_sup defined by app rabbit
+2024-08-19 10:51:12.359888+00:00 [info] <0.254.0> Running boot step rabbit_memory_monitor defined by app rabbit
+2024-08-19 10:51:12.360519+00:00 [info] <0.254.0> Running boot step rabbit_fifo_dlx_sup defined by app rabbit
+2024-08-19 10:51:12.360721+00:00 [info] <0.254.0> Running boot step core_initialized defined by app rabbit
+2024-08-19 10:51:12.360982+00:00 [info] <0.254.0> Running boot step rabbit_channel_tracking_handler defined by app rabbit
+2024-08-19 10:51:12.361125+00:00 [info] <0.254.0> Running boot step rabbit_connection_tracking_handler defined by app rabbit
+2024-08-19 10:51:12.361360+00:00 [info] <0.254.0> Running boot step rabbit_definitions_hashing defined by app rabbit
+2024-08-19 10:51:12.361455+00:00 [info] <0.254.0> Running boot step rabbit_exchange_parameters defined by app rabbit
+2024-08-19 10:51:12.428560+00:00 [info] <0.254.0> Running boot step rabbit_mirror_queue_misc defined by app rabbit
+2024-08-19 10:51:12.429948+00:00 [info] <0.254.0> Running boot step rabbit_policies defined by app rabbit
+2024-08-19 10:51:12.430993+00:00 [info] <0.254.0> Running boot step rabbit_policy defined by app rabbit
+2024-08-19 10:51:12.431191+00:00 [info] <0.254.0> Running boot step rabbit_queue_location_validator defined by app rabbit
+2024-08-19 10:51:12.431411+00:00 [info] <0.254.0> Running boot step rabbit_quorum_memory_manager defined by app rabbit
+2024-08-19 10:51:12.431620+00:00 [info] <0.254.0> Running boot step rabbit_quorum_queue defined by app rabbit
+2024-08-19 10:51:12.431802+00:00 [info] <0.254.0> Running boot step rabbit_stream_coordinator defined by app rabbit
+2024-08-19 10:51:12.432539+00:00 [info] <0.254.0> Running boot step rabbit_vhost_limit defined by app rabbit
+2024-08-19 10:51:12.432787+00:00 [info] <0.254.0> Running boot step recovery defined by app rabbit
+2024-08-19 10:51:12.460519+00:00 [info] <0.254.0> Running boot step empty_db_check defined by app rabbit
+2024-08-19 10:51:12.460610+00:00 [info] <0.254.0> Will seed default virtual host and user...
+2024-08-19 10:51:12.460833+00:00 [info] <0.254.0> Adding vhost '/' (description: 'Default virtual host', tags: [])
+2024-08-19 10:51:12.479976+00:00 [info] <0.614.0> Making sure data directory '/var/lib/rabbitmq/mnesia/rabbit@5030d707b14b/msg_stores/vhosts/628WB79CIFDYO9LJI6DKMI09L' for vhost '/' exists
+2024-08-19 10:51:12.504721+00:00 [info] <0.614.0> Setting segment_entry_count for vhost '/' with 0 queues to '2048'
+2024-08-19 10:51:12.567608+00:00 [info] <0.614.0> Starting message stores for vhost '/'
+2024-08-19 10:51:12.590051+00:00 [info] <0.624.0> Message store "628WB79CIFDYO9LJI6DKMI09L/msg_store_transient": using rabbit_msg_store_ets_index to provide index
+2024-08-19 10:51:12.606578+00:00 [info] <0.614.0> Started message store of type transient for vhost '/'
+2024-08-19 10:51:12.607226+00:00 [info] <0.628.0> Message store "628WB79CIFDYO9LJI6DKMI09L/msg_store_persistent": using rabbit_msg_store_ets_index to provide index
+2024-08-19 10:51:12.614372+00:00 [warning] <0.628.0> Message store "628WB79CIFDYO9LJI6DKMI09L/msg_store_persistent": rebuilding indices from scratch
+2024-08-19 10:51:12.629857+00:00 [info] <0.614.0> Started message store of type persistent for vhost '/'
+2024-08-19 10:51:12.630399+00:00 [info] <0.614.0> Recovering 0 queues of type rabbit_classic_queue took 116ms
+2024-08-19 10:51:12.630693+00:00 [info] <0.614.0> Recovering 0 queues of type rabbit_quorum_queue took 0ms
+2024-08-19 10:51:12.630812+00:00 [info] <0.614.0> Recovering 0 queues of type rabbit_stream_queue took 0ms
+2024-08-19 10:51:12.639783+00:00 [info] <0.254.0> Created user 'guest'
+2024-08-19 10:51:12.642208+00:00 [info] <0.254.0> Successfully set user tags for user 'guest' to [administrator]
+2024-08-19 10:51:12.644576+00:00 [info] <0.254.0> Successfully set permissions for user 'guest' in virtual host '/' to '.*', '.*', '.*'
+2024-08-19 10:51:12.644728+00:00 [info] <0.254.0> Running boot step rabbit_observer_cli defined by app rabbit
+2024-08-19 10:51:12.644976+00:00 [info] <0.254.0> Running boot step rabbit_looking_glass defined by app rabbit
+2024-08-19 10:51:12.645058+00:00 [info] <0.254.0> Running boot step rabbit_core_metrics_gc defined by app rabbit
+2024-08-19 10:51:12.645574+00:00 [info] <0.254.0> Running boot step background_gc defined by app rabbit
+2024-08-19 10:51:12.645773+00:00 [info] <0.254.0> Running boot step routing_ready defined by app rabbit
+2024-08-19 10:51:12.645803+00:00 [info] <0.254.0> Running boot step pre_flight defined by app rabbit
+2024-08-19 10:51:12.645833+00:00 [info] <0.254.0> Running boot step notify_cluster defined by app rabbit
+2024-08-19 10:51:12.645864+00:00 [info] <0.254.0> Running boot step networking defined by app rabbit
+2024-08-19 10:51:12.645892+00:00 [info] <0.254.0> Running boot step rabbit_quorum_queue_periodic_membership_reconciliation defined by app rabbit
+2024-08-19 10:51:12.646075+00:00 [info] <0.254.0> Running boot step definition_import_worker_pool defined by app rabbit
+2024-08-19 10:51:12.646113+00:00 [info] <0.316.0> Starting worker pool 'definition_import_pool' with 12 processes in it
+2024-08-19 10:51:12.647580+00:00 [info] <0.254.0> Running boot step cluster_name defined by app rabbit
+2024-08-19 10:51:12.647827+00:00 [info] <0.254.0> Initialising internal cluster ID to 'rabbitmq-cluster-id-hpUtVyYhjUBCv4VhW1nu_g'
+2024-08-19 10:51:12.650467+00:00 [info] <0.254.0> Running boot step virtual_host_reconciliation defined by app rabbit
+2024-08-19 10:51:12.651132+00:00 [info] <0.254.0> Running boot step direct_client defined by app rabbit
+2024-08-19 10:51:12.651748+00:00 [info] <0.673.0> Resetting node maintenance status
+2024-08-19 10:51:12.652016+00:00 [info] <0.673.0> Ready to start client connection listeners
+2024-08-19 10:51:12.727785+00:00 [info] <0.691.0> started TCP listener on [::]:5672
+2024-08-19 10:51:12.972133+00:00 [info] <0.673.0> Server startup complete; 0 plugins started.
+2024-08-19 10:51:13.053937+00:00 [info] <0.9.0> Time to start RabbitMQ: 10515 ms
+2024-08-19 10:53:56.935890+00:00 [info] <0.722.0> accepting AMQP connection <0.722.0> (172.23.0.1:55014 -> 172.23.0.4:5672)
+2024-08-19 10:53:57.158708+00:00 [info] <0.722.0> connection <0.722.0> (172.23.0.1:55014 -> 172.23.0.4:5672) has a client-provided name: connectionFactory#222f6971:0
+2024-08-19 10:53:57.161321+00:00 [error] <0.722.0> Error on AMQP connection <0.722.0> (172.23.0.1:55014 -> 172.23.0.4:5672, state: starting):
+2024-08-19 10:53:57.161321+00:00 [error] <0.722.0> PLAIN login refused: user 'guest' can only connect via localhost
+2024-08-19 10:53:57.164427+00:00 [info] <0.722.0> closing AMQP connection <0.722.0> (172.23.0.1:55014 -> 172.23.0.4:5672 - connectionFactory#222f6971:0)
+2024-08-19 10:53:57.178075+00:00 [info] <0.728.0> accepting AMQP connection <0.728.0> (172.23.0.1:55030 -> 172.23.0.4:5672)
+2024-08-19 10:53:57.183419+00:00 [info] <0.728.0> connection <0.728.0> (172.23.0.1:55030 -> 172.23.0.4:5672) has a client-provided name: connectionFactory#222f6971:0
+2024-08-19 10:53:57.183839+00:00 [error] <0.728.0> Error on AMQP connection <0.728.0> (172.23.0.1:55030 -> 172.23.0.4:5672, state: starting):
+2024-08-19 10:53:57.183839+00:00 [error] <0.728.0> PLAIN login refused: user 'guest' can only connect via localhost
+2024-08-19 10:53:57.188096+00:00 [info] <0.728.0> closing AMQP connection <0.728.0> (172.23.0.1:55030 -> 172.23.0.4:5672 - connectionFactory#222f6971:0)
+2024-08-19 10:53:57.207782+00:00 [info] <0.733.0> accepting AMQP connection <0.733.0> (172.23.0.1:55046 -> 172.23.0.4:5672)
+2024-08-19 10:53:57.212709+00:00 [info] <0.733.0> connection <0.733.0> (172.23.0.1:55046 -> 172.23.0.4:5672) has a client-provided name: connectionFactory#222f6971:1
+2024-08-19 10:53:57.212997+00:00 [error] <0.733.0> Error on AMQP connection <0.733.0> (172.23.0.1:55046 -> 172.23.0.4:5672, state: starting):
+2024-08-19 10:53:57.212997+00:00 [error] <0.733.0> PLAIN login refused: user 'guest' can only connect via localhost
+2024-08-19 10:53:57.215962+00:00 [info] <0.733.0> closing AMQP connection <0.733.0> (172.23.0.1:55046 -> 172.23.0.4:5672 - connectionFactory#222f6971:1)
+2024-08-19 10:53:57.220832+00:00 [info] <0.738.0> accepting AMQP connection <0.738.0> (172.23.0.1:55054 -> 172.23.0.4:5672)
+2024-08-19 10:53:57.224350+00:00 [info] <0.738.0> connection <0.738.0> (172.23.0.1:55054 -> 172.23.0.4:5672) has a client-provided name: connectionFactory#222f6971:1
+2024-08-19 10:53:57.224861+00:00 [error] <0.738.0> Error on AMQP connection <0.738.0> (172.23.0.1:55054 -> 172.23.0.4:5672, state: starting):
+2024-08-19 10:53:57.224861+00:00 [error] <0.738.0> PLAIN login refused: user 'guest' can only connect via localhost
+2024-08-19 10:53:57.226080+00:00 [info] <0.738.0> closing AMQP connection <0.738.0> (172.23.0.1:55054 -> 172.23.0.4:5672 - connectionFactory#222f6971:1)
+2024-08-19 10:53:57.246611+00:00 [info] <0.743.0> accepting AMQP connection <0.743.0> (172.23.0.1:55066 -> 172.23.0.4:5672)
+2024-08-19 10:53:57.249868+00:00 [info] <0.743.0> connection <0.743.0> (172.23.0.1:55066 -> 172.23.0.4:5672) has a client-provided name: connectionFactory#222f6971:2
+2024-08-19 10:53:57.250246+00:00 [error] <0.743.0> Error on AMQP connection <0.743.0> (172.23.0.1:55066 -> 172.23.0.4:5672, state: starting):
+2024-08-19 10:53:57.250246+00:00 [error] <0.743.0> PLAIN login refused: user 'guest' can only connect via localhost
+2024-08-19 10:53:57.251808+00:00 [info] <0.743.0> closing AMQP connection <0.743.0> (172.23.0.1:55066 -> 172.23.0.4:5672 - connectionFactory#222f6971:2)
+2024-08-19 10:53:57.257918+00:00 [info] <0.748.0> accepting AMQP connection <0.748.0> (172.23.0.1:55070 -> 172.23.0.4:5672)
+2024-08-19 10:53:57.260934+00:00 [info] <0.748.0> connection <0.748.0> (172.23.0.1:55070 -> 172.23.0.4:5672) has a client-provided name: connectionFactory#222f6971:2
+2024-08-19 10:53:57.261208+00:00 [error] <0.748.0> Error on AMQP connection <0.748.0> (172.23.0.1:55070 -> 172.23.0.4:5672, state: starting):
+2024-08-19 10:53:57.261208+00:00 [error] <0.748.0> PLAIN login refused: user 'guest' can only connect via localhost
+2024-08-19 10:53:57.262334+00:00 [info] <0.748.0> closing AMQP connection <0.748.0> (172.23.0.1:55070 -> 172.23.0.4:5672 - connectionFactory#222f6971:2)
+2024-08-19 10:55:47.841482+00:00 [info] <0.763.0> accepting AMQP connection <0.763.0> (172.23.0.1:38772 -> 172.23.0.4:5672)
+2024-08-19 10:55:47.842296+00:00 [error] <0.763.0> closing AMQP connection <0.763.0> (172.23.0.1:38772 -> 172.23.0.4:5672):
+2024-08-19 10:55:47.842296+00:00 [error] <0.763.0> {bad_header,<<"GET / HT">>}
+2024-08-19 10:55:49.067383+00:00 [info] <0.768.0> accepting AMQP connection <0.768.0> (172.23.0.1:38768 -> 172.23.0.4:5672)
+2024-08-19 10:55:49.067619+00:00 [error] <0.768.0> closing AMQP connection <0.768.0> (172.23.0.1:38768 -> 172.23.0.4:5672):
+2024-08-19 10:55:49.067619+00:00 [error] <0.768.0> {bad_header,<<"GET / HT">>}
+2024-08-19 10:55:54.110855+00:00 [info] <0.773.0> accepting AMQP connection <0.773.0> (172.23.0.1:37296 -> 172.23.0.4:5672)
+2024-08-19 10:55:54.111087+00:00 [error] <0.773.0> closing AMQP connection <0.773.0> (172.23.0.1:37296 -> 172.23.0.4:5672):
+2024-08-19 10:55:54.111087+00:00 [error] <0.773.0> {bad_header,<<"GET / HT">>}
+2024-08-19 10:59:12.382036+00:00 [info] <0.800.0> accepting AMQP connection <0.800.0> (172.23.0.1:42076 -> 172.23.0.4:5672)
+2024-08-19 10:59:12.385608+00:00 [error] <0.800.0> closing AMQP connection <0.800.0> (172.23.0.1:42076 -> 172.23.0.4:5672):
+2024-08-19 10:59:12.385608+00:00 [error] <0.800.0> {bad_header,<<"GET / HT">>}
+2024-08-19 10:59:13.447633+00:00 [info] <0.797.0> accepting AMQP connection <0.797.0> (172.23.0.1:42084 -> 172.23.0.4:5672)
+2024-08-19 10:59:13.448005+00:00 [error] <0.797.0> closing AMQP connection <0.797.0> (172.23.0.1:42084 -> 172.23.0.4:5672):
+2024-08-19 10:59:13.448005+00:00 [error] <0.797.0> {bad_header,<<"GET / HT">>}
+2024-08-19 11:01:49.335905+00:00 [info] <0.821.0> accepting AMQP connection <0.821.0> (172.23.0.1:58392 -> 172.23.0.4:5672)
+2024-08-19 11:01:49.538506+00:00 [info] <0.821.0> connection <0.821.0> (172.23.0.1:58392 -> 172.23.0.4:5672) has a client-provided name: connectionFactory#2dcce2a5:0
+2024-08-19 11:01:49.552695+00:00 [error] <0.821.0> Error on AMQP connection <0.821.0> (172.23.0.1:58392 -> 172.23.0.4:5672, state: starting):
+2024-08-19 11:01:49.552695+00:00 [error] <0.821.0> PLAIN login refused: user 'guest' can only connect via localhost
+2024-08-19 11:01:49.557700+00:00 [info] <0.821.0> closing AMQP connection <0.821.0> (172.23.0.1:58392 -> 172.23.0.4:5672 - connectionFactory#2dcce2a5:0)
+2024-08-19 11:01:49.608355+00:00 [info] <0.826.0> accepting AMQP connection <0.826.0> (172.23.0.1:58402 -> 172.23.0.4:5672)
+2024-08-19 11:01:49.616038+00:00 [info] <0.826.0> connection <0.826.0> (172.23.0.1:58402 -> 172.23.0.4:5672) has a client-provided name: connectionFactory#2dcce2a5:0
+2024-08-19 11:01:49.616702+00:00 [error] <0.826.0> Error on AMQP connection <0.826.0> (172.23.0.1:58402 -> 172.23.0.4:5672, state: starting):
+2024-08-19 11:01:49.616702+00:00 [error] <0.826.0> PLAIN login refused: user 'guest' can only connect via localhost
+2024-08-19 11:01:49.620349+00:00 [info] <0.826.0> closing AMQP connection <0.826.0> (172.23.0.1:58402 -> 172.23.0.4:5672 - connectionFactory#2dcce2a5:0)
+2024-08-19 11:01:49.658156+00:00 [info] <0.831.0> accepting AMQP connection <0.831.0> (172.23.0.1:58410 -> 172.23.0.4:5672)
+2024-08-19 11:01:49.664912+00:00 [info] <0.831.0> connection <0.831.0> (172.23.0.1:58410 -> 172.23.0.4:5672) has a client-provided name: connectionFactory#2dcce2a5:1
+2024-08-19 11:01:49.665480+00:00 [error] <0.831.0> Error on AMQP connection <0.831.0> (172.23.0.1:58410 -> 172.23.0.4:5672, state: starting):
+2024-08-19 11:01:49.665480+00:00 [error] <0.831.0> PLAIN login refused: user 'guest' can only connect via localhost
+2024-08-19 11:01:49.669973+00:00 [info] <0.831.0> closing AMQP connection <0.831.0> (172.23.0.1:58410 -> 172.23.0.4:5672 - connectionFactory#2dcce2a5:1)
+2024-08-19 11:01:49.680291+00:00 [info] <0.836.0> accepting AMQP connection <0.836.0> (172.23.0.1:58412 -> 172.23.0.4:5672)
+2024-08-19 11:01:49.684997+00:00 [info] <0.836.0> connection <0.836.0> (172.23.0.1:58412 -> 172.23.0.4:5672) has a client-provided name: connectionFactory#2dcce2a5:1
+2024-08-19 11:01:49.685320+00:00 [error] <0.836.0> Error on AMQP connection <0.836.0> (172.23.0.1:58412 -> 172.23.0.4:5672, state: starting):
+2024-08-19 11:01:49.685320+00:00 [error] <0.836.0> PLAIN login refused: user 'guest' can only connect via localhost
+2024-08-19 11:01:49.688349+00:00 [info] <0.836.0> closing AMQP connection <0.836.0> (172.23.0.1:58412 -> 172.23.0.4:5672 - connectionFactory#2dcce2a5:1)
+2024-08-19 11:01:49.724887+00:00 [info] <0.841.0> accepting AMQP connection <0.841.0> (172.23.0.1:58422 -> 172.23.0.4:5672)
+2024-08-19 11:01:49.729256+00:00 [info] <0.841.0> connection <0.841.0> (172.23.0.1:58422 -> 172.23.0.4:5672) has a client-provided name: connectionFactory#2dcce2a5:2
+2024-08-19 11:01:49.729617+00:00 [error] <0.841.0> Error on AMQP connection <0.841.0> (172.23.0.1:58422 -> 172.23.0.4:5672, state: starting):
+2024-08-19 11:01:49.729617+00:00 [error] <0.841.0> PLAIN login refused: user 'guest' can only connect via localhost
+2024-08-19 11:01:49.733288+00:00 [info] <0.841.0> closing AMQP connection <0.841.0> (172.23.0.1:58422 -> 172.23.0.4:5672 - connectionFactory#2dcce2a5:2)
+2024-08-19 11:01:49.741513+00:00 [info] <0.846.0> accepting AMQP connection <0.846.0> (172.23.0.1:58436 -> 172.23.0.4:5672)
+2024-08-19 11:01:49.744523+00:00 [info] <0.846.0> connection <0.846.0> (172.23.0.1:58436 -> 172.23.0.4:5672) has a client-provided name: connectionFactory#2dcce2a5:2
+2024-08-19 11:01:49.744766+00:00 [error] <0.846.0> Error on AMQP connection <0.846.0> (172.23.0.1:58436 -> 172.23.0.4:5672, state: starting):
+2024-08-19 11:01:49.744766+00:00 [error] <0.846.0> PLAIN login refused: user 'guest' can only connect via localhost
+2024-08-19 11:01:49.746447+00:00 [info] <0.846.0> closing AMQP connection <0.846.0> (172.23.0.1:58436 -> 172.23.0.4:5672 - connectionFactory#2dcce2a5:2)
+2024-08-19 11:02:45.067184+00:00 [notice] <0.64.0> SIGTERM received - shutting down
+2024-08-19 11:02:45.067184+00:00 [notice] <0.64.0> 
+2024-08-19 11:02:45.139638+00:00 [info] <0.691.0> stopped TCP listener on [::]:5672
+2024-08-19 11:02:45.165819+00:00 [info] <0.614.0> Virtual host '/' is stopping
+2024-08-19 11:02:45.168201+00:00 [info] <0.851.0> Closing all connections in vhost '/' on node 'rabbit@5030d707b14b' because the vhost is stopping
+2024-08-19 11:02:45.173211+00:00 [info] <0.628.0> Stopping message store for directory '/var/lib/rabbitmq/mnesia/rabbit@5030d707b14b/msg_stores/vhosts/628WB79CIFDYO9LJI6DKMI09L/msg_store_persistent'
+2024-08-19 11:02:45.269948+00:00 [info] <0.628.0> Message store for directory '/var/lib/rabbitmq/mnesia/rabbit@5030d707b14b/msg_stores/vhosts/628WB79CIFDYO9LJI6DKMI09L/msg_store_persistent' is stopped
+2024-08-19 11:02:45.270815+00:00 [info] <0.624.0> Stopping message store for directory '/var/lib/rabbitmq/mnesia/rabbit@5030d707b14b/msg_stores/vhosts/628WB79CIFDYO9LJI6DKMI09L/msg_store_transient'
+2024-08-19 11:02:45.346669+00:00 [info] <0.624.0> Message store for directory '/var/lib/rabbitmq/mnesia/rabbit@5030d707b14b/msg_stores/vhosts/628WB79CIFDYO9LJI6DKMI09L/msg_store_transient' is stopped
