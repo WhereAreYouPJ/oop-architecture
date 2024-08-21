@@ -12,16 +12,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import way.application.infrastructure.bookMark.repository.BookMarkRepository;
-import way.application.infrastructure.feed.entity.FeedEntity;
-import way.application.infrastructure.feed.repository.FeedRepository;
-import way.application.infrastructure.feedImage.entity.FeedImageEntity;
-import way.application.infrastructure.feedImage.repository.FeedImageRepository;
-import way.application.infrastructure.hideFeed.entity.HideFeedEntity;
-import way.application.infrastructure.hideFeed.repository.HideFeedRepository;
-import way.application.infrastructure.member.entity.MemberEntity;
-import way.application.infrastructure.member.repository.MemberRepository;
-import way.application.infrastructure.schedule.entity.ScheduleEntity;
+import way.application.infrastructure.jpa.bookMark.repository.BookMarkRepository;
+import way.application.infrastructure.jpa.feed.entity.FeedEntity;
+import way.application.infrastructure.jpa.feed.repository.FeedRepository;
+import way.application.infrastructure.jpa.feedImage.entity.FeedImageEntity;
+import way.application.infrastructure.jpa.feedImage.repository.FeedImageRepository;
+import way.application.infrastructure.jpa.hideFeed.entity.HideFeedEntity;
+import way.application.infrastructure.jpa.hideFeed.repository.HideFeedRepository;
+import way.application.infrastructure.jpa.member.entity.MemberEntity;
+import way.application.infrastructure.jpa.member.repository.MemberRepository;
+import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
 import way.application.service.hideFeed.mapper.HideFeedMapper;
 
 @Service

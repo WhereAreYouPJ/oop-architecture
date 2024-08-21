@@ -5,8 +5,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
-import way.application.infrastructure.feed.entity.FeedEntity;
-import way.application.infrastructure.feedImage.entity.FeedImageEntity;
+import way.application.infrastructure.jpa.feed.entity.FeedEntity;
+import way.application.infrastructure.jpa.feedImage.entity.FeedImageEntity;
 
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface FeedImageMapper {

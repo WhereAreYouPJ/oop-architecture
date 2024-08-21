@@ -4,8 +4,8 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
-import way.application.infrastructure.friendRequest.entity.FriendRequestEntity;
-import way.application.infrastructure.member.entity.MemberEntity;
+import way.application.infrastructure.jpa.friendRequest.entity.FriendRequestEntity;
+import way.application.infrastructure.jpa.member.entity.MemberEntity;
 
 import java.time.LocalDateTime;
 

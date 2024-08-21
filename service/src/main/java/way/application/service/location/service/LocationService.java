@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import way.application.infrastructure.location.entity.LocationEntity;
-import way.application.infrastructure.location.repository.LocationRepository;
-import way.application.infrastructure.member.entity.MemberEntity;
-import way.application.infrastructure.member.repository.MemberRepository;
+import way.application.infrastructure.jpa.location.entity.LocationEntity;
+import way.application.infrastructure.jpa.location.repository.LocationRepository;
+import way.application.infrastructure.jpa.member.entity.MemberEntity;
+import way.application.infrastructure.jpa.member.repository.MemberRepository;
 import way.application.service.location.mapper.LocationMapper;
 
 @Service

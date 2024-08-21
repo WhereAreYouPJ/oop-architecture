@@ -5,9 +5,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
-import way.application.infrastructure.bookMark.entity.BookMarkEntity;
-import way.application.infrastructure.feed.entity.FeedEntity;
-import way.application.infrastructure.member.entity.MemberEntity;
+import way.application.infrastructure.jpa.bookMark.entity.BookMarkEntity;
+import way.application.infrastructure.jpa.feed.entity.FeedEntity;
+import way.application.infrastructure.jpa.member.entity.MemberEntity;
 
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface BookMarkMapper {

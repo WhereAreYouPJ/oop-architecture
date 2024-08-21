@@ -23,6 +23,21 @@ services:
     networks:
       - docker-bridge
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_VHOST: /
+    ports:
+      - 5672:5672   # AMQP default port
+      - 15672:15672 # Management UI port
+      - 61613:61613 # STOMP protocol port
+    networks:
+      - docker-bridge
+
 networks:
   docker-bridge:
     driver: bridge

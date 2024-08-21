@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import way.application.infrastructure.friend.entity.FriendEntity;
-import way.application.infrastructure.member.entity.MemberEntity;
+import way.application.infrastructure.jpa.friend.entity.FriendEntity;
+import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.utils.exception.ErrorResult;
 import way.application.utils.exception.NotFoundRequestException;
 

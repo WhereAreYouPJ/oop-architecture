@@ -13,7 +13,7 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import way.application.infrastructure.member.entity.MemberEntity;
+import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.utils.exception.BadRequestException;
 import way.application.utils.exception.ErrorResult;
 

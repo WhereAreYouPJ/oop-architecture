@@ -126,6 +126,10 @@ jobs:
           sudo docker-compose -f docker-compose.yml down
           sudo docker-compose -f docker-compose.yml up -d
 
+      - name: Enable RabbitMQ STOMP Plugin
+        run: |
+          sudo docker exec rabbitmq rabbitmq-plugins enable rabbitmq_stomp
+
       - name: Run Docker
         run: |
           sudo docker ps -q --filter "name=way" | grep -q . && sudo docker stop "way" && sudo docker rmi -f "${{secrets.DOCKER_USERNAME}}/way"
