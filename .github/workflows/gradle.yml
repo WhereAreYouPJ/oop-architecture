@@ -126,6 +126,13 @@ jobs:
           sudo docker-compose -f docker-compose.yml down
           sudo docker-compose -f docker-compose.yml up -d
 
+      - name: Wait for RabbitMQ to be ready
+        run: |
+          until sudo docker exec rabbitmq rabbitmq-diagnostics status; do
+            echo "Waiting for RabbitMQ..."
+            sleep 5
+          done
+
       - name: Enable RabbitMQ STOMP Plugin
         run: |
           sudo docker exec rabbitmq rabbitmq-plugins enable rabbitmq_stomp
