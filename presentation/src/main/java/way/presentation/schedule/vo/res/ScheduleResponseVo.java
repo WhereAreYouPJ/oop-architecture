@@ -71,7 +71,10 @@ public class ScheduleResponseVo {
 		LocalDateTime startTime,
 
 		@Schema(description = "Schedule 끝나는 시간")
-		LocalDateTime endTime
+		LocalDateTime endTime,
+
+		@Schema(description = "그룹 여부")
+		boolean group
 	) {
 
 	}

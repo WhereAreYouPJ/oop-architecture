@@ -53,7 +53,9 @@ public class ScheduleResponseDto {
 
 		LocalDateTime startTime,
 
-		LocalDateTime endTime
+		LocalDateTime endTime,
+
+		boolean group
 	) {
 
 	}

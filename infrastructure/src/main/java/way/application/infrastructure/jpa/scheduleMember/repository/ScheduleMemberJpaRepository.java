@@ -11,4 +11,6 @@ public interface ScheduleMemberJpaRepository extends JpaRepository<ScheduleMembe
 
 	void deleteAllBySchedule(ScheduleEntity scheduleEntity);
 
+	long countBySchedule(ScheduleEntity scheduleEntity);
+
 }

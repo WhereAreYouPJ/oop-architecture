@@ -29,4 +29,6 @@ public interface ScheduleMemberRepository {
 	void deleteByScheduleEntity(ScheduleEntity scheduleEntity);
 
 	void deleteByScheduleEntityAndMemberEntity(ScheduleEntity scheduleEntity, MemberEntity memberEntity);
+
+	long countBySchedule(ScheduleEntity scheduleEntity);
 }

@@ -149,4 +149,10 @@ public class ScheduleMemberRepositoryImpl implements ScheduleMemberRepository {
 			)
 			.execute();
 	}
+
+	@Override
+	public long countBySchedule(ScheduleEntity scheduleEntity) {
+
+		return scheduleMemberJpaRepository.countBySchedule(scheduleEntity);
+	}
 }

@@ -242,15 +242,16 @@ public class ScheduleService {
 			getScheduleByDateRequestDto.memberSeq(), getScheduleByDateRequestDto.date()
 		);
 
-		return scheduleEntities.stream()
-			.map(scheduleEntity -> new GetScheduleByDateResponseDto(
-				scheduleEntity.getScheduleSeq(),
-				scheduleEntity.getTitle(),
-				scheduleEntity.getLocation(),
-				scheduleEntity.getColor(),
-				scheduleEntity.getStartTime(),
-				scheduleEntity.getEndTime()))
-			.collect(Collectors.toList());
+        return scheduleEntities.stream()
+				.map(scheduleEntity -> new GetScheduleByDateResponseDto(
+						scheduleEntity.getScheduleSeq(),
+						scheduleEntity.getTitle(),
+						scheduleEntity.getLocation(),
+						scheduleEntity.getColor(),
+						scheduleEntity.getStartTime(),
+						scheduleEntity.getEndTime(),
+                        scheduleMemberRepository.countBySchedule(scheduleEntity) > 1))
+				.collect(Collectors.toList());
 	}
 
 	@Transactional

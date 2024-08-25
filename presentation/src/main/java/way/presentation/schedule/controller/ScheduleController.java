@@ -400,7 +400,8 @@ public class ScheduleController {
 				dto.location(),
 				dto.color(),
 				dto.startTime(),
-				dto.endTime()))
+				dto.endTime(),
+				dto.group()	))
 			.collect(Collectors.toList());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
