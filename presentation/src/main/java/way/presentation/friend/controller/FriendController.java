@@ -89,7 +89,7 @@ public class FriendController {
     }
 
     @DeleteMapping(name = "친구 삭제")
-    @Operation(summary = "friend Request Refuse API", description = "친구 요청 거절 API")
+    @Operation(summary = "friend Request Refuse API", description = "친구 삭제 API")
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
