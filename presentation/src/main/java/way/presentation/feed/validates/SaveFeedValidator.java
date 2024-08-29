@@ -1,7 +1,6 @@
 package way.presentation.feed.validates;
 
 import static way.application.service.feed.dto.request.FeedRequestDto.*;
-import static way.application.service.feed.dto.request.FeedRequestDto.SaveFeedRequestDto.*;
 
 import java.util.List;
 
@@ -16,7 +15,7 @@ public class SaveFeedValidator {
 		validateScheduleSeq(request.scheduleSeq());
 		validateMemberSeq(request.memberSeq());
 		validateTitle(request.title());
-		validateImages(request.images());
+		validateFeedImageInfos(request.feedImageInfos());
 	}
 
 	private void validateScheduleSeq(Long scheduleSeq) {
@@ -37,7 +36,7 @@ public class SaveFeedValidator {
 		}
 	}
 
-	private void validateImages(List<ImageInfo> images) {
+	private void validateFeedImageInfos(List<feedImageInfo> images) {
 		if (images == null || images.isEmpty()) {
 			throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 		}

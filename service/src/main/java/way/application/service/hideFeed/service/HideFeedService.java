@@ -4,7 +4,6 @@ import static way.application.service.hideFeed.dto.request.HideFeedRequestDto.*;
 import static way.application.service.hideFeed.dto.response.HideFeedResponseDto.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import way.application.infrastructure.jpa.bookMark.repository.BookMarkRepository;
 import way.application.infrastructure.jpa.feed.entity.FeedEntity;
 import way.application.infrastructure.jpa.feed.repository.FeedRepository;
-import way.application.infrastructure.jpa.feedImage.entity.FeedImageEntity;
 import way.application.infrastructure.jpa.feedImage.repository.FeedImageRepository;
 import way.application.infrastructure.jpa.hideFeed.entity.HideFeedEntity;
 import way.application.infrastructure.jpa.hideFeed.repository.HideFeedRepository;
@@ -73,23 +71,27 @@ public class HideFeedService {
 	@Transactional(readOnly = true)
 	public Page<GetHideFeedResponseDto> getHideFeed(Long memberSeq, Pageable pageable) {
 		/*
-		 1. Member 확인
+		 1. Member 유효성 검사
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
-		// 2. HideFeedEntity 가져오기
+
+		// HideFeedEntity 가져오기
 		Page<HideFeedEntity> hideFeedEntityPage
 			= hideFeedRepository.findAllByMemberEntityOrderByScheduleStartTimeDesc(memberEntity, pageable);
 
-		// 3. HideFeedEntity를 GetHideFeedResponseDto로 변환
+		// HideFeedEntity를 GetHideFeedResponseDto로 변환
 		return hideFeedEntityPage.map(hideFeedEntity -> {
 			FeedEntity feedEntity = hideFeedEntity.getFeedEntity();
 			ScheduleEntity scheduleEntity = feedEntity.getSchedule();
 
-			// Feed 이미지 가져오기
-			List<String> feedImageUrl = feedImageRepository.findAllByFeedEntity(feedEntity)
-				.stream()
-				.map(FeedImageEntity::getFeedImageURL)
-				.collect(Collectors.toList());
+			// Feed 이미지 가져오기 및 ImageInfo로 변환
+			List<hideFeedImageInfo> imageInfos = feedImageRepository.findAllByFeedEntity(feedEntity).stream()
+				.map(feedImageEntity -> new hideFeedImageInfo(
+					feedImageEntity.getFeedImageSeq(),
+					feedImageEntity.getFeedImageURL(),
+					feedImageEntity.getFeedImageOrder()
+				))
+				.toList();
 
 			Boolean bookMark = bookMarkRepository.existsByFeedEntityAndMemberEntity(
 				feedEntity,
@@ -101,7 +103,7 @@ public class HideFeedService {
 				scheduleEntity.getStartTime(),
 				scheduleEntity.getLocation(),
 				feedEntity.getTitle(),
-				feedImageUrl,
+				imageInfos,
 				feedEntity.getContent(),
 				bookMark
 			);

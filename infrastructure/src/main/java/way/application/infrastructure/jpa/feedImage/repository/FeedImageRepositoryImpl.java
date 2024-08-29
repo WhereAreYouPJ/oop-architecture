@@ -30,7 +30,16 @@ public class FeedImageRepositoryImpl implements FeedImageRepository {
 
 	@Override
 	public List<FeedImageEntity> findAllByFeedEntity(FeedEntity feedEntity) {
-		return feedImageJpaRepository.findAllByFeedEntity(feedEntity);
+		QFeedImageEntity feedImageEntity = QFeedImageEntity.feedImageEntity;
+
+		return queryFactory
+			.select(feedImageEntity)
+			.from(feedImageEntity)
+			.where(
+				feedImageEntity.feedEntity.eq(feedEntity)
+			)
+			.orderBy(feedImageEntity.feedImageOrder.asc())
+			.fetch();
 	}
 
 	@Override

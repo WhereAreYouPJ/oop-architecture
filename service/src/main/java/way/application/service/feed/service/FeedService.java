@@ -71,13 +71,13 @@ public class FeedService {
 		FeedEntity savedFeedEntity = feedRepository.saveFeedEntity(feedEntity);
 
 		// Feed Image Entity 저장
-		if (saveFeedRequestDto.images() != null) {
-			for (ImageInfo imageInfo : saveFeedRequestDto.images()) {
-				String imageURL = s3Utils.uploadMultipartFile(imageInfo.images());
+		if (saveFeedRequestDto.feedImageInfos() != null) {
+			for (feedImageInfo feedImageInfo : saveFeedRequestDto.feedImageInfos()) {
+				String imageURL = s3Utils.uploadMultipartFile(feedImageInfo.images());
 
 				// Feed Image Entity 생성
 				feedImageRepository.saveFeedImageEntity(
-					feedImageMapper.toFeedImageEntity(savedFeedEntity, imageURL, imageInfo.order())
+					feedImageMapper.toFeedImageEntity(savedFeedEntity, imageURL, feedImageInfo.feedImageOrder())
 				);
 			}
 		}
