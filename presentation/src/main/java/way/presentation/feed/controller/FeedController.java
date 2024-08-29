@@ -1,7 +1,7 @@
 package way.presentation.feed.controller;
 
+import static way.application.service.feed.dto.request.FeedRequestDto.*;
 import static way.application.service.feed.dto.response.FeedResponseDto.*;
-import static way.presentation.feed.vo.req.FeedRequestVo.*;
 import static way.presentation.feed.vo.res.FeedResponseVo.*;
 
 import java.io.IOException;
@@ -61,26 +61,26 @@ public class FeedController {
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
-			responseCode = "SSB003",
-			description = "400 SCHEDULE_SEQ_BAD_REQUEST_EXCEPTION / SCHEDULE_ID 오류",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class))),
-		@ApiResponse(
 			responseCode = "B001",
 			description = "400 Invalid DTO Parameter errors / 요청 값 형식 요류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
-			responseCode = "MSNISB004",
-			description = "400 MEMBER_SEQ_NOT_IN_SCHEDULE_BAD_REQUEST_EXCEPTION / 일정에 존재하지 않는 Member의 경우 + Schedule에서 일정을 수락하지 않은 경우 조회 불가",
+			responseCode = "SSB003",
+			description = "400 SCHEDULE_SEQ_BAD_REQUEST_EXCEPTION / SCHEDULE_ID 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "MSB002",
 			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "MSNISB004",
+			description = "400 MEMBER_SEQ_NOT_IN_SCHEDULE_BAD_REQUEST_EXCEPTION / 일정에 존재하지 않는 Member의 경우 + Schedule에서 일정을 수락하지 않은 경우 조회 불가",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
@@ -93,13 +93,13 @@ public class FeedController {
 	})
 	public ResponseEntity<BaseResponse<SaveFeedResponse>> createFeed(
 		@Valid
-		@ModelAttribute SaveFeedRequest request
+		@ModelAttribute SaveFeedRequestDto request
 	) throws IOException {
 		// 유효성 검사
 		saveFeedValidator.validate(request);
 
 		// VO -> DTO
-		SaveFeedResponseDto saveFeedResponseDto = feedService.saveFeed(request.toSaveFeedRequest());
+		SaveFeedResponseDto saveFeedResponseDto = feedService.saveFeed(request);
 
 		// DTO -> VO
 		SaveFeedResponse response = new SaveFeedResponse(saveFeedResponseDto.feedSeq());
@@ -147,13 +147,13 @@ public class FeedController {
 	})
 	public ResponseEntity<BaseResponse<ModifyFeedResponse>> modifyFeed(
 		@Valid
-		@ModelAttribute ModifyReedRequest request
+		@ModelAttribute ModifyFeedRequestDto request
 	) throws IOException {
 		// 유효성 검사
 		modifyFeedValidator.validate(request);
 
 		// VO -> DTO
-		ModifyFeedResponseDto modifyFeedResponseDto = feedService.modifyFeed(request.toModifyFeedRequestDto());
+		ModifyFeedResponseDto modifyFeedResponseDto = feedService.modifyFeed(request);
 
 		// DTO -> VO
 		ModifyFeedResponse response = new ModifyFeedResponse(modifyFeedResponseDto.feedSeq());

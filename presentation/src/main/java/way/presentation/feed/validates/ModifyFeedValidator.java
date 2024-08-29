@@ -1,17 +1,18 @@
 package way.presentation.feed.validates;
 
-import static way.presentation.feed.vo.req.FeedRequestVo.*;
+import static way.application.service.feed.dto.request.FeedRequestDto.*;
 
 import org.springframework.stereotype.Component;
 
+import way.application.service.feed.dto.request.FeedRequestDto;
 import way.application.utils.exception.BadRequestException;
 import way.application.utils.exception.ErrorResult;
 
 @Component
 public class ModifyFeedValidator {
-	public void validate(ModifyReedRequest request) {
+	public void validate(ModifyFeedRequestDto request) {
 		validateFeedSeq(request.feedSeq());
-		validateMemberSeq(request.creatorSeq());
+		validateMemberSeq(request.memberSeq());
 		validateTitle(request.title());
 	}
 

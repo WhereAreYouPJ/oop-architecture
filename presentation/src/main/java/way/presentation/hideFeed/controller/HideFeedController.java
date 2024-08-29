@@ -176,7 +176,7 @@ public class HideFeedController {
 		@Parameter(name = "page", description = "페이지 처리 페이지 수", example = "0"),
 		@Parameter(name = "size", description = "페이지 당 응답 받을 데이터 개수", example = "10"),
 	})
-	public ResponseEntity<BaseResponse<Page<GetHideFeedResponse>>> getHideFeed(
+	public ResponseEntity<BaseResponse<Page<GetHideFeedResponseDto>>> getHideFeed(
 		@Valid
 		@RequestParam(value = "memberSeq") Long memberSeq,
 		@RequestParam(defaultValue = "0") int page,
@@ -186,18 +186,7 @@ public class HideFeedController {
 		getHideFeedValidator.validate(memberSeq);
 
 		Pageable pageable = PageRequest.of(page, size);
-		Page<GetHideFeedResponseDto> getHideFeedResponseDtos = hideFeedService.getHideFeed(memberSeq, pageable);
-
-		// DTO를 VO로 변환
-		Page<GetHideFeedResponse> responses = getHideFeedResponseDtos.map(dto -> new GetHideFeedResponse(
-			dto.profileImage(),
-			dto.startTime(),
-			dto.location(),
-			dto.title(),
-			dto.feedImageUrl(),
-			dto.content(),
-			dto.bookMark()
-		));
+		Page<GetHideFeedResponseDto> responses = hideFeedService.getHideFeed(memberSeq, pageable);
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), responses));
 	}

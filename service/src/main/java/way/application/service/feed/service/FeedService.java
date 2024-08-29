@@ -13,7 +13,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 import way.application.infrastructure.jpa.bookMark.repository.BookMarkRepository;
@@ -47,23 +46,23 @@ public class FeedService {
 	@Transactional
 	public SaveFeedResponseDto saveFeed(SaveFeedRequestDto saveFeedRequestDto) throws IOException {
 		/*
-		 1. Member
-		 2. Schedule
-		 3. Schedule 수락 여부
-		 4. Feed 존재 여부
+		 1. Member 유효성 검사
+		 2. Schedule 유효성 검사
+		 3. Schedule Member In (Accept = True) 유효성 검사
+		 4. 이미 Feed 생성 여부 검사
 		*/
-		MemberEntity creatorMemberEntity = memberRepository.findByMemberSeq(saveFeedRequestDto.creatorSeq());
-		ScheduleEntity savedSchedule = scheduleRepository.findByScheduleSeq(saveFeedRequestDto.scheduleSeq());
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(saveFeedRequestDto.memberSeq());
+		ScheduleEntity scheduleEntity = scheduleRepository.findByScheduleSeq(saveFeedRequestDto.scheduleSeq());
 		scheduleMemberRepository.findAcceptedScheduleMemberInSchedule(
 			saveFeedRequestDto.scheduleSeq(),
-			saveFeedRequestDto.creatorSeq()
+			saveFeedRequestDto.memberSeq()
 		);
-		feedRepository.findByCreatorMemberAndSchedule(creatorMemberEntity, savedSchedule);
+		feedRepository.findByCreatorMemberAndSchedule(memberEntity, scheduleEntity);
 
 		// Feed Entity 생성
 		FeedEntity feedEntity = feedMapper.toFeedEntity(
-			savedSchedule,
-			creatorMemberEntity,
+			scheduleEntity,
+			memberEntity,
 			saveFeedRequestDto.title(),
 			saveFeedRequestDto.content()
 		);
@@ -72,13 +71,13 @@ public class FeedService {
 		FeedEntity savedFeedEntity = feedRepository.saveFeedEntity(feedEntity);
 
 		// Feed Image Entity 저장
-		if (saveFeedRequestDto.images() != null) {
-			for (MultipartFile image : saveFeedRequestDto.images()) {
-				String imageURL = s3Utils.uploadMultipartFile(image);
+		if (saveFeedRequestDto.feedImageInfos() != null) {
+			for (feedImageInfo feedImageInfo : saveFeedRequestDto.feedImageInfos()) {
+				String imageURL = s3Utils.uploadMultipartFile(feedImageInfo.images());
 
 				// Feed Image Entity 생성
 				feedImageRepository.saveFeedImageEntity(
-					feedImageMapper.toFeedImageEntity(savedFeedEntity, imageURL)
+					feedImageMapper.toFeedImageEntity(savedFeedEntity, imageURL, feedImageInfo.feedImageOrder())
 				);
 			}
 		}
@@ -88,8 +87,12 @@ public class FeedService {
 
 	@Transactional
 	public ModifyFeedResponseDto modifyFeed(ModifyFeedRequestDto modifyFeedRequestDto) throws IOException {
-		// 유효성 처리 (Repo 단)
-		MemberEntity creatorMemberEntity = memberRepository.findByMemberSeq(modifyFeedRequestDto.creatorSeq());
+		/*
+		 1. Member 유효성 검사
+		 2. Feed 유효성 검사
+		 3. Feed 작성자 검사
+		*/
+		MemberEntity creatorMemberEntity = memberRepository.findByMemberSeq(modifyFeedRequestDto.memberSeq());
 		feedRepository.findByFeedSeq(modifyFeedRequestDto.feedSeq());
 		FeedEntity savedFeed = feedRepository.findByCreatorMemberAndFeedSeq(
 			creatorMemberEntity,

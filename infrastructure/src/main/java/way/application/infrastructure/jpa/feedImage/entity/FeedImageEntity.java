@@ -36,5 +36,9 @@ public class FeedImageEntity {
 	@JoinColumn(name = "feed_seq")
 	private FeedEntity feedEntity;
 
+	@Column(name = "feed_image_url", nullable = false)
 	private String feedImageURL;
+
+	@Column(name = "feed_image_order", nullable = false)
+	private Long feedImageOrder;
 }

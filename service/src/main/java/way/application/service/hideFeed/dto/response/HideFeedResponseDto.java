@@ -15,10 +15,18 @@ public class HideFeedResponseDto {
 		LocalDateTime startTime,
 		String location,
 		String title,
-		List<String> feedImageUrl,
+		List<hideFeedImageInfo> hideFeedImageInfos,
 		String content,
 
 		Boolean bookMark
+	) {
+
+	}
+
+	public record hideFeedImageInfo(
+		Long feedImageSeq,
+		String feedImageURL,
+		Long feedImageOrder
 	) {
 
 	}
