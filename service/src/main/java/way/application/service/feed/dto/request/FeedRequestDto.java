@@ -8,29 +8,36 @@ import org.springframework.web.multipart.MultipartFile;
 public class FeedRequestDto {
 	public record SaveFeedRequestDto(
 		Long scheduleSeq,
-		Long creatorSeq,
+		Long memberSeq,
 		String title,
 		String content,
-		List<MultipartFile> images
+		List<ImageInfo> images
 	) {
 
 	}
 
 	public record ModifyFeedRequestDto(
 		Long feedSeq,
-		Long creatorSeq,
+		Long memberSeq,
 		String title,
 		String content,
-		List<MultipartFile> images
+		List<ImageInfo> images
 	) {
 		public SaveFeedRequestDto toSaveFeedRequestDto(Long scheduleSeq) {
 			return new SaveFeedRequestDto(
 				scheduleSeq,
-				this.creatorSeq,
+				this.memberSeq,
 				this.title,
 				this.content,
 				this.images != null ? this.images : Collections.emptyList()
 			);
 		}
+	}
+
+	public record ImageInfo(
+		MultipartFile images,
+		Long order
+	) {
+
 	}
 }
