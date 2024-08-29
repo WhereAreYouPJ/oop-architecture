@@ -15,7 +15,7 @@ public class HideFeedResponseDto {
 		LocalDateTime startTime,
 		String location,
 		String title,
-		List<hideFeedImageInfo> feedImageInfo,
+		List<hideFeedImageInfo> hideFeedImageInfos,
 		String content,
 
 		Boolean bookMark
