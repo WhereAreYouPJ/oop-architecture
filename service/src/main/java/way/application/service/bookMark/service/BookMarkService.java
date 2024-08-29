@@ -22,6 +22,7 @@ import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.member.repository.MemberRepository;
 import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
 import way.application.service.bookMark.mapper.BookMarkMapper;
+import way.application.service.hideFeed.dto.response.HideFeedResponseDto;
 
 @Service
 @RequiredArgsConstructor
@@ -85,10 +86,13 @@ public class BookMarkService {
 			MemberEntity creatorMemberEntity = feedEntity.getCreatorMember();
 
 			// Feed 이미지 가져오기
-			List<String> feedImageUrl = feedImageRepository.findAllByFeedEntity(feedEntity)
-				.stream()
-				.map(FeedImageEntity::getFeedImageURL)
-				.collect(Collectors.toList());
+			List<BookMarkImageInfo> bookMarkImageInfos = feedImageRepository.findAllByFeedEntity(feedEntity).stream()
+				.map(feedImageEntity -> new BookMarkImageInfo(
+					feedImageEntity.getFeedImageSeq(),
+					feedImageEntity.getFeedImageURL(),
+					feedImageEntity.getFeedImageOrder()
+				))
+				.toList();
 
 			return new GetBookMarkResponseDto(
 				creatorMemberEntity.getMemberSeq(),
@@ -96,7 +100,7 @@ public class BookMarkService {
 				scheduleEntity.getStartTime(),
 				scheduleEntity.getLocation(),
 				feedEntity.getTitle(),
-				feedImageUrl,
+				bookMarkImageInfos,
 				feedEntity.getContent(),
 				true
 			);

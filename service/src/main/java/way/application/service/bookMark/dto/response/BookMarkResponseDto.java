@@ -16,9 +16,17 @@ public class BookMarkResponseDto {
 		LocalDateTime startTime,
 		String location,
 		String title,
-		List<String> feedImageUrl,
+		List<BookMarkImageInfo> bookMarkImageInfos,
 		String content,
 		Boolean bookMark
+	) {
+
+	}
+
+	public record BookMarkImageInfo(
+		Long feedImageSeq,
+		String feedImageURL,
+		Long feedImageOrder
 	) {
 
 	}

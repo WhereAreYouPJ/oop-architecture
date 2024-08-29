@@ -178,7 +178,7 @@ public class BookMarkController {
 		@Parameter(name = "page", description = "페이지 처리 페이지 수", example = "0"),
 		@Parameter(name = "size", description = "페이지 당 응답 받을 데이터 개수", example = "10"),
 	})
-	public ResponseEntity<BaseResponse<Page<GetBookMarkResponse>>> getBookMark(
+	public ResponseEntity<BaseResponse<Page<GetBookMarkResponseDto>>> getBookMark(
 		@Valid
 		@RequestParam(value = "memberSeq") Long memberSeq,
 		@RequestParam(defaultValue = "0") int page,
@@ -188,19 +188,7 @@ public class BookMarkController {
 		getBookMarkValidator.validate(memberSeq);
 
 		Pageable pageable = PageRequest.of(page, size);
-		Page<GetBookMarkResponseDto> getBookMarkResponseDtos = bookMarkService.getBookMark(memberSeq, pageable);
-
-		// DTO를 VO로 변환
-		Page<GetBookMarkResponse> responses = getBookMarkResponseDtos.map(dto -> new GetBookMarkResponse(
-			dto.memberSeq(),
-			dto.profileImage(),
-			dto.startTime(),
-			dto.location(),
-			dto.title(),
-			dto.feedImageUrl(),
-			dto.content(),
-			dto.bookMark()
-		));
+		Page<GetBookMarkResponseDto> responses = bookMarkService.getBookMark(memberSeq, pageable);
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), responses));
 	}
