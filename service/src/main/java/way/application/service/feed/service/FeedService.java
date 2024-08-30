@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import way.application.infrastructure.jpa.bookMark.repository.BookMarkRepository;
 import way.application.infrastructure.jpa.feed.entity.FeedEntity;
 import way.application.infrastructure.jpa.feed.repository.FeedRepository;
+import way.application.infrastructure.jpa.feedImage.entity.FeedImageEntity;
 import way.application.infrastructure.jpa.feedImage.repository.FeedImageRepository;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.member.repository.MemberRepository;
@@ -112,7 +113,9 @@ public class FeedService {
 
 	@Transactional(readOnly = true)
 	public Page<GetAllFeedResponseDto> getAllFeed(Long memberSeq, Pageable pageable) {
-		// 1. Member 유효성 검사
+		/*
+		 1. Member 유효성 검사
+		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
 
 		// ScheduleMemberEntity 조회 -> Schedule 추출
@@ -123,43 +126,62 @@ public class FeedService {
 		// Schedule 별 Feed 조회 및 응답 생성
 		List<GetAllFeedResponseDto> response = new ArrayList<>();
 
-		scheduleEntityPage.forEach(scheduleEntity -> {
+		for (ScheduleEntity scheduleEntity : scheduleEntityPage) {
+			// Schedule Feed Info List 생성
+			List<ScheduleFeedInfo> scheduleFeedInfos = new ArrayList<>();
+
+			// 해당 Schedule Info 생성
 			ScheduleInfo scheduleInfo = new ScheduleInfo(
 				scheduleEntity.getScheduleSeq(),
 				scheduleEntity.getStartTime(),
 				scheduleEntity.getLocation()
 			);
 
-			feedRepository.findByScheduleExcludingHidden(scheduleEntity, memberEntity, pageable)
-				.forEach(feedEntity -> {
-					FeedInfo feedInfo = new FeedInfo(
-						feedEntity.getFeedSeq(),
-						feedEntity.getTitle(),
-						feedEntity.getContent()
-					);
+			// Schedule 에 해당하는 Feed 반환 (작성자 중심 -> 없으면 무작위)
+			FeedEntity feedEntity
+				= feedRepository.findByScheduleExcludingHiddenRand(scheduleEntity, memberEntity);
+			FeedInfo feedInfo = new FeedInfo(
+				feedEntity.getFeedSeq(),
+				feedEntity.getTitle(),
+				feedEntity.getContent()
+			);
 
-					FeedImageInfo feedImageInfo = new FeedImageInfo(
-						feedImageRepository.findFeedImageURLsByFeedEntity(feedEntity)
-					);
+			// Feed 작성자 반환
+			MemberEntity creatorMember = feedEntity.getCreatorMember();
+			MemberInfo memberInfo = new MemberInfo(
+				creatorMember.getMemberSeq(),
+				creatorMember.getUserName(),
+				creatorMember.getProfileImage()
+			);
 
-					BookMarkInfo bookMarkInfo = new BookMarkInfo(
-						bookMarkRepository.isFeedBookMarkedByMember(feedEntity, memberEntity)
-					);
+			// Book Mark 여부 확인
+			boolean bookMarkInfo = bookMarkRepository.isFeedBookMarkedByMember(feedEntity, memberEntity);
 
-					MemberInfo memberInfo = new MemberInfo(
-						feedEntity.getCreatorMember().getMemberSeq(),
-						feedEntity.getCreatorMember().getUserName(),
-						feedEntity.getCreatorMember().getProfileImage()
-					);
+			// Feed Image 반환
+			List<FeedImageEntity> feedImageEntities = feedImageRepository.findAllByFeedEntity(feedEntity);
+			List<FeedImageInfo> feedImageInfos = feedImageEntities.stream()
+				.map(feedImageEntity -> new FeedImageInfo(
+					feedImageEntity.getFeedImageSeq(),
+					feedImageEntity.getFeedImageURL(),
+					feedImageEntity.getFeedImageOrder()
+				))
+				.toList();
 
-					List<ScheduleFeedInfo> scheduleFeedInfos = new ArrayList<>();
-					scheduleFeedInfos.add(
-						new ScheduleFeedInfo(memberInfo, scheduleInfo, feedInfo, feedImageInfo, bookMarkInfo)
-					);
+			ScheduleFeedInfo scheduleFeedInfo = new ScheduleFeedInfo(
+				memberInfo,
+				feedInfo,
+				feedImageInfos,
+				bookMarkInfo
+			);
 
-					response.add(new GetAllFeedResponseDto(scheduleFeedInfos));
-				});
-		});
+			scheduleFeedInfos.add(scheduleFeedInfo);
+			GetAllFeedResponseDto getAllFeedResponseDto = new GetAllFeedResponseDto(
+				scheduleInfo,
+				scheduleFeedInfos
+			);
+
+			response.add(getAllFeedResponseDto);
+		}
 
 		return new PageImpl<>(response, pageable, response.size());
 	}
