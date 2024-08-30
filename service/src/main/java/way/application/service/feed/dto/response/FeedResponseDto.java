@@ -17,14 +17,14 @@ public class FeedResponseDto {
 	}
 
 	public record GetAllFeedResponseDto(
+		ScheduleInfo scheduleInfo,
 		List<ScheduleFeedInfo> scheduleFeedInfo
 	) {
 		public record ScheduleFeedInfo(
 			MemberInfo memberInfo,
-			ScheduleInfo scheduleInfo,
 			FeedInfo feedInfo,
-			FeedImageInfo feedImageInfo,
-			BookMarkInfo bookMarkInfo
+			List<FeedImageInfo> feedImageInfos,
+			boolean bookMarkInfo
 		) {
 
 		}
@@ -54,13 +54,9 @@ public class FeedResponseDto {
 		}
 
 		public record FeedImageInfo(
-			List<String> feedImageURL
-		) {
-
-		}
-
-		public record BookMarkInfo(
-			boolean bookMark
+			Long feedImageSeq,
+			String feedImageURL,
+			Long feedImageOrder
 		) {
 
 		}

@@ -20,10 +20,9 @@ public interface FeedRepository {
 
 	void deleteAllByFeedSeq(Long feedSeq);
 
-	Page<FeedEntity> findByScheduleExcludingHidden(
+	FeedEntity findByScheduleExcludingHiddenRand(
 		ScheduleEntity scheduleEntity,
-		MemberEntity memberEntity,
-		Pageable pageable
+		MemberEntity memberEntity
 	);
 
 	void deleteFeedEntity(FeedEntity feedEntity);

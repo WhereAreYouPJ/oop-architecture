@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -58,29 +60,32 @@ public class FeedRepositoryImpl implements FeedRepository {
 	}
 
 	@Override
-	public Page<FeedEntity> findByScheduleExcludingHidden(
+	public FeedEntity findByScheduleExcludingHiddenRand(
 		ScheduleEntity scheduleEntity,
-		MemberEntity memberEntity,
-		Pageable pageable
+		MemberEntity memberEntity
 	) {
 		QFeedEntity feed = QFeedEntity.feedEntity;
 		QHideFeedEntity hideFeed = QHideFeedEntity.hideFeedEntity;
 
-		QueryResults<FeedEntity> results = queryFactory
+		return queryFactory
 			.selectFrom(feed)
 			.leftJoin(hideFeed)
 			.on(feed.eq(hideFeed.feedEntity)
 				.and(hideFeed.memberEntity.eq(memberEntity)))
 			.where(feed.schedule.eq(scheduleEntity)
-				.and(hideFeed.feedEntity.isNull()))
-			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize())
-			.fetchResults();
-
-		List<FeedEntity> content = results.getResults();
-		long total = results.getTotal();
-
-		return new PageImpl<>(content, pageable, total);
+				.and(hideFeed.feedEntity.isNull())
+				.and(feed.creatorMember.eq(memberEntity)
+					.or(feed.creatorMember.ne(memberEntity)
+						.and(feed.eq(
+							JPAExpressions.selectFrom(feed)
+								.where(feed.schedule.eq(scheduleEntity))
+								.orderBy(Expressions.numberTemplate(Double.class, "function('RAND')").asc())
+								.limit(1)
+						))
+					)
+				)
+			)
+			.fetchOne();
 	}
 
 	@Override
