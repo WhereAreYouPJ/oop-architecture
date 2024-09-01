@@ -1,5 +1,6 @@
 package way.application.infrastructure.jpa.feed.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -30,4 +31,6 @@ public interface FeedRepository {
 	void deleteByScheduleEntity(ScheduleEntity scheduleEntity);
 
 	Optional<FeedEntity> findByScheduleEntityAndMemberEntity(ScheduleEntity scheduleEntity, MemberEntity memberEntity);
+
+	List<FeedEntity> findByScheduleEntity(ScheduleEntity scheduleEntity);
 }

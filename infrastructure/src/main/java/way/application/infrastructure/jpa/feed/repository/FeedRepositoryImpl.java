@@ -8,7 +8,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -106,8 +105,10 @@ public class FeedRepositoryImpl implements FeedRepository {
 	}
 
 	@Override
-	public Optional<FeedEntity> findByScheduleEntityAndMemberEntity(ScheduleEntity scheduleEntity,
-		MemberEntity memberEntity) {
+	public Optional<FeedEntity> findByScheduleEntityAndMemberEntity(
+		ScheduleEntity scheduleEntity,
+		MemberEntity memberEntity
+	) {
 		QFeedEntity feed = QFeedEntity.feedEntity;
 
 		return Optional.ofNullable(queryFactory
@@ -119,5 +120,17 @@ public class FeedRepositoryImpl implements FeedRepository {
 			)
 			.fetchOne()
 		);
+	}
+
+	@Override
+	public List<FeedEntity> findByScheduleEntity(ScheduleEntity scheduleEntity) {
+		QFeedEntity feed = QFeedEntity.feedEntity;
+
+		return queryFactory
+			.selectFrom(feed)
+			.where(
+				feed.schedule.eq(scheduleEntity)
+			)
+			.fetch();
 	}
 }
