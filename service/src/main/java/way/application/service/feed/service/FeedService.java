@@ -2,14 +2,12 @@ package way.application.service.feed.service;
 
 import static way.application.service.feed.dto.request.FeedRequestDto.*;
 import static way.application.service.feed.dto.response.FeedResponseDto.*;
-import static way.application.service.feed.dto.response.FeedResponseDto.GetAllFeedResponseDto.*;
+import static way.application.service.feed.dto.response.FeedResponseDto.GetFeedResponseDto.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import way.application.infrastructure.jpa.bookMark.repository.BookMarkRepository;
 import way.application.infrastructure.jpa.feed.entity.FeedEntity;
 import way.application.infrastructure.jpa.feed.repository.FeedRepository;
-import way.application.infrastructure.jpa.feedImage.entity.FeedImageEntity;
 import way.application.infrastructure.jpa.feedImage.repository.FeedImageRepository;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.member.repository.MemberRepository;
@@ -112,41 +109,30 @@ public class FeedService {
 	}
 
 	@Transactional(readOnly = true)
-	public Page<GetAllFeedResponseDto> getAllFeed(Long memberSeq, Pageable pageable) {
-		/*
-		 1. Member 유효성 검사
-		*/
+	public Page<GetFeedResponseDto> getAllFeed(Long memberSeq, Pageable pageable) {
+		// Member 유효성 검사
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
 
-		// ScheduleMemberEntity 조회 -> Schedule 추출
-		Page<ScheduleEntity> scheduleEntityPage = scheduleRepository.getScheduleEntityFromScheduleMember(
+		// ScheduleMemberEntity를 통해 Schedule을 조회하고 각 Schedule에 대해 Feed 정보를 조회
+		return scheduleRepository.getScheduleEntityFromScheduleMember(
 			scheduleMemberRepository.findByMemberEntity(memberEntity, pageable)
-		);
-
-		// Schedule 별 Feed 조회 및 응답 생성
-		List<GetAllFeedResponseDto> response = new ArrayList<>();
-
-		for (ScheduleEntity scheduleEntity : scheduleEntityPage) {
-			// Schedule Feed Info List 생성
-			List<ScheduleFeedInfo> scheduleFeedInfos = new ArrayList<>();
-
-			// 해당 Schedule Info 생성
+		).map(scheduleEntity -> {
+			// Schedule 정보 생성
 			ScheduleInfo scheduleInfo = new ScheduleInfo(
 				scheduleEntity.getScheduleSeq(),
 				scheduleEntity.getStartTime(),
 				scheduleEntity.getLocation()
 			);
 
-			// Schedule 에 해당하는 Feed 반환 (작성자 중심 -> 없으면 무작위)
-			FeedEntity feedEntity
-				= feedRepository.findByScheduleExcludingHiddenRand(scheduleEntity, memberEntity);
+			// 해당 Schedule의 Feed 조회 및 정보 생성
+			FeedEntity feedEntity = feedRepository.findByScheduleExcludingHiddenRand(scheduleEntity, memberEntity);
 			FeedInfo feedInfo = new FeedInfo(
 				feedEntity.getFeedSeq(),
 				feedEntity.getTitle(),
 				feedEntity.getContent()
 			);
 
-			// Feed 작성자 반환
+			// Feed 작성자 정보
 			MemberEntity creatorMember = feedEntity.getCreatorMember();
 			MemberInfo memberInfo = new MemberInfo(
 				creatorMember.getMemberSeq(),
@@ -157,16 +143,15 @@ public class FeedService {
 			// Book Mark 여부 확인
 			boolean bookMarkInfo = bookMarkRepository.isFeedBookMarkedByMember(feedEntity, memberEntity);
 
-			// Feed Image 반환
-			List<FeedImageEntity> feedImageEntities = feedImageRepository.findAllByFeedEntity(feedEntity);
-			List<FeedImageInfo> feedImageInfos = feedImageEntities.stream()
+			// Feed 이미지 정보 생성
+			List<FeedImageInfo> feedImageInfos = feedImageRepository.findAllByFeedEntity(feedEntity).stream()
 				.map(feedImageEntity -> new FeedImageInfo(
 					feedImageEntity.getFeedImageSeq(),
 					feedImageEntity.getFeedImageURL(),
 					feedImageEntity.getFeedImageOrder()
-				))
-				.toList();
+				)).toList();
 
+			// ScheduleFeedInfo 생성 및 응답 객체 생성
 			ScheduleFeedInfo scheduleFeedInfo = new ScheduleFeedInfo(
 				memberInfo,
 				feedInfo,
@@ -174,15 +159,60 @@ public class FeedService {
 				bookMarkInfo
 			);
 
-			scheduleFeedInfos.add(scheduleFeedInfo);
-			GetAllFeedResponseDto getAllFeedResponseDto = new GetAllFeedResponseDto(
-				scheduleInfo,
-				scheduleFeedInfos
-			);
+			return new GetFeedResponseDto(scheduleInfo, List.of(scheduleFeedInfo));
+		});
+	}
 
-			response.add(getAllFeedResponseDto);
-		}
+	@Transactional(readOnly = true)
+	public GetFeedResponseDto getFeed(Long memberSeq, Long scheduleSeq) {
+		/*
+		 1. Member 유효성 검사
+		 2. Schedule 유효성 검사
+		 3. Member Schedule 유효성 검사
+		*/
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
+		ScheduleEntity scheduleEntity = scheduleRepository.findByScheduleSeq(scheduleSeq);
+		scheduleMemberRepository.findAcceptedScheduleMemberInSchedule(scheduleSeq, memberSeq);
 
-		return new PageImpl<>(response, pageable, response.size());
+		// Feed 조회 및 변환
+		List<ScheduleFeedInfo> scheduleFeedInfos = feedRepository.findByScheduleEntity(scheduleEntity).stream()
+			.map(feedEntity -> {
+				// Member Info 생성
+				MemberInfo memberInfo = new MemberInfo(
+					feedEntity.getCreatorMember().getMemberSeq(),
+					feedEntity.getCreatorMember().getUserName(),
+					feedEntity.getCreatorMember().getProfileImage()
+				);
+
+				// Feed Info 생성
+				FeedInfo feedInfo = new FeedInfo(
+					feedEntity.getFeedSeq(),
+					feedEntity.getTitle(),
+					feedEntity.getContent()
+				);
+
+				// Feed 이미지 정보 생성
+				List<FeedImageInfo> feedImageInfos = feedImageRepository.findAllByFeedEntity(feedEntity).stream()
+					.map(feedImageEntity -> new FeedImageInfo(
+						feedImageEntity.getFeedImageSeq(),
+						feedImageEntity.getFeedImageURL(),
+						feedImageEntity.getFeedImageOrder()
+					)).toList();
+
+				// Book Mark 여부 확인
+				boolean bookMarkInfo = bookMarkRepository.isFeedBookMarkedByMember(feedEntity, memberEntity);
+
+				// ScheduleFeedInfo 생성
+				return new ScheduleFeedInfo(memberInfo, feedInfo, feedImageInfos, bookMarkInfo);
+			}).toList();
+
+		// Schedule Info 생성
+		ScheduleInfo scheduleInfo = new ScheduleInfo(
+			scheduleEntity.getScheduleSeq(),
+			scheduleEntity.getStartTime(),
+			scheduleEntity.getLocation()
+		);
+
+		return new GetFeedResponseDto(scheduleInfo, scheduleFeedInfos);
 	}
 }

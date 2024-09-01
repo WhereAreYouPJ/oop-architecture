@@ -16,7 +16,7 @@ public class FeedResponseDto {
 
 	}
 
-	public record GetAllFeedResponseDto(
+	public record GetFeedResponseDto(
 		ScheduleInfo scheduleInfo,
 		List<ScheduleFeedInfo> scheduleFeedInfo
 	) {
@@ -28,37 +28,37 @@ public class FeedResponseDto {
 		) {
 
 		}
+	}
 
-		public record MemberInfo(
-			Long memberSeq,
-			String userName,
-			String profileImage
-		) {
+	public record MemberInfo(
+		Long memberSeq,
+		String userName,
+		String profileImage
+	) {
 
-		}
+	}
 
-		public record ScheduleInfo(
-			Long scheduleSeq,
-			LocalDateTime startTime,
-			String location
-		) {
+	public record ScheduleInfo(
+		Long scheduleSeq,
+		LocalDateTime startTime,
+		String location
+	) {
 
-		}
+	}
 
-		public record FeedInfo(
-			Long feedSeq,
-			String title,
-			String content
-		) {
+	public record FeedInfo(
+		Long feedSeq,
+		String title,
+		String content
+	) {
 
-		}
+	}
 
-		public record FeedImageInfo(
-			Long feedImageSeq,
-			String feedImageURL,
-			Long feedImageOrder
-		) {
+	public record FeedImageInfo(
+		Long feedImageSeq,
+		String feedImageURL,
+		Long feedImageOrder
+	) {
 
-		}
 	}
 }
