@@ -33,6 +33,7 @@ import way.application.service.feed.service.FeedService;
 import way.application.utils.exception.GlobalExceptionHandler;
 import way.presentation.base.BaseResponse;
 import way.presentation.feed.validates.GetAllFeedValidator;
+import way.presentation.feed.validates.GetFeedValidator;
 import way.presentation.feed.validates.ModifyFeedValidator;
 import way.presentation.feed.validates.SaveFeedValidator;
 
@@ -44,6 +45,7 @@ public class FeedController {
 	private final SaveFeedValidator saveFeedValidator;
 	private final ModifyFeedValidator modifyFeedValidator;
 	private final GetAllFeedValidator getAllFeedValidator;
+	private final GetFeedValidator getFeedValidator;
 
 	private final FeedService feedService;
 
@@ -161,8 +163,8 @@ public class FeedController {
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
 
-	@GetMapping(name = "피드 조회")
-	@Operation(summary = "피드 조회 API")
+	@GetMapping(value = "/list", name = "피드 리스트 조회")
+	@Operation(summary = "피드 리스트 조회 API")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -202,7 +204,7 @@ public class FeedController {
 			description = "페이지당 항목 수 (기본값: 10)",
 			example = "10")
 	})
-	public ResponseEntity<BaseResponse<Page<GetAllFeedResponseDto>>> getAllFeed(
+	public ResponseEntity<BaseResponse<Page<GetFeedResponseDto>>> getAllFeed(
 		@Valid
 		@RequestParam(value = "memberSeq") Long memberSeq,
 		@RequestParam(value = "page", defaultValue = "0") int page,
@@ -212,8 +214,72 @@ public class FeedController {
 		getAllFeedValidator.validate(memberSeq);
 
 		Pageable pageable = PageRequest.of(page, size);
-		Page<GetAllFeedResponseDto> response = feedService.getAllFeed(memberSeq, pageable);
+		Page<GetFeedResponseDto> response = feedService.getAllFeed(memberSeq, pageable);
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
+
+	@GetMapping(value = "/details", name = "피드 상세 조회")
+	@Operation(summary = "피드 상세 조회 API")
+	@ApiResponses(value = {
+		@ApiResponse(
+			responseCode = "200",
+			description = "요청에 성공하였습니다.",
+			useReturnTypeSchema = true),
+		@ApiResponse(
+			responseCode = "S500",
+			description = "500 SERVER_ERROR (나도 몰라 ..)",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "B001",
+			description = "400 Invalid DTO Parameter errors / 요청 값 형식 요류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "MSB002",
+			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "SSB003",
+			description = "400 SCHEDULE_SEQ_BAD_REQUEST_EXCEPTION / SCHEDULE_ID 오류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "MSNISB004",
+			description = "400 MEMBER_SEQ_NOT_IN_SCHEDULE_BAD_REQUEST_EXCEPTION / Member 가 해당 Schedule 에 존재 X 오류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class)))
+	})
+	@Parameters({
+		@Parameter(
+			name = "memberSeq",
+			description = "Member Seq",
+			example = "1",
+			required = true),
+		@Parameter(
+			name = "scheduleSeq",
+			description = "Schedule Seq",
+			example = "1",
+			required = true)
+	})
+	public ResponseEntity<BaseResponse<GetFeedResponseDto>> getFeed(
+		@Valid
+		@RequestParam(value = "memberSeq") Long memberSeq,
+		@RequestParam(value = "scheduleSeq") Long scheduleSeq
+	) throws IOException {
+		// 유효성 검사
+		getFeedValidator.validate(memberSeq, scheduleSeq);
+
+		GetFeedResponseDto response = feedService.getFeed(memberSeq, scheduleSeq);
+
+		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
+	}
+
 }
