@@ -47,12 +47,14 @@ public class MemberRequestVo {
     public record LoginRequest(
 
             String email,
-            String password
+            String password,
+            String fcmToken
     ) {
         public MemberRequestDto.LoginRequestDto toLoginRequestDto() {
             return new MemberRequestDto.LoginRequestDto(
                     this.email,
-                    this.password
+                    this.password,
+                    this.fcmToken
             );
         }
     }

@@ -28,7 +28,8 @@ public class MemberRequestDto {
 
     public record LoginRequestDto (
             String email,
-            String password
+            String password,
+            String fcmToken
     ) {
 
     }

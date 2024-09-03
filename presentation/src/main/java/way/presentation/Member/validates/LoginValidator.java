@@ -12,6 +12,7 @@ public class LoginValidator {
 
         validateEmail(request.email());
         validatePassword(request.password());
+        validateFcmToken(request.fcmToken());
 
     }
 
@@ -23,6 +24,12 @@ public class LoginValidator {
 
     private void validatePassword(String password) {
         if (password == null || password.isEmpty()) {
+            throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+        }
+    }
+
+    private void validateFcmToken(String fcmToken) {
+        if (fcmToken == null || fcmToken.isEmpty()) {
             throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
         }
     }
