@@ -30,6 +30,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
 		registry.addEndpoint("/ws")
 			.setAllowedOriginPatterns("https://wlrmadjel.com")
+			.setAllowedOrigins(System.getenv("DOMAIN"))
 			.setAllowedOriginPatterns("*");
 		//.withSockJS();
 	}
