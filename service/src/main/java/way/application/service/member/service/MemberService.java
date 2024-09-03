@@ -73,6 +73,10 @@ public class MemberService {
 		// refreshToken 저장
 		memberRepository.saveRefreshToken(refreshToken, loginRequestDto.email());
 
+		// fcm 저장
+		memberEntity.saveFireBaseTargetToken(loginRequestDto.fcmToken());
+		memberRepository.saveMember(memberEntity);
+
 		return new LoginResponseDto(accessToken,refreshToken,memberEntity.getMemberSeq(),memberEntity.getMemberCode());
 	}
 

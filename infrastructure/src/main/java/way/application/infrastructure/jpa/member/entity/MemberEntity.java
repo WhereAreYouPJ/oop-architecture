@@ -60,6 +60,10 @@ public class MemberEntity {
 		this.profileImage = profileImage;
 	}
 
+	public void saveFireBaseTargetToken(String fireBaseTargetToken) {
+		this.fireBaseTargetToken = fireBaseTargetToken;
+	}
+
 	public void deleteFireBaseTargetToken() {
 		this.fireBaseTargetToken = null;
 	}
