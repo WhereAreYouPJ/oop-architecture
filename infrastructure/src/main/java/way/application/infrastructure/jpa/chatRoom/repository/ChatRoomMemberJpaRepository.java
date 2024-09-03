@@ -15,4 +15,8 @@ public interface ChatRoomMemberJpaRepository extends JpaRepository<ChatRoomMembe
 		MemberEntity memberEntity,
 		ChatRoomEntity chatRoomEntity
 	);
+
+	void deleteAllByChatRoomEntity(ChatRoomEntity chatRoomEntity);
+
+	void deleteByChatRoomEntityAndMemberEntity(ChatRoomEntity chatRoomEntity, MemberEntity memberEntity);
 }

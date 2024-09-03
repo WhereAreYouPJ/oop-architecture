@@ -42,7 +42,7 @@ import way.presentation.schedule.validates.SaveScheduleValidator;
 @RestController
 @RequestMapping("/schedule")
 @RequiredArgsConstructor
-@Tag(name = "일정", description = "담당자 (송인준)")
+@Tag(name = "일정", description = "담당자 (박종훈)")
 public class ScheduleController {
 	private final SaveScheduleValidator saveScheduleValidator;
 	private final ModifyScheduleValidator modifyScheduleValidator;
@@ -214,6 +214,12 @@ public class ScheduleController {
 			description = "400 SCHEDULE_DIDNT_CREATED_BY_MEMBER_BAD_REQUEST_EXCEPTION / SCHEDULE_ID 오류",
 			content = @Content(
 				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "CRN004",
+			description = "404 CHAT_ROOM_NOT_FOUND_EXCEPTION / Chat Room 이 생성되어 있지 않을 때 오류",
+			content = @Content(
+				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
 	public ResponseEntity<BaseResponse> deleteSchedule(
@@ -267,6 +273,12 @@ public class ScheduleController {
 		@ApiResponse(
 			responseCode = "MSNISB004",
 			description = "400 MEMBER_SEQ_NOT_IN_SCHEDULE_BAD_REQUEST_EXCEPTION / Schedule에 Member가 존재하지 않는 오류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "CRN004",
+			description = "404 CHAT_ROOM_NOT_FOUND_EXCEPTION / Chat Room 이 생성되어 있지 않을 때 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))

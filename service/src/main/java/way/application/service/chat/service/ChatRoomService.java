@@ -40,10 +40,17 @@ public class ChatRoomService {
 
 	@Transactional
 	public CreateChatRoomResponseDto createChatRoom(CreateChatRoomRequestDto createChatRoomRequestDto) {
+		/*
+		 1. Schedule 유효성 검사
+		 2. Chat Room 이미 존재
+		*/
+		ScheduleEntity scheduleEntity = scheduleRepository.findByScheduleSeq(createChatRoomRequestDto.scheduleSeq());
+		chatRoomRepository.existChatRoomEntityByScheduleEntity(scheduleEntity);
+
 		// Chat Room Entity 생성 및 저장
 		ChatRoomEntity chatRoomEntity = chatRoomMapper.toChatRoomEntity(
 			UUID.randomUUID().toString(),
-			createChatRoomRequestDto.roomName()
+			scheduleEntity
 		);
 
 		ChatRoomEntity savedChatRoomEntity = chatRoomRepository.saveChatRoomEntity(chatRoomEntity);
@@ -62,7 +69,7 @@ public class ChatRoomService {
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(enterChatRoomRequestDto.memberSeq());
 		scheduleRepository.findByScheduleSeq(enterChatRoomRequestDto.scheduleSeq());
-		ScheduleEntity scheduleEntity = scheduleMemberRepository.findAcceptedScheduleMemberInSchedule(
+		scheduleMemberRepository.findAcceptedScheduleMemberInSchedule(
 			enterChatRoomRequestDto.scheduleSeq(),
 			enterChatRoomRequestDto.memberSeq()
 		).getSchedule();
@@ -71,7 +78,7 @@ public class ChatRoomService {
 
 		// Chat Room Member Entity 생성 및 저장
 		ChatRoomMemberEntity chatRoomMemberEntity
-			= chatRoomMemberMapper.toChatRoomMemberEntity(memberEntity, chatRoomEntity, scheduleEntity);
+			= chatRoomMemberMapper.toChatRoomMemberEntity(memberEntity, chatRoomEntity);
 		chatRoomMemberRepository.saveChatRoomMemberEntity(chatRoomMemberEntity);
 	}
 
@@ -84,7 +91,7 @@ public class ChatRoomService {
 		*/
 		ChatRoomEntity chatRoomEntity = chatRoomRepository.findByChatRoomSeq(sendChatRequestDto.chatRoomSeq());
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(sendChatRequestDto.senderMemberSeq());
-		chatRoomMemberRepository.existsChatRoomMemberEntity(memberEntity, chatRoomEntity);
+		chatRoomMemberRepository.findByMemberEntityAndChatRoomEntity(memberEntity, chatRoomEntity);
 
 		// Chat Entity 생성 및 저장
 		ChatEntity chatEntity = chatMapper.toChatEntity(

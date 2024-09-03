@@ -6,12 +6,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public class ChatRoomRequestVo {
 	public record CreateChatRoomRequest(
-		@Schema(description = "채팅방 이름")
-		String roomName
+		Long scheduleSeq
 	) {
 		public CreateChatRoomRequestDto toCreateChatRoomRequestDto() {
 			return new CreateChatRoomRequestDto(
-				this.roomName
+				this.scheduleSeq
 			);
 		}
 	}
@@ -50,6 +49,21 @@ public class ChatRoomRequestVo {
 				this.chatRoomSeq,
 				this.senderMemberSeq,
 				this.message
+			);
+		}
+	}
+
+	public record ExitChatRoomRequest(
+		@Schema(description = "채팅방 나가려는 Member Seq")
+		Long memberSeq,
+
+		@Schema(description = "Chat Room Seq")
+		String chatRoomSeq
+	) {
+		public ExitChatRoomRequestDto toExitChatRequestDto() {
+			return new ExitChatRoomRequestDto(
+				this.memberSeq,
+				this.chatRoomSeq
 			);
 		}
 	}

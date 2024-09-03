@@ -10,4 +10,8 @@ public interface ChatRoomMemberRepository {
 	ChatRoomMemberEntity findByMemberEntityAndChatRoomEntity(MemberEntity memberEntity, ChatRoomEntity chatRoomEntity);
 
 	void existsChatRoomMemberEntity(MemberEntity memberEntity, ChatRoomEntity chatRoomEntity);
+
+	void deleteAllByChatRoomEntity(ChatRoomEntity chatRoomEntity);
+
+	void deleteByChatRoomEntityAndMemberEntity(ChatRoomEntity chatRoomEntity, MemberEntity memberEntity);
 }

@@ -40,7 +40,7 @@ public class ChatEntity extends BaseEntity {
 	private ChatRoomEntity chatRoomEntity;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_seq")
+	@JoinColumn(name = "sender_seq")
 	private MemberEntity memberEntity;
 
 	@Column(name = "message", length = 5000)

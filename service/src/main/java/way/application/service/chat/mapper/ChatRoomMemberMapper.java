@@ -15,10 +15,8 @@ public interface ChatRoomMemberMapper {
 	@Mapping(target = "chatRoomMemberSeq", ignore = true)
 	@Mapping(target = "memberEntity", source = "memberEntity")
 	@Mapping(target = "chatRoomEntity", source = "chatRoomEntity")
-	@Mapping(target = "scheduleEntity", source = "scheduleEntity")
 	ChatRoomMemberEntity toChatRoomMemberEntity(
 		MemberEntity memberEntity,
-		ChatRoomEntity chatRoomEntity,
-		ScheduleEntity scheduleEntity
+		ChatRoomEntity chatRoomEntity
 	);
 }
