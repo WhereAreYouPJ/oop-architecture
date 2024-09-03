@@ -27,6 +27,8 @@ public class ChatController {
 
 	@MessageMapping("/sendMessage")
 	public void sendMessage(@Payload SendChatRequestDto chat) {
+		log.info("sendMessage = {}", chat.message());
+
 		chatRoomService.createChat(chat);
 
 		template.convertAndSend("/sub/chat/room/" + chat.chatRoomSeq(), chat);
