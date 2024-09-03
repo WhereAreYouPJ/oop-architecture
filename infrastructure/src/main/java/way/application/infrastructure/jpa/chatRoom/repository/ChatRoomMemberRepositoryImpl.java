@@ -35,6 +35,16 @@ public class ChatRoomMemberRepositoryImpl implements ChatRoomMemberRepository {
 	}
 
 	@Override
+	public void deleteAllByChatRoomEntity(ChatRoomEntity chatRoomEntity) {
+		chatRoomMemberJpaRepository.deleteAllByChatRoomEntity(chatRoomEntity);
+	}
+
+	@Override
+	public void deleteByChatRoomEntityAndMemberEntity(ChatRoomEntity chatRoomEntity, MemberEntity memberEntity) {
+		chatRoomMemberJpaRepository.deleteByChatRoomEntityAndMemberEntity(chatRoomEntity, memberEntity);
+	}
+
+	@Override
 	public ChatRoomMemberEntity findByMemberEntityAndChatRoomEntity(
 		MemberEntity memberEntity,
 		ChatRoomEntity chatRoomEntity

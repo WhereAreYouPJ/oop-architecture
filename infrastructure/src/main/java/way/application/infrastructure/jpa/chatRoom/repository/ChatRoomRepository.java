@@ -9,4 +9,8 @@ public interface ChatRoomRepository {
 	ChatRoomEntity findByChatRoomSeq(String chatRoomSeq);
 
 	void existChatRoomEntityByScheduleEntity(ScheduleEntity scheduleEntity);
+
+	void deleteChatRoomEntity(ChatRoomEntity chatRoomEntity);
+
+	ChatRoomEntity findByScheduleEntity(ScheduleEntity scheduleEntity);
 }

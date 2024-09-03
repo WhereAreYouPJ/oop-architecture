@@ -20,6 +20,9 @@ import way.application.domain.member.MemberDomain;
 import way.application.domain.schedule.ScheduleDomain;
 import way.application.domain.scheduleMember.ScheduleMemberDomain;
 import way.application.infrastructure.jpa.bookMark.repository.BookMarkRepository;
+import way.application.infrastructure.jpa.chatRoom.entity.ChatRoomEntity;
+import way.application.infrastructure.jpa.chatRoom.repository.ChatRoomMemberRepository;
+import way.application.infrastructure.jpa.chatRoom.repository.ChatRoomRepository;
 import way.application.infrastructure.jpa.feed.entity.FeedEntity;
 import way.application.infrastructure.jpa.feed.repository.FeedRepository;
 import way.application.infrastructure.jpa.feedImage.repository.FeedImageRepository;
@@ -32,6 +35,7 @@ import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
 import way.application.infrastructure.jpa.schedule.repository.ScheduleRepository;
 import way.application.infrastructure.jpa.scheduleMember.entity.ScheduleMemberEntity;
 import way.application.infrastructure.jpa.scheduleMember.repository.ScheduleMemberRepository;
+import way.application.infrastructure.mongo.chat.repository.ChatRepository;
 import way.application.service.schedule.mapper.ScheduleMapper;
 import way.application.service.scheduleMember.mapper.ScheduleMemberMapper;
 
@@ -46,6 +50,9 @@ public class ScheduleService {
 	private final HideFeedRepository hideFeedRepository;
 	private final BookMarkRepository bookMarkRepository;
 	private final FeedImageRepository feedImageRepository;
+	private final ChatRoomRepository chatRoomRepository;
+	private final ChatRoomMemberRepository chatRoomMemberRepository;
+	private final ChatRepository chatRepository;
 
 	private final MemberDomain memberDomain;
 	private final ScheduleMemberDomain scheduleMemberDomain;
@@ -135,6 +142,7 @@ public class ScheduleService {
 		 1. Member 유효성 검사
 		 2. Schedule 유효성 검사
 		 3. 생성자 여부 확인
+		 4. Chat Room 유효성 검사
 		*/
 		memberRepository.findByMemberSeq(deleteScheduleRequestDto.memberSeq());
 		scheduleRepository.findByScheduleSeq(deleteScheduleRequestDto.scheduleSeq());
@@ -142,6 +150,7 @@ public class ScheduleService {
 			deleteScheduleRequestDto.scheduleSeq(),
 			deleteScheduleRequestDto.memberSeq()
 		);
+		ChatRoomEntity chatRoomEntity = chatRoomRepository.findByScheduleEntity(scheduleEntity);
 
 		/*
 		 해당 일정의 모든 Feed 삭제
@@ -149,11 +158,17 @@ public class ScheduleService {
 		 2. Hide Feed Entity
 		 3. Book Mark Feed Entity
 		 4. Feed Image Entity
+		 5. Chat Room Member Entity
+		 6. Chat Entity
+		 7. Chat Room Entity
 		*/
 		hideFeedRepository.deleteByScheduleEntity(scheduleEntity);
 		bookMarkRepository.deleteByScheduleEntity(scheduleEntity);
 		feedImageRepository.deleteByScheduleEntity(scheduleEntity);
 		feedRepository.deleteByScheduleEntity(scheduleEntity);
+		chatRoomMemberRepository.deleteAllByChatRoomEntity(chatRoomEntity);
+		chatRepository.deleteByChatRoomEntity(chatRoomEntity);
+		chatRoomRepository.deleteChatRoomEntity(chatRoomEntity);
 
 		/*
 		 해당 일정의 모든 Schedule 삭제
@@ -170,6 +185,8 @@ public class ScheduleService {
 		 1. Member 유효성 검사
 		 2. Schedule 유효성 검사
 		 3. Schedule 초대자 확인
+		 4. Chat Room 유효성 검사
+		 TODO 생성자가 아닌 초대자임을 확인
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(deleteScheduleRequestDto.memberSeq());
 		scheduleRepository.findByScheduleSeq(deleteScheduleRequestDto.scheduleSeq());
@@ -177,12 +194,16 @@ public class ScheduleService {
 			deleteScheduleRequestDto.scheduleSeq(),
 			deleteScheduleRequestDto.memberSeq()
 		).getSchedule();
+		ChatRoomEntity chatRoomEntity = chatRoomRepository.findByScheduleEntity(scheduleEntity);
 
 		// 해당 Schedule 의 작성한 Feed 조회
 		Optional<FeedEntity> feedEntity
 			= feedRepository.findByScheduleEntityAndMemberEntity(scheduleEntity, memberEntity);
 
-		// 작성한 Feed 존재 유무에 따라
+		// 해당 Member 의 채팅 삭제
+		chatRoomMemberRepository.deleteByChatRoomEntityAndMemberEntity(chatRoomEntity, memberEntity);
+		chatRepository.deleteByChatRoomEntityAndMemberEntity(chatRoomEntity, memberEntity);
+
 		if (feedEntity.isEmpty()) {
 			scheduleMemberRepository.deleteByScheduleEntityAndMemberEntity(scheduleEntity, memberEntity);
 		} else {
@@ -192,18 +213,20 @@ public class ScheduleService {
 			 2. Hide Feed Entity
 			 3. Book Mark Feed Entity
 			 4. Feed Image Entity
+			 5. Chat Room Member Entity
+			 6. Chat Entity
 			*/
 			hideFeedRepository.deleteByFeedEntity(feedEntity.get());
 			bookMarkRepository.deleteByFeedEntity(feedEntity.get());
 			feedImageRepository.deleteByFeedEntity(feedEntity.get());
 			feedRepository.deleteFeedEntity(feedEntity.get());
-
-			/*
-			 해당 일정의 모든 Schedule Member 삭제
-			 1. Schedule Member
-			*/
-			scheduleMemberRepository.deleteByScheduleEntityAndMemberEntity(scheduleEntity, memberEntity);
 		}
+
+		/*
+		 Feed와 상관 없이
+		 1. Schedule Member
+		*/
+		scheduleMemberRepository.deleteByScheduleEntityAndMemberEntity(scheduleEntity, memberEntity);
 	}
 
 	@Cacheable(value = "schedules", key = "#scheduleSeq + '-' + #memberSeq")
@@ -242,16 +265,16 @@ public class ScheduleService {
 			getScheduleByDateRequestDto.memberSeq(), getScheduleByDateRequestDto.date()
 		);
 
-        return scheduleEntities.stream()
-				.map(scheduleEntity -> new GetScheduleByDateResponseDto(
-						scheduleEntity.getScheduleSeq(),
-						scheduleEntity.getTitle(),
-						scheduleEntity.getLocation(),
-						scheduleEntity.getColor(),
-						scheduleEntity.getStartTime(),
-						scheduleEntity.getEndTime(),
-                        scheduleMemberRepository.countBySchedule(scheduleEntity) > 1))
-				.collect(Collectors.toList());
+		return scheduleEntities.stream()
+			.map(scheduleEntity -> new GetScheduleByDateResponseDto(
+				scheduleEntity.getScheduleSeq(),
+				scheduleEntity.getTitle(),
+				scheduleEntity.getLocation(),
+				scheduleEntity.getColor(),
+				scheduleEntity.getStartTime(),
+				scheduleEntity.getEndTime(),
+				scheduleMemberRepository.countBySchedule(scheduleEntity) > 1))
+			.collect(Collectors.toList());
 	}
 
 	@Transactional

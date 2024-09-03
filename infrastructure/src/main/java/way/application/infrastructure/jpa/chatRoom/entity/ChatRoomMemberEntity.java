@@ -41,8 +41,4 @@ public class ChatRoomMemberEntity extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "chat_room_seq")
 	private ChatRoomEntity chatRoomEntity;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "schedule_seq")
-	private ScheduleEntity scheduleEntity;
 }

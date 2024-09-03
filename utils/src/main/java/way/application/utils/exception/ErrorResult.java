@@ -185,6 +185,12 @@ public enum ErrorResult {
 		"CRDHMN003"
 	),
 
+	CHAT_ROOM_NOT_FOUND_EXCEPTION(
+		HttpStatus.BAD_REQUEST.value(),
+		"CHAT_ROOM_NOT_FOUND_EXCEPTION",
+		"CRN004"
+	),
+
 	// CONFLICT
 	USER_ID_DUPLICATION_CONFLICT_EXCEPTION(
 		HttpStatus.CONFLICT.value(),

@@ -69,7 +69,7 @@ public class ChatRoomService {
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(enterChatRoomRequestDto.memberSeq());
 		scheduleRepository.findByScheduleSeq(enterChatRoomRequestDto.scheduleSeq());
-		ScheduleEntity scheduleEntity = scheduleMemberRepository.findAcceptedScheduleMemberInSchedule(
+		scheduleMemberRepository.findAcceptedScheduleMemberInSchedule(
 			enterChatRoomRequestDto.scheduleSeq(),
 			enterChatRoomRequestDto.memberSeq()
 		).getSchedule();
@@ -78,7 +78,7 @@ public class ChatRoomService {
 
 		// Chat Room Member Entity 생성 및 저장
 		ChatRoomMemberEntity chatRoomMemberEntity
-			= chatRoomMemberMapper.toChatRoomMemberEntity(memberEntity, chatRoomEntity, scheduleEntity);
+			= chatRoomMemberMapper.toChatRoomMemberEntity(memberEntity, chatRoomEntity);
 		chatRoomMemberRepository.saveChatRoomMemberEntity(chatRoomMemberEntity);
 	}
 

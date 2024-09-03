@@ -52,4 +52,19 @@ public class ChatRoomRequestVo {
 			);
 		}
 	}
+
+	public record ExitChatRoomRequest(
+		@Schema(description = "채팅방 나가려는 Member Seq")
+		Long memberSeq,
+
+		@Schema(description = "Chat Room Seq")
+		String chatRoomSeq
+	) {
+		public ExitChatRoomRequestDto toExitChatRequestDto() {
+			return new ExitChatRoomRequestDto(
+				this.memberSeq,
+				this.chatRoomSeq
+			);
+		}
+	}
 }

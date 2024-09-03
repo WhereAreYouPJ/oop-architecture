@@ -22,4 +22,11 @@ public class ChatRoomRequestDto {
 	) {
 
 	}
+
+	public record ExitChatRoomRequestDto(
+		Long memberSeq,
+		String chatRoomSeq
+	) {
+
+	}
 }
