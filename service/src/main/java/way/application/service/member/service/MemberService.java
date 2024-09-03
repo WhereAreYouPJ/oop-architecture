@@ -14,6 +14,7 @@ import way.application.utils.s3.S3Utils;
 
 import java.io.IOException;
 
+import static way.application.service.member.dto.request.MemberRequestDto.*;
 import static way.application.service.member.dto.response.MemberResponseDto.*;
 
 
@@ -50,7 +51,7 @@ public class MemberService {
 
 	}
 
-	public CheckEmailResponseDto checkEmail(MemberRequestDto.CheckEmailRequestDto checkEmailRequestDto) {
+	public CheckEmailResponseDto checkEmail(CheckEmailRequestDto checkEmailRequestDto) {
 
 		//email 중복 검사
 		memberRepository.isDuplicatedEmail(checkEmailRequestDto.email());
@@ -58,7 +59,7 @@ public class MemberService {
 		return new CheckEmailResponseDto(checkEmailRequestDto.email());
 	}
 
-	public LoginResponseDto login(MemberRequestDto.LoginRequestDto loginRequestDto) {
+	public LoginResponseDto login(LoginRequestDto loginRequestDto) {
 
 		// 이메일 검증
 		MemberEntity memberEntity = memberRepository.validateEmail(loginRequestDto.email());
@@ -80,7 +81,7 @@ public class MemberService {
 		return new LoginResponseDto(accessToken,refreshToken,memberEntity.getMemberSeq(),memberEntity.getMemberCode());
 	}
 
-	public void send(MemberRequestDto.MailSendRequestDto mailSendRequestDto) {
+	public void send(MailSendRequestDto mailSendRequestDto) {
 
 		// authKey 생성
 		String authKey = memberDomain.generateAuthKey();
@@ -92,7 +93,7 @@ public class MemberService {
 		memberRepository.saveAuthKey(mailSendRequestDto.email(), authKey);
 	}
 
-	public void verify(MemberRequestDto.VerifyCodeDto verifyCodeDto) {
+	public void verify(VerifyCodeDto verifyCodeDto) {
 
 		// 인증코드 조회
 		String verifyCode = memberRepository.getCode(verifyCodeDto.email());
@@ -105,7 +106,7 @@ public class MemberService {
 
 	}
 
-	public void verifyPassword(MemberRequestDto.VerifyCodeDto verifyCodeDto) {
+	public void verifyPassword(VerifyCodeDto verifyCodeDto) {
 
 		// 이메일 검사
 		MemberEntity memberEntity = memberRepository.validateEmail(verifyCodeDto.email());
@@ -121,7 +122,7 @@ public class MemberService {
 
 	}
 
-	public void resetPassword(MemberRequestDto.PasswordResetRequestDto passwordResetRequestDto) {
+	public void resetPassword(PasswordResetRequestDto passwordResetRequestDto) {
 
 		// 이메일 검사
 		MemberEntity memberEntity = memberRepository.validateEmail(passwordResetRequestDto.email());
@@ -137,7 +138,7 @@ public class MemberService {
 
 	}
 
-	public GetMemberDetailResponseDto getMemberDetail(MemberRequestDto.GetMemberDetailDto getMemberDetailDto) {
+	public GetMemberDetailResponseDto getMemberDetail(GetMemberDetailDto getMemberDetailDto) {
 
 		// memberSeq 검사
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(getMemberDetailDto.memberSeq());
@@ -147,7 +148,7 @@ public class MemberService {
 
 	}
 
-	public void modifyProfileImage(MemberRequestDto.ModifyProfileImage modifyProfileImage) throws IOException {
+	public void modifyProfileImage(ModifyProfileImage modifyProfileImage) throws IOException {
 
 		// memberSeq 검사
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(modifyProfileImage.memberSeq());
@@ -160,7 +161,7 @@ public class MemberService {
 		memberRepository.saveMember(memberEntity);
 	}
 
-	public void logout(MemberRequestDto.LogoutRequestDto logoutRequest) {
+	public void logout(LogoutRequestDto logoutRequest) {
 
 		// memberSeq 검사
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(logoutRequest.memberSeq());
@@ -176,13 +177,24 @@ public class MemberService {
 
 	}
 
-	public SearchMemberResponseDto searchMember(MemberRequestDto.SearchMemberDto searchMemberDto) {
+	public SearchMemberResponseDto searchMember(SearchMemberDto searchMemberDto) {
 
 		//memberCode 조회
 		MemberEntity memberEntity = memberRepository.findByMemberCode(searchMemberDto.memberCode());
 
 		return new SearchMemberResponseDto(memberEntity.getUserName(), memberEntity.getMemberSeq(), memberEntity.getProfileImage());
 
+
+	}
+
+	public void modifyUserName(ModifyUserNameDto modifyUserNameRequest) {
+
+		// memberSeq 검사
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(modifyUserNameRequest.memberSeq());
+		// userName 변경
+		memberEntity.updateUserName(modifyUserNameRequest.userName());
+		// 변경 저장
+		memberRepository.saveMember(memberEntity);
 
 	}
 }

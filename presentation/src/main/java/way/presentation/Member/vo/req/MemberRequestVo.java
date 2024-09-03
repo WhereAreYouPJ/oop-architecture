@@ -145,4 +145,16 @@ public class MemberRequestVo {
             );
         }
     }
+
+    public record ModifyUserNameRequest(
+            Long memberSeq,
+            String userName
+    ) {
+        public MemberRequestDto.ModifyUserNameDto toModifyUserNameRequest() {
+            return new MemberRequestDto.ModifyUserNameDto(
+                    this.memberSeq,
+                    this.userName
+            );
+        }
+    }
 }

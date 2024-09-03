@@ -75,4 +75,11 @@ public class MemberRequestDto {
     ) {
 
     }
+
+    public record ModifyUserNameDto(
+            Long memberSeq,
+            String userName
+    ) {
+
+    }
 }
