@@ -67,4 +67,8 @@ public class MemberEntity {
 	public void deleteFireBaseTargetToken() {
 		this.fireBaseTargetToken = null;
 	}
+
+	public void updateUserName(String userName) {
+		this.userName = userName;
+	}
 }

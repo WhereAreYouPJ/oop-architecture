@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import way.application.service.member.dto.request.MemberRequestDto;
 import way.application.service.member.service.MemberService;
 import way.application.utils.exception.GlobalExceptionHandler;
 import way.presentation.Member.validates.*;
@@ -39,6 +40,7 @@ public class MemberController {
     private final VerifyCodeValidator verifyCodeValidator;
     private final ResetPasswordValidator resetPasswordValidator;
     private final LogoutValidator logoutValidator;
+    private final ModifyUserNameValidator modifyUserNameValidator;
 
     @PostMapping(name = "회원가입")
     @Operation(summary = "join Member API", description = "회원가입 API")
@@ -113,7 +115,7 @@ public class MemberController {
     public ResponseEntity<BaseResponse<CheckEmailResponse>> checkEmail(@Valid @RequestParam("email") String email) {
 
         // Param -> VO
-        MemberRequestVo.CheckEmailRequest request = new MemberRequestVo.CheckEmailRequest(email);
+        CheckEmailRequest request = new CheckEmailRequest(email);
 
         // VO -> DTO
         CheckEmailResponseDto checkEmailResponseDto = memberService.checkEmail(request.toCheckEmailRequestDto());
@@ -156,7 +158,7 @@ public class MemberController {
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class)))
     })
-    public ResponseEntity<BaseResponse<LoginResponseDto>> login(@Valid @RequestBody MemberRequestVo.LoginRequest request) {
+    public ResponseEntity<BaseResponse<LoginResponseDto>> login(@Valid @RequestBody LoginRequest request) {
 
         // DTO 유효성 검사
         loginValidator.validate(request);
@@ -188,7 +190,7 @@ public class MemberController {
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class)))
     })
-    public ResponseEntity<BaseResponse<String>> sendMail(@Valid @RequestBody MemberRequestVo.MailSendRequest request) {
+    public ResponseEntity<BaseResponse<String>> sendMail(@Valid @RequestBody MailSendRequest request) {
 
         // DTO 유효성 검사
         sendEmailRequestValidator.validate(request);
@@ -226,7 +228,7 @@ public class MemberController {
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class)))
     })
-    public ResponseEntity<BaseResponse<String>> verifyCode(@Valid @RequestBody MemberRequestVo.VerifyCodeRequest request) {
+    public ResponseEntity<BaseResponse<String>> verifyCode(@Valid @RequestBody VerifyCodeRequest request) {
 
         // DTO 유효성 검사
         verifyCodeValidator.validate(request);
@@ -270,7 +272,7 @@ public class MemberController {
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class)))
     })
-    public ResponseEntity<BaseResponse<String>> verifyPasswordCode(@Valid @RequestBody MemberRequestVo.VerifyCodeRequest request) {
+    public ResponseEntity<BaseResponse<String>> verifyPasswordCode(@Valid @RequestBody VerifyCodeRequest request) {
 
         // DTO 유효성 검사
         verifyCodeValidator.validate(request);
@@ -320,7 +322,7 @@ public class MemberController {
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class))),
     })
-    public ResponseEntity<BaseResponse<String>> resetPassword(@Valid @RequestBody MemberRequestVo.PasswordResetRequest request) {
+    public ResponseEntity<BaseResponse<String>> resetPassword(@Valid @RequestBody PasswordResetRequest request) {
 
 
         // DTO 유효성 검사
@@ -496,7 +498,7 @@ public class MemberController {
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class)))
     })
-    public ResponseEntity<BaseResponse<String>> logout(@Valid @RequestBody MemberRequestVo.LogoutRequest request) {
+    public ResponseEntity<BaseResponse<String>> logout(@Valid @RequestBody LogoutRequest request) {
 
         // DTO 유효성 검사
         logoutValidator.validate(request);
@@ -504,6 +506,44 @@ public class MemberController {
         // VO -> DTO 변환
         LogoutRequestDto logoutRequest = request.toLogoutRequest();
         memberService.logout(logoutRequest);
+
+        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
+    }
+
+    @PutMapping(value = "/modify/userName", name = "회원 이름 변경")
+    @Operation(summary = "Modify UserName API", description = "이름 변경 API")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청에 성공하였습니다.",
+                    useReturnTypeSchema = true),
+            @ApiResponse(
+                    responseCode = "B001",
+                    description = "400 Invalid DTO Parameter errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "S500",
+                    description = "500 SERVER_ERROR",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "MSB002",
+                    description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class)))
+    })
+    public ResponseEntity<BaseResponse<String>> ModifyUserName(@RequestBody ModifyUserNameRequest request) {
+
+        // DTO 유효성 검사
+        modifyUserNameValidator.validate(request);
+
+        // VO -> DTO 변환
+        ModifyUserNameDto modifyUserNameRequest = request.toModifyUserNameRequest();
+        memberService.modifyUserName(modifyUserNameRequest);
 
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
     }
