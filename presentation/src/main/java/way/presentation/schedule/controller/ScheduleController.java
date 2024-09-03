@@ -42,7 +42,7 @@ import way.presentation.schedule.validates.SaveScheduleValidator;
 @RestController
 @RequestMapping("/schedule")
 @RequiredArgsConstructor
-@Tag(name = "일정", description = "담당자 (송인준)")
+@Tag(name = "일정", description = "담당자 (박종훈)")
 public class ScheduleController {
 	private final SaveScheduleValidator saveScheduleValidator;
 	private final ModifyScheduleValidator modifyScheduleValidator;

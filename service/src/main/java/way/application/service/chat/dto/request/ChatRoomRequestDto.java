@@ -2,7 +2,7 @@ package way.application.service.chat.dto.request;
 
 public class ChatRoomRequestDto {
 	public record CreateChatRoomRequestDto(
-		String roomName
+		Long scheduleSeq
 	) {
 
 	}

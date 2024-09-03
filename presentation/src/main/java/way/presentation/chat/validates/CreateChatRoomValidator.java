@@ -10,11 +10,11 @@ import way.application.utils.exception.ErrorResult;
 @Component
 public class CreateChatRoomValidator {
 	public void validate(CreateChatRoomRequest request) {
-		validateRoomName(request.roomName());
+		validateScheduleSeq(request.scheduleSeq());
 	}
 
-	private void validateRoomName(String roomName) {
-		if (roomName == null || roomName.isEmpty()) {
+	private void validateScheduleSeq(Long scheduleSeq) {
+		if (scheduleSeq == null) {
 			throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 		}
 	}
