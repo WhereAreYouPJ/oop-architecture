@@ -17,14 +17,22 @@ import way.application.service.friend.dto.request.FriendDto;
 import way.application.service.friend.dto.response.FriendResponseDto;
 import way.application.service.friend.service.FriendService;
 import way.application.service.friendRequest.dto.request.FriendRequestDto;
+import way.application.service.member.dto.request.MemberRequestDto;
 import way.application.utils.exception.GlobalExceptionHandler;
+import way.presentation.Member.vo.req.MemberRequestVo;
 import way.presentation.base.BaseResponse;
+import way.presentation.friend.validates.AddFavoritesValidator;
 import way.presentation.friend.validates.DeleteFriendValidator;
+import way.presentation.friend.validates.RemoveFavoritesValidator;
 import way.presentation.friend.vo.req.FriendVo;
 import way.presentation.friend.vo.res.FriendResponseVo;
 import way.presentation.friendRequest.vo.req.FriendRequestVo;
 
 import java.util.List;
+
+import static way.application.service.friend.dto.request.FriendDto.*;
+import static way.presentation.friend.vo.req.FriendVo.*;
+import static way.presentation.friend.vo.res.FriendResponseVo.*;
 
 @RestController
 @RequestMapping("/friend")
@@ -34,6 +42,8 @@ public class FriendController {
 
     private final FriendService friendService;
     private final DeleteFriendValidator deleteFriendValidator;
+    private final AddFavoritesValidator addFavoritesValidator;
+    private final RemoveFavoritesValidator removeFavoritesValidator;
 
     @GetMapping(name = "친구 리스트 조회")
     @Operation(summary = "friend List API", description = "친구 리스트 조회 API")
@@ -67,21 +77,22 @@ public class FriendController {
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class)))
     })
-    public ResponseEntity<BaseResponse<List<FriendResponseVo.GetFriendListResponse>>> getFriendList(@Valid @RequestParam("memberSeq") Long memberSeq) {
+    public ResponseEntity<BaseResponse<List<GetFriendListResponse>>> getFriendList(@Valid @RequestParam("memberSeq") Long memberSeq) {
 
         // Param -> VO
-        FriendVo.GetFriendList request = new FriendVo.GetFriendList(memberSeq);
+        GetFriendList request = new GetFriendList(memberSeq);
 
         // VO -> DTO
         List<FriendResponseDto.GetFriendList> friendList
                 = friendService.getFriendList(request.toGetFriendList());
 
 
-        List<FriendResponseVo.GetFriendListResponse> response = friendList.stream()
-                .map(dto -> new FriendResponseVo.GetFriendListResponse(
+        List<GetFriendListResponse> response = friendList.stream()
+                .map(dto -> new GetFriendListResponse(
                         dto.memberSeq(),
                         dto.userName(),
-                        dto.profileImage()))
+                        dto.profileImage(),
+                        dto.Favorites()))
                 .toList();
 
 
@@ -114,15 +125,103 @@ public class FriendController {
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class)))
     })
-    public ResponseEntity<BaseResponse<String>> deleteFriend(@Valid @RequestBody FriendVo.DeleteFriend request) {
+    public ResponseEntity<BaseResponse<String>> deleteFriend(@Valid @RequestBody DeleteFriend request) {
 
         // DTO 유효성 검사
         deleteFriendValidator.validate(request);
 
         // VO -> DTO 변환
-        FriendDto.DeleteFriendDto deleteFriendDto = request.toDeleteFriend();
+        DeleteFriendDto deleteFriendDto = request.toDeleteFriend();
 
         friendService.delete(deleteFriendDto);
+
+        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
+    }
+
+    @PutMapping(value = "/favorites/add", name = "친구 즐찾 추가")
+    @Operation(summary = "Modify UserName API", description = "친구 즐찾 추가 API")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청에 성공하였습니다.",
+                    useReturnTypeSchema = true),
+            @ApiResponse(
+                    responseCode = "B001",
+                    description = "400 Invalid DTO Parameter errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "S500",
+                    description = "500 SERVER_ERROR",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "MSB002",
+                    description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "FN002",
+                    description = "404 FRIEND_NOT_FOUND_EXCEPTION / 친구 아님 오류",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class)))
+    })
+    public ResponseEntity<BaseResponse<String>> AddFavorites(@RequestBody FriendVo.AddFavorites request) {
+
+        // DTO 유효성 검사
+        addFavoritesValidator.validate(request);
+
+        // VO -> DTO 변환
+        AddFavoritesDto addFavoritesRequest = request.toAddFavorites();
+        friendService.addFavorites(addFavoritesRequest);
+
+        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
+    }
+
+    @PutMapping(value = "/favorites/remove", name = "친구 즐찾 제거")
+    @Operation(summary = "Modify UserName API", description = "친구 즐찾 제거 API")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청에 성공하였습니다.",
+                    useReturnTypeSchema = true),
+            @ApiResponse(
+                    responseCode = "B001",
+                    description = "400 Invalid DTO Parameter errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "S500",
+                    description = "500 SERVER_ERROR",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "MSB002",
+                    description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "FN002",
+                    description = "404 FRIEND_NOT_FOUND_EXCEPTION / 친구 아님 오류",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class)))
+    })
+    public ResponseEntity<BaseResponse<String>> RemoveFavorites(@RequestBody FriendVo.RemoveFavorites request) {
+
+        // DTO 유효성 검사
+        removeFavoritesValidator.validate(request);
+
+        // VO -> DTO 변환
+        RemoveFavoritesDto removeFavorites = request.toRemoveFavorites();
+        friendService.removeFavorites(removeFavorites);
 
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
     }

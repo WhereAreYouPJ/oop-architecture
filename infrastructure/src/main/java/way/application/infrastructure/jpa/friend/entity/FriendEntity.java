@@ -31,4 +31,16 @@ public class FriendEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owner_seq")
     private MemberEntity owner;
+
+    @Column(columnDefinition = "boolean default false")
+    private boolean Favorites;
+
+
+    public void addFavorites() {
+        Favorites = true;
+    }
+
+    public void removeFavorites() {
+        Favorites = false;
+    }
 }

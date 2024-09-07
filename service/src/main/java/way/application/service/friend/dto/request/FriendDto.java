@@ -13,4 +13,16 @@ public class FriendDto {
             Long friendSeq
     ) {
     }
+
+    public record AddFavoritesDto(
+            Long friendSeq,
+            Long memberSeq
+    ) {
+    }
+
+    public record RemoveFavoritesDto(
+            Long friendSeq,
+            Long memberSeq
+    ) {
+    }
 }

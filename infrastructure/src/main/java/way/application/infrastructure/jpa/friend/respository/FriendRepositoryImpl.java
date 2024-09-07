@@ -30,12 +30,19 @@ public class FriendRepositoryImpl implements FriendRepository {
 
     @Override
     public List<FriendEntity> findByOwner(MemberEntity member) {
-        return friendJpaRepository.findByOwner(member);
+        return friendJpaRepository.findByOwnerOrderByFriendsUserName(member);
 
     }
 
     @Override
     public void delete(MemberEntity member, MemberEntity friend) {
         friendJpaRepository.deleteByOwnerAndFriends(member,friend);
+    }
+
+    @Override
+    public FriendEntity findByOwnerAndFriend(MemberEntity member, MemberEntity friend) {
+        return friendJpaRepository.findByOwnerAndFriends(member,friend)
+                .orElseThrow(() -> new BadRequestException(ErrorResult.FRIEND_NOT_FOUND_EXCEPTION));
+
     }
 }

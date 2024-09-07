@@ -7,13 +7,16 @@ import way.application.infrastructure.jpa.friend.entity.FriendEntity;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface FriendJpaRepository extends JpaRepository<FriendEntity, Long> {
 
-        List<FriendEntity> findByOwner(MemberEntity member);
+        List<FriendEntity> findByOwnerOrderByFriendsUserName(MemberEntity member);
 
         @Transactional
         void deleteByOwnerAndFriends(MemberEntity member, MemberEntity friend);
+
+        Optional<FriendEntity> findByOwnerAndFriends(MemberEntity member, MemberEntity friend);
 
 }

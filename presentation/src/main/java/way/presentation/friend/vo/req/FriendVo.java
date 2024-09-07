@@ -31,5 +31,29 @@ public class FriendVo {
         }
     }
 
+    public record AddFavorites(
+            Long friendSeq,
+            Long memberSeq
+    ) {
+        public FriendDto.AddFavoritesDto toAddFavorites() {
+            return new FriendDto.AddFavoritesDto(
+                    this.friendSeq,
+                    this.memberSeq
+            );
+        }
+    }
+
+    public record RemoveFavorites(
+            Long friendSeq,
+            Long memberSeq
+    ) {
+        public FriendDto.RemoveFavoritesDto toRemoveFavorites() {
+            return new FriendDto.RemoveFavoritesDto(
+                    this.friendSeq,
+                    this.memberSeq
+            );
+        }
+    }
+
 
 }

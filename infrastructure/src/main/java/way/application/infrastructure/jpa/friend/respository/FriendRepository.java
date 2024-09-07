@@ -13,4 +13,6 @@ public interface FriendRepository {
     List<FriendEntity> findByOwner(MemberEntity member);
 
     void delete(MemberEntity member, MemberEntity friend);
+
+    FriendEntity findByOwnerAndFriend(MemberEntity member, MemberEntity friend);
 }
