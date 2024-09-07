@@ -8,6 +8,7 @@ import way.application.infrastructure.jpa.friend.respository.FriendRepository;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.member.repository.MemberRepository;
 import way.application.infrastructure.jpa.scheduleMember.repository.ScheduleMemberRepository;
+import way.application.service.friend.dto.request.FriendDto;
 import way.application.service.friend.dto.response.FriendResponseDto;
 
 import java.util.List;
@@ -30,10 +31,12 @@ public class FriendService {
         List<FriendEntity> friendList = friendRepository.findByOwner(member);
 
 
+
         return friendList.stream().map(friendEntity -> new FriendResponseDto.GetFriendList(
                 friendEntity.getFriends().getMemberSeq(),
                 friendEntity.getFriends().getUserName(),
-                friendEntity.getFriends().getProfileImage())).collect(Collectors.toList());
+                friendEntity.getFriends().getProfileImage(),
+                friendEntity.isFavorites())).collect(Collectors.toList());
 
     }
 
@@ -47,5 +50,29 @@ public class FriendService {
         friendRepository.delete(member, friend);
         friendRepository.delete(friend, member);
 
+    }
+
+    public void addFavorites(AddFavoritesDto addFavoritesRequest) {
+
+        MemberEntity member = memberRepository.findByMemberSeq(addFavoritesRequest.memberSeq());
+        MemberEntity friend = memberRepository.findByMemberSeq(addFavoritesRequest.friendSeq());
+
+        FriendEntity friendEntity = friendRepository.findByOwnerAndFriend(member, friend);
+
+        friendEntity.addFavorites();
+
+        friendRepository.saveFriend(friendEntity);
+    }
+
+    public void removeFavorites(RemoveFavoritesDto removeFavoritesDto) {
+
+        MemberEntity member = memberRepository.findByMemberSeq(removeFavoritesDto.memberSeq());
+        MemberEntity friend = memberRepository.findByMemberSeq(removeFavoritesDto.friendSeq());
+
+        FriendEntity friendEntity = friendRepository.findByOwnerAndFriend(member, friend);
+
+        friendEntity.removeFavorites();
+
+        friendRepository.saveFriend(friendEntity);
     }
 }

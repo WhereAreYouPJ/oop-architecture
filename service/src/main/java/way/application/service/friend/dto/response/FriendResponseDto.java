@@ -5,7 +5,8 @@ public class FriendResponseDto {
     public record GetFriendList(
             Long memberSeq,
             String userName,
-            String profileImage
+            String profileImage,
+            boolean Favorites
     ) {
 
     }
