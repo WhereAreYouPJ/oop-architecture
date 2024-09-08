@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
+import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.schedule.entity.QScheduleEntity;
 import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
 import way.application.infrastructure.jpa.scheduleMember.entity.QScheduleMemberEntity;
@@ -90,5 +91,21 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 	@Override
 	public void deleteScheduleEntity(ScheduleEntity scheduleEntity) {
 		scheduleJpaRepository.delete(scheduleEntity);
+	}
+
+	@Override
+	public List<ScheduleEntity> findSchedulesByMember(MemberEntity memberEntity) {
+		QScheduleEntity schedule = QScheduleEntity.scheduleEntity;
+		QScheduleMemberEntity scheduleMember = QScheduleMemberEntity.scheduleMemberEntity;
+
+		return queryFactory
+				.select(schedule)
+				.from(schedule)
+				.join(scheduleMember).on(schedule.scheduleSeq.eq(scheduleMember.schedule.scheduleSeq))
+				.where(
+						scheduleMember.invitedMember.eq(memberEntity)
+						.and(schedule.startTime.goe(LocalDate.now().atStartOfDay()))
+				)
+				.fetch();
 	}
 }

@@ -101,4 +101,10 @@ public class ScheduleRequestDto {
 	) {
 
 	}
+
+	public record GetDdayScheduleDto(
+			Long memberSeq
+	) {
+
+	}
 }
