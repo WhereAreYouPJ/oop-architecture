@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 
+import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
 import way.application.infrastructure.jpa.scheduleMember.entity.ScheduleMemberEntity;
 
@@ -28,4 +29,6 @@ public interface ScheduleRepository {
 	Page<ScheduleEntity> getScheduleEntityFromScheduleMember(Page<ScheduleMemberEntity> scheduleMemberEntityPage);
 
 	void deleteScheduleEntity(ScheduleEntity scheduleEntity);
+
+	List<ScheduleEntity> findSchedulesByMember(MemberEntity memberEntity);
 }

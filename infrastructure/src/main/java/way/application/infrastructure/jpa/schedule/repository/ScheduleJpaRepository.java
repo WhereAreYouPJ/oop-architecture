@@ -32,4 +32,7 @@ public interface ScheduleJpaRepository extends JpaRepository<ScheduleEntity, Lon
 		@Param("memberSeq") Long memberSeq,
 		@Param("requestDate") LocalDate requestDate
 	);
+
+	@Query("SELECT s FROM ScheduleEntity s WHERE s.startTime >= CURRENT_DATE")
+	List<ScheduleEntity> findSchedulesAfterToday();
 }

@@ -2,6 +2,7 @@ package way.application.domain.schedule;
 
 import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.time.temporal.ChronoUnit;
 
 import org.springframework.stereotype.Component;
 
@@ -27,5 +28,18 @@ public class ScheduleDomain {
 		if (startTime.isAfter(oneHourBefore) && startTime.isBefore(oneHourAfter)) {
 			throw new BadRequestException(ErrorResult.START_TIME_BAD_REQUEST_EXCEPTION);
 		}
+	}
+
+	public String getDdaySchedule(LocalDateTime startTime) {
+
+		LocalDateTime now = LocalDateTime.now();
+
+		long day = ChronoUnit.DAYS.between(now.toLocalDate(), startTime.toLocalDate());
+
+		if (day == 0 ) {
+			return "D-day";
+		}
+
+		return "D-"+day;
 	}
 }

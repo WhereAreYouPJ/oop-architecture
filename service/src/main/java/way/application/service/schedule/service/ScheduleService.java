@@ -327,4 +327,22 @@ public class ScheduleService {
 			))
 			.collect(Collectors.toList());
 	}
+
+	public List<GetDdayScheduleResponseDto> getDdaySchedule(GetDdayScheduleDto getDdayScheduleDto) {
+
+		// 유효성 검사 (Repository 에서 처리)
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(getDdayScheduleDto.memberSeq());
+
+		List<ScheduleEntity> scheduleEntities = scheduleRepository.findSchedulesByMember(memberEntity);
+
+		return scheduleEntities.stream()
+				.map(scheduleEntity -> new GetDdayScheduleResponseDto(
+						scheduleEntity.getScheduleSeq(),
+						scheduleEntity.getTitle(),
+						scheduleDomain.getDdaySchedule(scheduleEntity.getStartTime())
+				))
+				.collect(Collectors.toList());
+
+
+	}
 }

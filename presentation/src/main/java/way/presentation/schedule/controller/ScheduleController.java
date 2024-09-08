@@ -526,4 +526,47 @@ public class ScheduleController {
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
+
+	@GetMapping(value = "/dday-schedule", name = "일정 D-DAY 조회")
+	@Operation(summary = "일정 D-DAY 조회 API", description = "일정 D-DAY 조회 API")
+	@ApiResponses(value = {
+			@ApiResponse(
+					responseCode = "200",
+					description = "요청에 성공하였습니다.",
+					useReturnTypeSchema = true),
+			@ApiResponse(
+					responseCode = "S500",
+					description = "500 SERVER_ERROR (나도 몰라 ..)",
+					content = @Content(
+							schema = @Schema(
+									implementation = GlobalExceptionHandler.ErrorResponse.class))),
+			@ApiResponse(
+					responseCode = "MSB002",
+					description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+					content = @Content(
+							schema = @Schema(
+									implementation = GlobalExceptionHandler.ErrorResponse.class)))
+	})
+	public ResponseEntity<BaseResponse<List<GetDdayScheduleResponse>>> getDdaySchedule(
+			@Valid
+			@RequestParam("memberSeq") Long memberSeq) {
+
+		// Param -> VO
+		GetDdaySchedule requestVo = new GetDdaySchedule(memberSeq);
+
+		// VO -> DTO
+
+		List<GetDdayScheduleResponseDto> responseDto = scheduleService.getDdaySchedule(requestVo.toGetDdayScheduleDto());
+
+		// DTO -> VO
+		List<GetDdayScheduleResponse> response = responseDto.stream()
+				.map(scheduleEntity -> new GetDdayScheduleResponse(
+						scheduleEntity.scheduleSeq(),
+						scheduleEntity.title(),
+						scheduleEntity.dDay()
+				))
+				.collect(Collectors.toList());
+
+		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
+	}
 }

@@ -169,4 +169,14 @@ public class ScheduleRequestVo {
 			);
 		}
 	}
+
+	public record GetDdaySchedule(
+			Long memberSeq
+	) {
+		public GetDdayScheduleDto toGetDdayScheduleDto() {
+			return new GetDdayScheduleDto(
+					this.memberSeq
+			);
+		}
+	}
 }

@@ -75,4 +75,12 @@ public class ScheduleResponseDto {
 	) {
 
 	}
+
+	public record GetDdayScheduleResponseDto(
+			Long scheduleSeq,
+			String title,
+			String dDay
+	) {
+
+	}
 }
