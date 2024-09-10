@@ -226,6 +226,12 @@ public class MemberController {
                     description = "400 CODE_BAD_REQUEST_EXCEPTION",
                     content = @Content(
                             schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "EDC002",
+                    description = "409 EMAIL_DUPLICATION_EXCEPTION",
+                    content = @Content(
+                            schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class)))
     })
     public ResponseEntity<BaseResponse<String>> verifyCode(@Valid @RequestBody VerifyCodeRequest request) {

@@ -95,6 +95,9 @@ public class MemberService {
 
 	public void verify(VerifyCodeDto verifyCodeDto) {
 
+		//email 중복 검사
+		memberRepository.isDuplicatedEmail(verifyCodeDto.email());
+
 		// 인증코드 조회
 		String verifyCode = memberRepository.getCode(verifyCodeDto.email());
 
