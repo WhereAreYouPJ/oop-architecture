@@ -171,11 +171,23 @@ public class ScheduleRequestVo {
 	}
 
 	public record GetDdaySchedule(
-			Long memberSeq
+		Long memberSeq
 	) {
 		public GetDdayScheduleDto toGetDdayScheduleDto() {
 			return new GetDdayScheduleDto(
-					this.memberSeq
+				this.memberSeq
+			);
+		}
+	}
+
+	public record RefuseScheduleRequest(
+		Long memberSeq,
+		Long scheduleSeq
+	) {
+		public RefuseScheduleRequestDto toRefuseScheduleRequestDto() {
+			return new RefuseScheduleRequestDto(
+				this.memberSeq,
+				this.scheduleSeq
 			);
 		}
 	}
