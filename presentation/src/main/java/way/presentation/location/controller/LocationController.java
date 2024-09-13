@@ -111,6 +111,12 @@ public class LocationController {
 			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / 존재하지 않는 MemberSeq 오류",
 			content = @Content(
 				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "LSB025",
+			description = "400 LOCATION_SEQ_BAD_REQUEST_EXCEPTION / 존재하지 않는 LocationSeq 오류",
+			content = @Content(
+				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
 	public ResponseEntity<BaseResponse> deleteLocation(

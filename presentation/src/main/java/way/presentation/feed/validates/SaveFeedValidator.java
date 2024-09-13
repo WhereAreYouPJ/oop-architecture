@@ -15,7 +15,6 @@ public class SaveFeedValidator {
 		validateScheduleSeq(request.scheduleSeq());
 		validateMemberSeq(request.memberSeq());
 		validateTitle(request.title());
-		validateFeedImageInfos(request.feedImageInfos());
 	}
 
 	private void validateScheduleSeq(Long scheduleSeq) {
@@ -32,12 +31,6 @@ public class SaveFeedValidator {
 
 	private void validateTitle(String title) {
 		if (title == null || title.trim().isEmpty()) {
-			throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
-		}
-	}
-
-	private void validateFeedImageInfos(List<feedImageInfo> images) {
-		if (images == null || images.isEmpty()) {
 			throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 		}
 	}
