@@ -10,6 +10,9 @@ import java.time.YearMonth;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -566,6 +569,44 @@ public class ScheduleController {
 						scheduleEntity.dDay()
 				))
 				.collect(Collectors.toList());
+
+		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
+	}
+
+	@GetMapping(value = "/list", name = "일정 List 조회")
+	@Operation(summary = "일정 List 조회 API", description = "일정 D-DAY 조회 API")
+	@ApiResponses(value = {
+		@ApiResponse(
+			responseCode = "200",
+			description = "요청에 성공하였습니다.",
+			useReturnTypeSchema = true),
+		@ApiResponse(
+			responseCode = "S500",
+			description = "500 SERVER_ERROR (나도 몰라 ..)",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "MSB002",
+			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class)))
+	})
+	@Parameters({
+		@Parameter(name = "memberSeq", description = "회원 PK 값", example = "1"),
+		@Parameter(name = "page", description = "페이지 처리 페이지 수", example = "0"),
+		@Parameter(name = "size", description = "페이지 당 응답 받을 데이터 개수", example = "10"),
+	})
+	public ResponseEntity<BaseResponse<Page<GetScheduleListDto>>> getScheduleList(
+		@Valid
+		@RequestParam("memberSeq") Long memberSeq,
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(defaultValue = "10") int size
+	) {
+
+		Pageable pageable = PageRequest.of(page, size);
+		Page<GetScheduleListDto> response = scheduleService.getScheduleList(memberSeq, pageable);
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
