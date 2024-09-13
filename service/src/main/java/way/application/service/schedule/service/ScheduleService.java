@@ -10,6 +10,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -328,6 +330,7 @@ public class ScheduleService {
 			.collect(Collectors.toList());
 	}
 
+	@Transactional(readOnly = true)
 	public List<GetDdayScheduleResponseDto> getDdaySchedule(GetDdayScheduleDto getDdayScheduleDto) {
 
 		// 유효성 검사 (Repository 에서 처리)
@@ -336,13 +339,30 @@ public class ScheduleService {
 		List<ScheduleEntity> scheduleEntities = scheduleRepository.findSchedulesByMember(memberEntity);
 
 		return scheduleEntities.stream()
-				.map(scheduleEntity -> new GetDdayScheduleResponseDto(
-						scheduleEntity.getScheduleSeq(),
-						scheduleEntity.getTitle(),
-						scheduleDomain.getDdaySchedule(scheduleEntity.getStartTime())
-				))
-				.collect(Collectors.toList());
+			.map(scheduleEntity -> new GetDdayScheduleResponseDto(
+				scheduleEntity.getScheduleSeq(),
+				scheduleEntity.getTitle(),
+				scheduleDomain.getDdaySchedule(scheduleEntity.getStartTime())
+			))
+			.collect(Collectors.toList());
+	}
 
+	@Transactional(readOnly = true)
+	public Page<GetScheduleListDto> getScheduleList(Long memberSeq, Pageable pageable) {
+		/*
+		 1. Member 유효성 검사
+		*/
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
+		Page<ScheduleEntity> scheduleEntityPage = scheduleRepository.findSchedulesByMemberEntityAndStartTime(
+			memberEntity,
+			LocalDateTime.now().plusHours(1),
+			pageable
+		);
 
+		return scheduleEntityPage.map(scheduleEntity -> new GetScheduleListDto(
+			scheduleEntity.getScheduleSeq(),
+			scheduleEntity.getStartTime(),
+			scheduleEntity.getTitle()
+		));
 	}
 }
