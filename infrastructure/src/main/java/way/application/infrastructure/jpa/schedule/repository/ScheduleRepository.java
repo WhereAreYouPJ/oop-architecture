@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
@@ -31,4 +32,10 @@ public interface ScheduleRepository {
 	void deleteScheduleEntity(ScheduleEntity scheduleEntity);
 
 	List<ScheduleEntity> findSchedulesByMember(MemberEntity memberEntity);
+
+	Page<ScheduleEntity> findSchedulesByMemberEntityAndStartTime(
+		MemberEntity memberEntity,
+		LocalDateTime startTime,
+		Pageable pageable
+	);
 }
