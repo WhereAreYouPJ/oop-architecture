@@ -31,4 +31,8 @@ public interface ScheduleMemberRepository {
 	void deleteByScheduleEntityAndMemberEntity(ScheduleEntity scheduleEntity, MemberEntity memberEntity);
 
 	long countBySchedule(ScheduleEntity scheduleEntity);
+
+	void validateScheduleMemberIsCreator(MemberEntity memberEntity, ScheduleEntity scheduleEntity);
+
+	void validateScheduleMemberAccept(MemberEntity memberEntity, ScheduleEntity scheduleEntity);
 }

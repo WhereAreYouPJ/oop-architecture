@@ -299,7 +299,6 @@ public class ScheduleController {
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
 	}
 
-
 	@GetMapping(name = "일정 조회")
 	@Operation(summary = "일정 상세 조회 API", description = "Response: GetScheduleResponse")
 	@Parameters({
@@ -416,13 +415,13 @@ public class ScheduleController {
 				dto.color(),
 				dto.startTime(),
 				dto.endTime(),
-				dto.group()	))
+				dto.group()))
 			.collect(Collectors.toList());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
 
-	@PostMapping(value = "/accept-schedule", name = "일정 초대 수락")
+	@PostMapping(value = "/accept", name = "일정 초대 수락")
 	@Operation(summary = "일정 초대 수락 API", description = "Request: AcceptScheduleRequest")
 	@ApiResponses(value = {
 		@ApiResponse(
@@ -467,7 +466,7 @@ public class ScheduleController {
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
 	}
 
-	@GetMapping(value = "/month-schedule", name = "월별 일정 조회")
+	@GetMapping(value = "/month", name = "월별 일정 조회")
 	@Operation(summary = "월별 일정 조회 API", description = "Response: GetScheduleByMonthResponse")
 	@Parameters({
 		@Parameter(
@@ -530,45 +529,46 @@ public class ScheduleController {
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
 
-	@GetMapping(value = "/dday-schedule", name = "일정 D-DAY 조회")
+	@GetMapping(value = "/dday", name = "일정 D-DAY 조회")
 	@Operation(summary = "일정 D-DAY 조회 API", description = "일정 D-DAY 조회 API")
 	@ApiResponses(value = {
-			@ApiResponse(
-					responseCode = "200",
-					description = "요청에 성공하였습니다.",
-					useReturnTypeSchema = true),
-			@ApiResponse(
-					responseCode = "S500",
-					description = "500 SERVER_ERROR (나도 몰라 ..)",
-					content = @Content(
-							schema = @Schema(
-									implementation = GlobalExceptionHandler.ErrorResponse.class))),
-			@ApiResponse(
-					responseCode = "MSB002",
-					description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
-					content = @Content(
-							schema = @Schema(
-									implementation = GlobalExceptionHandler.ErrorResponse.class)))
+		@ApiResponse(
+			responseCode = "200",
+			description = "요청에 성공하였습니다.",
+			useReturnTypeSchema = true),
+		@ApiResponse(
+			responseCode = "S500",
+			description = "500 SERVER_ERROR (나도 몰라 ..)",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "MSB002",
+			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
 	public ResponseEntity<BaseResponse<List<GetDdayScheduleResponse>>> getDdaySchedule(
-			@Valid
-			@RequestParam("memberSeq") Long memberSeq) {
+		@Valid
+		@RequestParam("memberSeq") Long memberSeq) {
 
 		// Param -> VO
 		GetDdaySchedule requestVo = new GetDdaySchedule(memberSeq);
 
 		// VO -> DTO
 
-		List<GetDdayScheduleResponseDto> responseDto = scheduleService.getDdaySchedule(requestVo.toGetDdayScheduleDto());
+		List<GetDdayScheduleResponseDto> responseDto = scheduleService.getDdaySchedule(
+			requestVo.toGetDdayScheduleDto());
 
 		// DTO -> VO
 		List<GetDdayScheduleResponse> response = responseDto.stream()
-				.map(scheduleEntity -> new GetDdayScheduleResponse(
-						scheduleEntity.scheduleSeq(),
-						scheduleEntity.title(),
-						scheduleEntity.dDay()
-				))
-				.collect(Collectors.toList());
+			.map(scheduleEntity -> new GetDdayScheduleResponse(
+				scheduleEntity.scheduleSeq(),
+				scheduleEntity.title(),
+				scheduleEntity.dDay()
+			))
+			.collect(Collectors.toList());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
@@ -609,5 +609,58 @@ public class ScheduleController {
 		Page<GetScheduleListDto> response = scheduleService.getScheduleList(memberSeq, pageable);
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
+	}
+
+	@DeleteMapping(value = "/refuse", name = "일정 거절")
+	@Operation(summary = "일정 거절 API", description = "일정 거절 API")
+	@ApiResponses(value = {
+		@ApiResponse(
+			responseCode = "200",
+			description = "요청에 성공하였습니다.",
+			useReturnTypeSchema = true),
+		@ApiResponse(
+			responseCode = "S500",
+			description = "500 SERVER_ERROR (나도 몰라 ..)",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "MSB002",
+			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "SSB003",
+			description = "400 SCHEDULE_SEQ_BAD_REQUEST_EXCEPTION / SCHEDULE_ID 오류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "MCSB033",
+			description = "400 MEMBER_CREATED_SCHEDULE_BAD_REQUEST_EXCEPTION / 일정 거절하려는 사람이 Creator 인 경우",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "MAASB034",
+			description = "400 MEMBER_ALREADY_ACCEPT_SCHEDULE_BAD_REQUEST_EXCEPTION / 이미 일정 수락한 경우",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "MSNISB004",
+			description = "400 MEMBER_SEQ_NOT_IN_SCHEDULE_BAD_REQUEST_EXCEPTION / 해당 Schedule 에 Member 가 없을 때",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+	})
+	public ResponseEntity<BaseResponse> refuseSchedule(
+		@Valid
+		@RequestBody RefuseScheduleRequest request
+	) {
+		scheduleService.refuseSchedule(request.toRefuseScheduleRequestDto());
+
+		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
 	}
 }

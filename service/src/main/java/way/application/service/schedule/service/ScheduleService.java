@@ -365,4 +365,26 @@ public class ScheduleService {
 			scheduleEntity.getTitle()
 		));
 	}
+
+	@Transactional
+	public void refuseSchedule(RefuseScheduleRequestDto refuseScheduleRequestDto) {
+		/*
+		 1. Member 유효성 검사
+		 2. Schedule 유효성 검사
+		 3. Schedule Member 유효성 검사
+		 4. Creator 일 경우 삭제 불가능
+		 5. 이미 수락할 경우 삭제 불가능
+		*/
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(refuseScheduleRequestDto.memberSeq());
+		ScheduleEntity scheduleEntity = scheduleRepository.findByScheduleSeq(refuseScheduleRequestDto.scheduleSeq());
+		scheduleMemberRepository.findScheduleMemberInSchedule(
+			memberEntity.getMemberSeq(),
+			scheduleEntity.getScheduleSeq()
+		);
+		scheduleMemberRepository.validateScheduleMemberIsCreator(memberEntity, scheduleEntity);
+		scheduleMemberRepository.validateScheduleMemberAccept(memberEntity, scheduleEntity);
+
+		// ScheduleMember 삭제
+		scheduleMemberRepository.deleteByScheduleEntityAndMemberEntity(scheduleEntity, memberEntity);
+	}
 }

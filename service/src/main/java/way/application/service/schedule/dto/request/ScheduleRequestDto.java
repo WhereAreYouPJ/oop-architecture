@@ -107,4 +107,11 @@ public class ScheduleRequestDto {
 	) {
 
 	}
+
+	public record RefuseScheduleRequestDto(
+		Long memberSeq,
+		Long scheduleSeq
+	) {
+
+	}
 }
