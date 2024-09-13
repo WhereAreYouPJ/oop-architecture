@@ -549,6 +549,12 @@ public class ScheduleController {
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
+	@Parameters({
+		@Parameter(
+			name = "memberSeq",
+			description = "Member Sequence",
+			example = "1")
+	})
 	public ResponseEntity<BaseResponse<List<GetDdayScheduleResponse>>> getDdaySchedule(
 		@Valid
 		@RequestParam("memberSeq") Long memberSeq) {
@@ -574,7 +580,7 @@ public class ScheduleController {
 	}
 
 	@GetMapping(value = "/list", name = "일정 List 조회")
-	@Operation(summary = "일정 List 조회 API", description = "일정 D-DAY 조회 API")
+	@Operation(summary = "일정 List 조회 API", description = "일정 List 조회 API")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
