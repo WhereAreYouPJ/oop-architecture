@@ -155,4 +155,38 @@ public class ScheduleMemberRepositoryImpl implements ScheduleMemberRepository {
 
 		return scheduleMemberJpaRepository.countBySchedule(scheduleEntity);
 	}
+
+	@Override
+	public void validateScheduleMemberIsCreator(MemberEntity memberEntity, ScheduleEntity scheduleEntity) {
+		QScheduleMemberEntity scheduleMember = QScheduleMemberEntity.scheduleMemberEntity;
+
+		Optional.ofNullable(queryFactory
+			.selectFrom(scheduleMember)
+			.where(
+				scheduleMember.invitedMember.eq(memberEntity)
+					.and(scheduleMember.schedule.eq(scheduleEntity))
+					.and(scheduleMember.isCreator.isTrue())
+			)
+			.fetchOne()
+		).ifPresent(entity -> {
+			throw new BadRequestException(ErrorResult.MEMBER_CREATED_SCHEDULE_BAD_REQUEST_EXCEPTION);
+		});
+	}
+
+	@Override
+	public void validateScheduleMemberAccept(MemberEntity memberEntity, ScheduleEntity scheduleEntity) {
+		QScheduleMemberEntity scheduleMember = QScheduleMemberEntity.scheduleMemberEntity;
+
+		Optional.ofNullable(queryFactory
+			.selectFrom(scheduleMember)
+			.where(
+				scheduleMember.invitedMember.eq(memberEntity)
+					.and(scheduleMember.schedule.eq(scheduleEntity))
+					.and(scheduleMember.acceptSchedule.isTrue())
+			)
+			.fetchOne()
+		).ifPresent(entity -> {
+			throw new BadRequestException(ErrorResult.MEMBER_ALREADY_ACCEPT_SCHEDULE_BAD_REQUEST_EXCEPTION);
+		});
+	}
 }
