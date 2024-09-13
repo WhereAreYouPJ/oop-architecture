@@ -7,12 +7,15 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
+import way.application.infrastructure.jpa.member.entity.QMemberEntity;
 import way.application.infrastructure.jpa.schedule.entity.QScheduleEntity;
 import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
 import way.application.infrastructure.jpa.scheduleMember.entity.QScheduleMemberEntity;
@@ -107,5 +110,33 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 						.and(schedule.startTime.goe(LocalDate.now().atStartOfDay()))
 				)
 				.fetch();
+	}
+
+	@Override
+	public Page<ScheduleEntity> findSchedulesByMemberEntityAndStartTime(
+		MemberEntity memberEntity,
+		LocalDateTime startTime,
+		Pageable pageable
+	) {
+		QScheduleEntity schedule = QScheduleEntity.scheduleEntity;
+		QScheduleMemberEntity scheduleMember = QScheduleMemberEntity.scheduleMemberEntity;
+		QMemberEntity member = QMemberEntity.memberEntity;  // 추가된 QMemberEntity
+
+		QueryResults<ScheduleEntity> results = queryFactory
+			.select(schedule)
+			.from(schedule)
+			.join(scheduleMember).on(schedule.scheduleSeq.eq(scheduleMember.schedule.scheduleSeq))
+			.join(member).on(scheduleMember.invitedMember.memberSeq.eq(member.memberSeq))
+			.where(
+				scheduleMember.acceptSchedule.isTrue()
+					.and(schedule.startTime.before(startTime))
+					.and(member.memberSeq.eq(memberEntity.getMemberSeq()))
+			)
+			.orderBy(schedule.startTime.asc())
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.fetchResults();
+
+		return new PageImpl<>(results.getResults(), pageable, results.getTotal());
 	}
 }

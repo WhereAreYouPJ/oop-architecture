@@ -114,12 +114,12 @@ public class ScheduleResponseVo {
 	}
 
 	public record GetDdayScheduleResponse(
-			@Schema(description = "조회한 Schedule Seq")
-			Long scheduleSeq,
-			@Schema(description = "Schedule 제목")
-			String title,
-			@Schema(description = "남은 일수")
-			String dDay
+		@Schema(description = "조회한 Schedule Seq")
+		Long scheduleSeq,
+		@Schema(description = "Schedule 제목")
+		String title,
+		@Schema(description = "남은 일수")
+		String dDay
 	) {
 
 	}
