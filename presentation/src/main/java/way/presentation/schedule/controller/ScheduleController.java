@@ -421,7 +421,7 @@ public class ScheduleController {
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
 
-	@PostMapping(value = "/accept-schedule", name = "일정 초대 수락")
+	@PostMapping(value = "/accept", name = "일정 초대 수락")
 	@Operation(summary = "일정 초대 수락 API", description = "Request: AcceptScheduleRequest")
 	@ApiResponses(value = {
 		@ApiResponse(
@@ -466,7 +466,7 @@ public class ScheduleController {
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
 	}
 
-	@GetMapping(value = "/month-schedule", name = "월별 일정 조회")
+	@GetMapping(value = "/month", name = "월별 일정 조회")
 	@Operation(summary = "월별 일정 조회 API", description = "Response: GetScheduleByMonthResponse")
 	@Parameters({
 		@Parameter(
@@ -529,7 +529,7 @@ public class ScheduleController {
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
 
-	@GetMapping(value = "/dday-schedule", name = "일정 D-DAY 조회")
+	@GetMapping(value = "/dday", name = "일정 D-DAY 조회")
 	@Operation(summary = "일정 D-DAY 조회 API", description = "일정 D-DAY 조회 API")
 	@ApiResponses(value = {
 		@ApiResponse(
