@@ -38,6 +38,9 @@ public class ScheduleRequestVo {
 		@Schema(description = "Schedule 메모")
 		String memo,
 
+		@Schema(description = "하루 종일 여부")
+		Boolean allDay,
+
 		@Schema(description = "Schedule 초대 Member Seq (중복으로 넘겨도 괜찮도록 구현해놨습니다.)")
 		List<Long> invitedMemberSeqs,
 
@@ -55,6 +58,7 @@ public class ScheduleRequestVo {
 				this.y,
 				this.color,
 				this.memo,
+				this.allDay,
 				this.invitedMemberSeqs,
 				this.createMemberSeq
 			);
@@ -92,6 +96,9 @@ public class ScheduleRequestVo {
 		@Schema(description = "Schedule 메모")
 		String memo,
 
+		@Schema(description = "하루 종일 여부")
+		Boolean allDay,
+
 		@Schema(description = "Schedule 초대 Member Seq (중복으로 넘겨도 괜찮도록 구현해놨습니다.)")
 		List<Long> invitedMemberSeqs,
 
@@ -110,6 +117,7 @@ public class ScheduleRequestVo {
 				this.y,
 				this.color,
 				this.memo,
+				this.allDay,
 				this.invitedMemberSeqs,
 				this.createMemberSeq
 			);

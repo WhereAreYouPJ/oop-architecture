@@ -11,10 +11,24 @@ import way.application.utils.exception.ErrorResult;
 public class AddLocationValidator {
 	public void validate(AddLocationRequest request) {
 		validateMemberSeq(request.memberSeq());
+		validateLocation(request.location());
+		validateStreetName(request.streetName());
 	}
 
 	private void validateMemberSeq(Long memberSeq) {
 		if (memberSeq == null) {
+			throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+		}
+	}
+
+	private void validateLocation(String location) {
+		if (location == null || location.isEmpty()) {
+			throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+		}
+	}
+
+	private void validateStreetName(String streetName) {
+		if (streetName == null || streetName.isEmpty()) {
 			throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 		}
 	}

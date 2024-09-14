@@ -40,7 +40,7 @@ public class BookMarkRepositoryImpl implements BookMarkRepository {
 	public void checkBookMarkFeedEntityByFeedEntityAndMemberEntity(FeedEntity feedEntity, MemberEntity memberEntity) {
 		bookMarkJpaRepository.findBookMarkEntityByFeedEntityAndMemberEntity(feedEntity, memberEntity)
 			.ifPresent(entity -> {
-				throw new ConflictException(ErrorResult.HIDE_FEED_DUPLICATION_CONFLICT_EXCEPTION);
+				throw new ConflictException(ErrorResult.BOOK_MARK_FEED_DUPLICATION_CONFLICT_EXCEPTION);
 			});
 	}
 

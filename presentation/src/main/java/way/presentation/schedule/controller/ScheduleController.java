@@ -99,9 +99,8 @@ public class ScheduleController {
 		saveScheduleValidator.validate(request);
 
 		// VO -> DTO 변환
-		SaveScheduleRequestDto scheduleDto = request.toSaveScheduleRequestDto();
-		SaveScheduleResponseDto saveScheduleResponseDto = scheduleService.createSchedule(
-			scheduleDto);
+		SaveScheduleResponseDto saveScheduleResponseDto
+			= scheduleService.createSchedule(request.toSaveScheduleRequestDto());
 
 		// DTO -> VO 변환
 		SaveScheduleResponse response
@@ -168,8 +167,8 @@ public class ScheduleController {
 		modifyScheduleValidator.validate(request);
 
 		// VO -> DTO 변환
-		ModifyScheduleRequestDto scheduleDto = request.toModifyScheduleRequestDto();
-		ModifyScheduleResponseDto modifyScheduleResponseDto = scheduleService.modifySchedule(scheduleDto);
+		ModifyScheduleResponseDto modifyScheduleResponseDto
+			= scheduleService.modifySchedule(request.toModifyScheduleRequestDto());
 
 		// DTO -> VO 변환
 		ModifyScheduleResponse response
@@ -549,6 +548,12 @@ public class ScheduleController {
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
+	@Parameters({
+		@Parameter(
+			name = "memberSeq",
+			description = "Member Sequence",
+			example = "1")
+	})
 	public ResponseEntity<BaseResponse<List<GetDdayScheduleResponse>>> getDdaySchedule(
 		@Valid
 		@RequestParam("memberSeq") Long memberSeq) {
@@ -574,7 +579,7 @@ public class ScheduleController {
 	}
 
 	@GetMapping(value = "/list", name = "일정 List 조회")
-	@Operation(summary = "일정 List 조회 API", description = "일정 D-DAY 조회 API")
+	@Operation(summary = "일정 List 조회 API", description = "일정 List 조회 API")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",

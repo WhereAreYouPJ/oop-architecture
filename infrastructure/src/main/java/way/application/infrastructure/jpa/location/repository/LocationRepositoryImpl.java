@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import way.application.infrastructure.jpa.location.entity.LocationEntity;
 import way.application.infrastructure.jpa.location.entity.QLocationEntity;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
+import way.application.utils.exception.BadRequestException;
+import way.application.utils.exception.ErrorResult;
 
 @Component
 @RequiredArgsConstructor
@@ -29,13 +31,19 @@ public class LocationRepositoryImpl implements LocationRepository {
 	) {
 		QLocationEntity location = QLocationEntity.locationEntity;
 
-		return queryFactory
+		List<LocationEntity> locationEntities = queryFactory
 			.selectFrom(location)
 			.where(
 				location.memberEntity.eq(memberEntity)
 					.and(location.locationSeq.in(locationSeqs))
 			)
 			.fetch();
+
+		if (locationEntities.size() != locationSeqs.size()) {
+			throw new BadRequestException(ErrorResult.LOCATION_SEQ_BAD_REQUEST_EXCEPTION);
+		}
+
+		return locationEntities;
 	}
 
 	@Override

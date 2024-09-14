@@ -25,6 +25,8 @@ public class ScheduleRequestDto {
 
 		String memo,
 
+		Boolean allDay,
+
 		List<Long> invitedMemberSeqs,
 
 		Long createMemberSeq
@@ -53,6 +55,8 @@ public class ScheduleRequestDto {
 
 		String memo,
 
+		Boolean allDay,
+
 		List<Long> invitedMemberSeqs,
 
 		Long createMemberSeq
@@ -68,6 +72,7 @@ public class ScheduleRequestDto {
 				this.y,
 				this.color,
 				this.memo,
+				this.allDay,
 				this.invitedMemberSeqs,
 				this.createMemberSeq
 			);
