@@ -99,9 +99,8 @@ public class ScheduleController {
 		saveScheduleValidator.validate(request);
 
 		// VO -> DTO 변환
-		SaveScheduleRequestDto scheduleDto = request.toSaveScheduleRequestDto();
-		SaveScheduleResponseDto saveScheduleResponseDto = scheduleService.createSchedule(
-			scheduleDto);
+		SaveScheduleResponseDto saveScheduleResponseDto
+			= scheduleService.createSchedule(request.toSaveScheduleRequestDto());
 
 		// DTO -> VO 변환
 		SaveScheduleResponse response
@@ -168,8 +167,8 @@ public class ScheduleController {
 		modifyScheduleValidator.validate(request);
 
 		// VO -> DTO 변환
-		ModifyScheduleRequestDto scheduleDto = request.toModifyScheduleRequestDto();
-		ModifyScheduleResponseDto modifyScheduleResponseDto = scheduleService.modifySchedule(scheduleDto);
+		ModifyScheduleResponseDto modifyScheduleResponseDto
+			= scheduleService.modifySchedule(request.toModifyScheduleRequestDto());
 
 		// DTO -> VO 변환
 		ModifyScheduleResponse response
