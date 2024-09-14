@@ -9,9 +9,6 @@ services:
       MYSQL_DATABASE: way
       MYSQL_ROOT_PASSWORD: 1234
       TZ: Asia/Seoul
-    volumes:
-      - ./db/mysql/data:/var/lib/mysql
-      - ./db/mysql/init:/docker-entrypoint-initdb.d
     ports:
       - 3306:3306
     networks:
@@ -23,9 +20,6 @@ services:
     restart: always
     environment:
       TZ: Asia/Seoul
-    volumes:
-      - ./redis/data:/data
-      - ./redis/conf/redis.conf:/usr/local/conf/redis.conf
     ports:
       - "6379:6379"
     networks:
