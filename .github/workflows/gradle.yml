@@ -88,6 +88,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Set up Swap Memory
+        run: |
+          sudo fallocate -l 2G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          free -h
+
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
@@ -126,16 +134,16 @@ jobs:
           sudo docker-compose -f docker-compose.yml down
           sudo docker-compose -f docker-compose.yml up -d
 
-#      - name: Wait for RabbitMQ to be ready
-#        run: |
-#          until sudo docker exec rabbitmq rabbitmq-diagnostics status; do
-#            echo "Waiting for RabbitMQ..."
-#            sleep 5
-#          done
-#
-#      - name: Enable RabbitMQ STOMP Plugin
-#        run: |
-#          sudo docker exec rabbitmq rabbitmq-plugins enable rabbitmq_stomp
+      - name: Wait for RabbitMQ to be ready
+        run: |
+          until sudo docker exec rabbitmq rabbitmq-diagnostics status; do
+            echo "Waiting for RabbitMQ..."
+            sleep 5
+          done
+
+      - name: Enable RabbitMQ STOMP Plugin
+        run: |
+          sudo docker exec rabbitmq rabbitmq-plugins enable rabbitmq_stomp
 
       - name: Run Docker
         run: |
