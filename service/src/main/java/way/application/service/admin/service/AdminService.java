@@ -4,6 +4,7 @@ import static way.application.service.admin.dto.request.AdminRequestDto.*;
 import static way.application.service.admin.dto.response.AdminResponseDto.*;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,14 +33,12 @@ public class AdminService {
 	}
 
 	@Transactional(readOnly = true)
-	public GetHomeImageResponseDto getHomeImage(GetHomeImageRequestDto getHomeImageRequestDto) {
-		/*
-		 1. Admin Image 유효성 검사
-		*/
-		AdminImageEntity adminImageEntity
-			= adminImageRepository.findByAdminImageSeq(getHomeImageRequestDto.adminImageSeq());
+	public List<GetHomeImageResponseDto> getHomeImage() {
+		List<AdminImageEntity> adminImageEntityList = adminImageRepository.findAllAdminImageEntity();
 
-		return new GetHomeImageResponseDto(adminImageEntity.imageURL);
+		return adminImageEntityList.stream()
+			.map(entity -> new GetHomeImageResponseDto(entity.getImageURL()))
+			.toList();
 	}
 
 	@Transactional

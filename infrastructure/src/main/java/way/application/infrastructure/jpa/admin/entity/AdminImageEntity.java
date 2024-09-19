@@ -15,7 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "ADMIN")
+@Table(name = "ADMIN_IMAGE")
 @AllArgsConstructor
 @NoArgsConstructor
 @DynamicInsert

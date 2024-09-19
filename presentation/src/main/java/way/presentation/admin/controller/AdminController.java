@@ -1,11 +1,10 @@
 package way.presentation.admin.controller;
 
-import static way.application.service.admin.dto.request.AdminRequestDto.*;
 import static way.application.service.admin.dto.response.AdminResponseDto.*;
 import static way.presentation.admin.vo.request.AdminRequestVo.*;
-import static way.presentation.admin.vo.response.AdminResponseVo.*;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,24 +29,17 @@ public class AdminController {
 	private final AdminService adminService;
 
 	@PostMapping("/image")
-	public ResponseEntity<BaseResponse<AddHomeImageResponse>> addHomeImage(
+	public ResponseEntity<BaseResponse<AddHomeImageResponseDto>> addHomeImage(
 		@ModelAttribute AddHomeImageRequest request
 	) throws IOException {
-		AddHomeImageResponseDto addHomeImageResponseDto = adminService.addHomeImage(request.toAddHomeImageRequestDto());
-
-		AddHomeImageResponse response = new AddHomeImageResponse(addHomeImageResponseDto.adminImageSeq());
+		AddHomeImageResponseDto response = adminService.addHomeImage(request.toAddHomeImageRequestDto());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
 
 	@GetMapping("/image")
-	public ResponseEntity<BaseResponse<GetHomeImageResponse>> getHomeImage(
-		@RequestParam(value = "adminImageSeq") Long adminImageSeq
-	) {
-		GetHomeImageResponseDto getHomeImageResponseDto
-			= adminService.getHomeImage(new GetHomeImageRequestDto(adminImageSeq));
-
-		GetHomeImageResponse response = new GetHomeImageResponse(getHomeImageResponseDto.imageURL());
+	public ResponseEntity<BaseResponse<List<GetHomeImageResponseDto>>> getHomeImage() {
+		List<GetHomeImageResponseDto> response = adminService.getHomeImage();
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
