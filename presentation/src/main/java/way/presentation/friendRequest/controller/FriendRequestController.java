@@ -29,7 +29,7 @@ import static way.application.service.friendRequest.dto.response.FriendRequestRe
 import static way.presentation.friendRequest.vo.res.FriendRequestResponseVo.*;
 
 @RestController
-@RequestMapping("/friendRequest")
+@RequestMapping("/friend-request")
 @RequiredArgsConstructor
 @Tag(name = "친구 요청", description = "담당자 (송인준)")
 public class FriendRequestController {

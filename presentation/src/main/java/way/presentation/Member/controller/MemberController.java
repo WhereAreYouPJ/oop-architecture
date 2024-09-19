@@ -434,7 +434,7 @@ public class MemberController {
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(),searchMemberResponse));
     }
 
-    @PutMapping(value = "/modify/profileImage", name = "회원 사진 변경")
+    @PutMapping(value = "/profile-image", name = "회원 사진 변경")
     @Operation(summary = "Modify profileImage API", description = "프로필 사진 변경 API")
     @ApiResponses(value = {
             @ApiResponse(
@@ -516,7 +516,7 @@ public class MemberController {
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
     }
 
-    @PutMapping(value = "/modify/userName", name = "회원 이름 변경")
+    @PutMapping(value = "/user-name", name = "회원 이름 변경")
     @Operation(summary = "Modify UserName API", description = "이름 변경 API")
     @ApiResponses(value = {
             @ApiResponse(
