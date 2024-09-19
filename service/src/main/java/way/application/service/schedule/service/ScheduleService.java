@@ -275,8 +275,9 @@ public class ScheduleService {
 				scheduleEntity.getColor(),
 				scheduleEntity.getStartTime(),
 				scheduleEntity.getEndTime(),
-				scheduleMemberRepository.countBySchedule(scheduleEntity) > 1))
-			.collect(Collectors.toList());
+				scheduleMemberRepository.countBySchedule(scheduleEntity) > 1,
+				scheduleEntity.getAllDay())
+			).collect(Collectors.toList());
 	}
 
 	@Transactional
