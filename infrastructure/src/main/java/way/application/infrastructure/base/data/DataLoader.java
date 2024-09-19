@@ -22,6 +22,8 @@ public class DataLoader {
 				.userName("zxcv")
 				.encodedPassword(encoder.encode("zxcv1234!@#$"))
 				.email("zxcv@zxcv.com")
+				.memberCode("zxcv")
+				.fireBaseTargetToken("zxcv")
 				.build();
 			memberRepository.saveMember(member1);
 
@@ -30,6 +32,8 @@ public class DataLoader {
 				.userName("asdf")
 				.encodedPassword(encoder.encode("asdf1234!@#$"))
 				.email("asdf@asdf.com")
+				.memberCode("asdf")
+				.fireBaseTargetToken("asdf")
 				.build();
 			memberRepository.saveMember(member2);
 
@@ -38,6 +42,8 @@ public class DataLoader {
 				.userName("qwer")
 				.encodedPassword(encoder.encode("qwer1234!@#$"))
 				.email("qwer@qwer.com")
+				.memberCode("qwer")
+				.fireBaseTargetToken("qwer")
 				.build();
 			memberRepository.saveMember(member3);
 
@@ -46,6 +52,8 @@ public class DataLoader {
 				.userName("uiop")
 				.encodedPassword(encoder.encode("uiop1234!@#$"))
 				.email("uiop@uiop.com")
+				.memberCode("uiop")
+				.fireBaseTargetToken("uiop")
 				.build();
 			memberRepository.saveMember(member4);
 		};
