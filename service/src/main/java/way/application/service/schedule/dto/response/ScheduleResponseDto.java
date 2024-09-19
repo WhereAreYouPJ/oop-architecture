@@ -55,7 +55,9 @@ public class ScheduleResponseDto {
 
 		LocalDateTime endTime,
 
-		boolean group
+		boolean group,
+
+		Boolean allDay
 	) {
 
 	}

@@ -74,7 +74,10 @@ public class ScheduleResponseVo {
 		LocalDateTime endTime,
 
 		@Schema(description = "그룹 여부")
-		boolean group
+		boolean group,
+
+		@Schema(description = "일정 하루 종일 여부")
+		Boolean allDay
 	) {
 
 	}

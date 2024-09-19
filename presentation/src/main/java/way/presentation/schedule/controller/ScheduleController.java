@@ -414,8 +414,9 @@ public class ScheduleController {
 				dto.color(),
 				dto.startTime(),
 				dto.endTime(),
-				dto.group()))
-			.collect(Collectors.toList());
+				dto.group(),
+				dto.allDay())
+			).collect(Collectors.toList());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
