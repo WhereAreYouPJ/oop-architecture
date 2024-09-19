@@ -6,6 +6,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
+import way.application.infrastructure.jpa.admin.entity.AdminImageEntity;
+import way.application.infrastructure.jpa.admin.repository.AdminImageRepository;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.member.repository.MemberRepository;
 
@@ -15,7 +17,7 @@ public class DataLoader {
 	private final BCryptPasswordEncoder encoder;
 
 	@Bean
-	ApplicationRunner init(MemberRepository memberRepository) {
+	ApplicationRunner init(MemberRepository memberRepository, AdminImageRepository adminImageRepository) {
 		return args -> {
 			// 첫 번째 더미 데이터
 			MemberEntity member1 = MemberEntity.builder()
@@ -56,6 +58,13 @@ public class DataLoader {
 				.fireBaseTargetToken("uiop")
 				.build();
 			memberRepository.saveMember(member4);
+
+			// 홈 화면 데미 데이터
+			AdminImageEntity adminImageEntity = AdminImageEntity.builder()
+				.adminImageSeq(1L)
+				.imageURL("https://way-s3.s3.ap-northeast-2.amazonaws.com/990e3058-e9c9-4629-982c-420bf818b415.jpg")
+				.build();
+			adminImageRepository.saveAdminEntity(adminImageEntity);
 		};
 	}
 }
