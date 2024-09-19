@@ -88,6 +88,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: Disable existing swap
+        run: |
+          sudo swapoff -a
+
       - name: Set up Swap Memory
         run: |
           sudo fallocate -l 2G /swapfile
