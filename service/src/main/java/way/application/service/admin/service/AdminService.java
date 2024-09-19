@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import way.application.infrastructure.jpa.admin.entity.AdminImageEntity;
 import way.application.infrastructure.jpa.admin.repository.AdminImageRepository;
+import way.application.infrastructure.jpa.member.repository.MemberRepository;
 import way.application.service.admin.mapper.AdminImageMapper;
 import way.application.utils.s3.S3Utils;
 
@@ -19,6 +20,7 @@ import way.application.utils.s3.S3Utils;
 @RequiredArgsConstructor
 public class AdminService {
 	private final AdminImageRepository adminImageRepository;
+	private final MemberRepository memberRepository;
 
 	private final S3Utils s3Utils;
 	private final AdminImageMapper adminMapper;
@@ -33,7 +35,12 @@ public class AdminService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<GetHomeImageResponseDto> getHomeImage() {
+	public List<GetHomeImageResponseDto> getHomeImage(Long memberSeq) {
+		/*
+		 1. Member 유효성 검사
+		*/
+		memberRepository.findByMemberSeq(memberSeq);
+
 		List<AdminImageEntity> adminImageEntityList = adminImageRepository.findAllAdminImageEntity();
 
 		return adminImageEntityList.stream()

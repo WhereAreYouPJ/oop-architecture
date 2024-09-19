@@ -14,11 +14,20 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import way.application.service.admin.service.AdminService;
+import way.application.utils.exception.GlobalExceptionHandler;
 import way.presentation.base.BaseResponse;
 
 @RestController
@@ -38,8 +47,35 @@ public class AdminController {
 	}
 
 	@GetMapping("/image")
-	public ResponseEntity<BaseResponse<List<GetHomeImageResponseDto>>> getHomeImage() {
-		List<GetHomeImageResponseDto> response = adminService.getHomeImage();
+	@Operation(summary = "홈 화면 공지사항 사진", description = "홈 화면 공지사항 사진")
+	@Parameters({
+		@Parameter(
+			name = "memberSeq",
+			description = "Member Sequence",
+			example = "1")
+	})
+	@ApiResponses(value = {
+		@ApiResponse(
+			responseCode = "200",
+			description = "요청에 성공하였습니다.",
+			useReturnTypeSchema = true),
+		@ApiResponse(
+			responseCode = "S500",
+			description = "500 SERVER_ERROR (나도 몰라 ..)",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "MSB002",
+			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+	})
+	public ResponseEntity<BaseResponse<List<GetHomeImageResponseDto>>> getHomeImage(
+		@RequestParam(value = "memberSeq") Long memberSeq
+	) {
+		List<GetHomeImageResponseDto> response = adminService.getHomeImage(memberSeq);
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
