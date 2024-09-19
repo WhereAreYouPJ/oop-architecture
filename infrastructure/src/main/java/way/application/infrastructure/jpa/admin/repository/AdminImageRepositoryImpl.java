@@ -1,5 +1,7 @@
 package way.application.infrastructure.jpa.admin.repository;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,11 @@ public class AdminImageRepositoryImpl implements AdminImageRepository {
 	public AdminImageEntity findByAdminImageSeq(Long adminImageSeq) {
 		return adminJpaRepository.findById(adminImageSeq)
 			.orElseThrow(() -> new IllegalArgumentException("IMAGE SEQ 오류"));
+	}
+
+	@Override
+	public List<AdminImageEntity> findAllAdminImageEntity() {
+		return adminJpaRepository.findAll();
 	}
 
 	@Override
