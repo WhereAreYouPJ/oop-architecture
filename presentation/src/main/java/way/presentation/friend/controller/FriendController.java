@@ -138,7 +138,7 @@ public class FriendController {
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
     }
 
-    @PutMapping(value = "/favorites/add", name = "친구 즐찾 추가")
+    @PostMapping(value = "/favorites", name = "친구 즐찾 추가")
     @Operation(summary = "Modify UserName API", description = "친구 즐찾 추가 API")
     @ApiResponses(value = {
             @ApiResponse(
@@ -182,7 +182,7 @@ public class FriendController {
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
     }
 
-    @PutMapping(value = "/favorites/remove", name = "친구 즐찾 제거")
+    @DeleteMapping(value = "/favorites", name = "친구 즐찾 제거")
     @Operation(summary = "Modify UserName API", description = "친구 즐찾 제거 API")
     @ApiResponses(value = {
             @ApiResponse(
