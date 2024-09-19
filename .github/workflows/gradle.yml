@@ -88,17 +88,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Disable existing swap
+      - name: Check if swap is already active
         run: |
-          sudo swapoff -a
-
-      - name: Set up Swap Memory
-        run: |
-          sudo fallocate -l 2G /swapfile
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
-          free -h
+          if free | awk '/^Swap:/ {exit !$2}'; then
+            echo "Swap is already active, skipping swap creation."
+          else
+            echo "Swap is not active, creating swap."
+            sudo fallocate -l 2G /swapfile
+            sudo chmod 600 /swapfile
+            sudo mkswap /swapfile
+            sudo swapon /swapfile
+            free -h
+          fi
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
