@@ -7,7 +7,7 @@ services:
     restart: always
     environment:
       MYSQL_DATABASE: way
-      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_ROOT_PASSWORD: way1!
       TZ: Asia/Seoul
     ports:
       - 3306:3306
