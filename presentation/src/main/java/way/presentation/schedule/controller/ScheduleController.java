@@ -522,7 +522,8 @@ public class ScheduleController {
 				scheduleEntity.x(),
 				scheduleEntity.y(),
 				scheduleEntity.color(),
-				scheduleEntity.memo()
+				scheduleEntity.memo(),
+				scheduleEntity.allDay()
 			))
 			.collect(Collectors.toList());
 

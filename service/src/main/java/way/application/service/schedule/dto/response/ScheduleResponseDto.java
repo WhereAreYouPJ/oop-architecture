@@ -73,7 +73,8 @@ public class ScheduleResponseDto {
 		Double x,
 		Double y,
 		String color,
-		String memo
+		String memo,
+		Boolean allDay
 	) {
 
 	}
