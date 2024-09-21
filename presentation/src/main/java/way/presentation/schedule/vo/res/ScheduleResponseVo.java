@@ -111,7 +111,10 @@ public class ScheduleResponseVo {
 		String color,
 
 		@Schema(description = "Schedule 메모")
-		String memo
+		String memo,
+
+		@Schema(description = "하루 종일 여부")
+		Boolean allDay
 	) {
 
 	}

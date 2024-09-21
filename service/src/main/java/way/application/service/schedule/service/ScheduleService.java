@@ -326,7 +326,8 @@ public class ScheduleService {
 				scheduleEntity.getX(),
 				scheduleEntity.getY(),
 				scheduleEntity.getColor(),
-				scheduleEntity.getMemo()
+				scheduleEntity.getMemo(),
+				scheduleEntity.getAllDay()
 			))
 			.collect(Collectors.toList());
 	}
