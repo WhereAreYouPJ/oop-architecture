@@ -6,7 +6,7 @@ public class FriendResponseDto {
             Long memberSeq,
             String userName,
             String profileImage,
-            boolean Favorites
+            boolean favorites
     ) {
 
     }
