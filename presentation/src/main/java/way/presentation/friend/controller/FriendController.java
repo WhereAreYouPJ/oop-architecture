@@ -92,7 +92,7 @@ public class FriendController {
                         dto.memberSeq(),
                         dto.userName(),
                         dto.profileImage(),
-                        dto.Favorites()))
+                        dto.favorites()))
                 .toList();
 
 
