@@ -98,30 +98,29 @@ public class ScheduleService {
 	}
 
 	@Transactional
-	public ModifyScheduleResponseDto modifySchedule(ModifyScheduleRequestDto modifyScheduleRequestDto) {
+	public ModifyScheduleResponseDto modifySchedule(ModifyScheduleRequestDto requestDto) {
 		/*
 		 1. Member 유효성 검사
 		 2. 초대 Member 유효성 검사
 		 3. Schedule 유효성 검사
-		 4. 시작 시간 확인 (전 후 1시간 기준)
+		 4. Schedule 작성자 확인
+		 5. 시작 시간 확인 (전 후 1시간 기준)
 		*/
-		memberRepository.findByMemberSeq(modifyScheduleRequestDto.createMemberSeq());
-		memberRepository.findByMemberSeqs(modifyScheduleRequestDto.invitedMemberSeqs());
-		scheduleRepository.findByScheduleSeq(modifyScheduleRequestDto.scheduleSeq());
+		memberRepository.findByMemberSeq(requestDto.createMemberSeq());
+		memberRepository.findByMemberSeqs(requestDto.invitedMemberSeqs());
+		scheduleRepository.findByScheduleSeq(requestDto.scheduleSeq());
 		ScheduleEntity scheduleEntity = scheduleMemberRepository.findScheduleIfCreatedByMember(
-			modifyScheduleRequestDto.scheduleSeq(),
-			modifyScheduleRequestDto.createMemberSeq()
+			requestDto.scheduleSeq(),
+			requestDto.createMemberSeq()
 		);
 		scheduleDomain.validateScheduleStartTime(scheduleEntity.getStartTime());
 
-		// 삭제 (Repository 에서 처리)
-		scheduleRepository.deleteById(modifyScheduleRequestDto.scheduleSeq());
+		// 전체 삭제
+		scheduleRepository.deleteById(requestDto.scheduleSeq());
 		scheduleMemberRepository.deleteAllBySchedule(scheduleEntity);
 
 		// 재저장
-		SaveScheduleResponseDto saveScheduleResponseDto = createSchedule(
-			modifyScheduleRequestDto.toSaveScheduleRequestDto()
-		);
+		SaveScheduleResponseDto saveScheduleResponseDto = createSchedule(requestDto.toSaveScheduleRequestDto());
 
 		return new ModifyScheduleResponseDto(saveScheduleResponseDto.scheduleSeq());
 	}
