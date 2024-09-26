@@ -282,7 +282,7 @@ public class ScheduleController {
 	}
 
 	@GetMapping(name = "일정 조회")
-	@Operation(summary = "일정 상세 조회 API", description = "Response: GetScheduleResponse")
+	@Operation(summary = "일정 상세 조회 API")
 	@Parameters({
 		@Parameter(
 			name = "scheduleSeq",
@@ -327,22 +327,8 @@ public class ScheduleController {
 		@Valid
 		@RequestParam(name = "scheduleSeq") Long scheduleSeq,
 		@RequestParam(name = "memberSeq") Long memberSeq) {
-		GetScheduleResponseDto getScheduleResponseDto = scheduleService.getSchedule(scheduleSeq,
-			memberSeq);
-
-		// DTO -> VO 변환
-		GetScheduleResponse response = new GetScheduleResponse(
-			getScheduleResponseDto.title(),
-			getScheduleResponseDto.startTime(),
-			getScheduleResponseDto.endTime(),
-			getScheduleResponseDto.location(),
-			getScheduleResponseDto.streetName(),
-			getScheduleResponseDto.x(),
-			getScheduleResponseDto.y(),
-			getScheduleResponseDto.color(),
-			getScheduleResponseDto.memo(),
-			getScheduleResponseDto.userName()
-		);
+		GetScheduleResponseDto responseDto = scheduleService.getSchedule(scheduleSeq, memberSeq);
+		GetScheduleResponse response = scheduleResponseMapper.toGetScheduleResponse(responseDto);
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
