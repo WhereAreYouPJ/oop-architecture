@@ -5,6 +5,7 @@ import static way.application.service.schedule.dto.response.ScheduleResponseDto.
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -287,36 +288,21 @@ public class ScheduleService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<GetScheduleByMonthResponseDto> getScheduleByMonth(
-		GetScheduleByMonthRequestDto getScheduleByMonthRequestDto
-	) {
-		// 유효성 검사 (Repository 에서 처리)
-		memberRepository.findByMemberSeq(getScheduleByMonthRequestDto.memberSeq());
+	public List<GetScheduleByMonthResponseDto> getScheduleByMonth(YearMonth yearMonth, Long memberSeq) {
+		/*
+		 1. Member 유효성 검사
+		*/
+		memberRepository.findByMemberSeq(memberSeq);
 
-		// Domain 에서 처리
-		LocalDateTime startOfMonth = scheduleDomain.getStartOfMonth(getScheduleByMonthRequestDto.yearMonth());
-		LocalDateTime endOfMonth = scheduleDomain.getEndOfMonth(getScheduleByMonthRequestDto.yearMonth());
+		// 해당 월 날짜 정보
+		LocalDateTime startOfMonth = scheduleDomain.getStartOfMonth(yearMonth);
+		LocalDateTime endOfMonth = scheduleDomain.getEndOfMonth(yearMonth);
 
-		List<ScheduleEntity> scheduleEntities = scheduleRepository.findSchedulesByYearMonth(
-			startOfMonth,
-			endOfMonth,
-			getScheduleByMonthRequestDto.memberSeq()
-		);
+		List<ScheduleEntity> scheduleEntities
+			= scheduleRepository.findSchedulesByYearMonth(startOfMonth, endOfMonth, memberSeq);
 
 		return scheduleEntities.stream()
-			.map(scheduleEntity -> new GetScheduleByMonthResponseDto(
-				scheduleEntity.getScheduleSeq(),
-				scheduleEntity.getTitle(),
-				scheduleEntity.getStartTime(),
-				scheduleEntity.getEndTime(),
-				scheduleEntity.getLocation(),
-				scheduleEntity.getStreetName(),
-				scheduleEntity.getX(),
-				scheduleEntity.getY(),
-				scheduleEntity.getColor(),
-				scheduleEntity.getMemo(),
-				scheduleEntity.getAllDay()
-			))
+			.map(scheduleEntityMapper::toGetScheduleByMonthResponseDto)
 			.collect(Collectors.toList());
 	}
 
