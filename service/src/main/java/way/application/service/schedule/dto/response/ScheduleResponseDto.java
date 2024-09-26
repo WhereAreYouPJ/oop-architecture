@@ -35,19 +35,12 @@ public class ScheduleResponseDto {
 
 	public record GetScheduleByDateResponseDto(
 		Long scheduleSeq,
-
 		String title,
-
 		String location,
-
 		String color,
-
 		LocalDateTime startTime,
-
 		LocalDateTime endTime,
-
-		boolean group,
-
+		Boolean group,
 		Boolean allDay
 	) {
 
