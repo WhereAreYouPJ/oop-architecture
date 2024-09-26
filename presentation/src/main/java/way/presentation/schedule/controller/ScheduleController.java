@@ -465,29 +465,10 @@ public class ScheduleController {
 		@DateTimeFormat(pattern = "yyyy-MM") YearMonth yearMonth,
 		@RequestParam("memberSeq") Long memberSeq
 	) {
-		// Param -> VO
-		GetScheduleByMonthRequest requestVO = new GetScheduleByMonthRequest(yearMonth, memberSeq);
+		List<GetScheduleByMonthResponseDto> responseDto = scheduleService.getScheduleByMonth(yearMonth, memberSeq);
 
-		// VO -> DTO
-		List<GetScheduleByMonthResponseDto> responseDto = scheduleService.getScheduleByMonth(
-			requestVO.toGetScheduleByMonthRequestDto()
-		);
-
-		// DTO -> VO
 		List<GetScheduleByMonthResponse> response = responseDto.stream()
-			.map(scheduleEntity -> new GetScheduleByMonthResponse(
-				scheduleEntity.scheduleSeq(),
-				scheduleEntity.title(),
-				scheduleEntity.startTime(),
-				scheduleEntity.endTime(),
-				scheduleEntity.location(),
-				scheduleEntity.streetName(),
-				scheduleEntity.x(),
-				scheduleEntity.y(),
-				scheduleEntity.color(),
-				scheduleEntity.memo(),
-				scheduleEntity.allDay()
-			))
+			.map(scheduleResponseMapper::toGetScheduleByMonthResponse)
 			.collect(Collectors.toList());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
