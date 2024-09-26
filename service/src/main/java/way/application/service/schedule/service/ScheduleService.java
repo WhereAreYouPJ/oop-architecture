@@ -126,18 +126,18 @@ public class ScheduleService {
 	}
 
 	@Transactional
-	public void deleteScheduleByCreator(DeleteScheduleRequestDto deleteScheduleRequestDto) {
+	public void deleteScheduleByCreator(DeleteScheduleRequestDto requestDto) {
 		/*
 		 1. Member 유효성 검사
 		 2. Schedule 유효성 검사
 		 3. 생성자 여부 확인
 		 4. Chat Room 유효성 검사
 		*/
-		memberRepository.findByMemberSeq(deleteScheduleRequestDto.memberSeq());
-		scheduleRepository.findByScheduleSeq(deleteScheduleRequestDto.scheduleSeq());
+		memberRepository.findByMemberSeq(requestDto.memberSeq());
+		scheduleRepository.findByScheduleSeq(requestDto.scheduleSeq());
 		ScheduleEntity scheduleEntity = scheduleMemberRepository.findScheduleIfCreatedByMember(
-			deleteScheduleRequestDto.scheduleSeq(),
-			deleteScheduleRequestDto.memberSeq()
+			requestDto.scheduleSeq(),
+			requestDto.memberSeq()
 		);
 		ChatRoomEntity chatRoomEntity = chatRoomRepository.findByScheduleEntity(scheduleEntity);
 
@@ -169,7 +169,7 @@ public class ScheduleService {
 	}
 
 	@Transactional
-	public void deleteScheduleMemberByInvitor(DeleteScheduleRequestDto deleteScheduleRequestDto) {
+	public void deleteScheduleMemberByInvitor(DeleteScheduleRequestDto requestDto) {
 		/*
 		 1. Member 유효성 검사
 		 2. Schedule 유효성 검사
@@ -177,11 +177,11 @@ public class ScheduleService {
 		 4. Chat Room 유효성 검사
 		 TODO 생성자가 아닌 초대자임을 확인
 		*/
-		MemberEntity memberEntity = memberRepository.findByMemberSeq(deleteScheduleRequestDto.memberSeq());
-		scheduleRepository.findByScheduleSeq(deleteScheduleRequestDto.scheduleSeq());
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(requestDto.memberSeq());
+		scheduleRepository.findByScheduleSeq(requestDto.scheduleSeq());
 		ScheduleEntity scheduleEntity = scheduleMemberRepository.findAcceptedScheduleMemberInSchedule(
-			deleteScheduleRequestDto.scheduleSeq(),
-			deleteScheduleRequestDto.memberSeq()
+			requestDto.scheduleSeq(),
+			requestDto.memberSeq()
 		).getSchedule();
 		ChatRoomEntity chatRoomEntity = chatRoomRepository.findByScheduleEntity(scheduleEntity);
 
@@ -189,7 +189,11 @@ public class ScheduleService {
 		Optional<FeedEntity> feedEntity
 			= feedRepository.findByScheduleEntityAndMemberEntity(scheduleEntity, memberEntity);
 
-		// 해당 Member 의 채팅 삭제
+		/*
+		 해당 Member 의 채팅 삭제
+		 1. Chat Room Member 삭제
+		 2. Chat Room 삭제
+		*/
 		chatRoomMemberRepository.deleteByChatRoomEntityAndMemberEntity(chatRoomEntity, memberEntity);
 		chatRepository.deleteByChatRoomEntityAndMemberEntity(chatRoomEntity, memberEntity);
 
