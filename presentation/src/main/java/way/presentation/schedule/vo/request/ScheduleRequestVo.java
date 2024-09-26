@@ -8,36 +8,22 @@ import java.time.YearMonth;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
+import way.application.utils.exception.BadRequestException;
+import way.application.utils.exception.ErrorResult;
 
 public class ScheduleRequestVo {
 	public record SaveScheduleRequest(
-		@NotNull
 		String title,
-
-		@NotNull
 		LocalDateTime startTime,
-
-		@NotNull
 		LocalDateTime endTime,
-
 		String location,
-
 		String streetName,
-
 		Double x,
-
 		Double y,
-
 		String color,
-
 		String memo,
-
 		Boolean allDay,
-
 		List<Long> invitedMemberSeqs,
-
-		@NotNull
 		Long createMemberSeq
 	) {
 		public SaveScheduleRequestDto toSaveScheduleRequestDto() {
@@ -55,6 +41,21 @@ public class ScheduleRequestVo {
 				this.invitedMemberSeqs,
 				this.createMemberSeq
 			);
+		}
+
+		public void saveScheduleRequestValidate() {
+			if (this.title == null) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
+			if (this.startTime == null) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
+			if (this.endTime == null) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
+			if (this.createMemberSeq == null) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
 		}
 	}
 
