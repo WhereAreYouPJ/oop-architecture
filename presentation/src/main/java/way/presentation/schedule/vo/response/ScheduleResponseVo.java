@@ -8,7 +8,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 public class ScheduleResponseVo {
 	public record SaveScheduleResponse(
-		@Schema(description = "Schedule DB에 저장한 이후 반환되는 Seq 값")
 		Long scheduleSeq
 	) {
 
