@@ -10,7 +10,7 @@ import org.mapstruct.ReportingPolicy;
 import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
 
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface ScheduleMapper {
+public interface ScheduleEntityMapper {
 	@Mapping(target = "scheduleSeq", ignore = true)
 	ScheduleEntity toScheduleEntity(SaveScheduleRequestDto scheduleDto);
 }
