@@ -38,6 +38,7 @@ import lombok.RequiredArgsConstructor;
 import way.application.service.schedule.service.ScheduleService;
 import way.application.utils.exception.GlobalExceptionHandler;
 import way.presentation.base.BaseResponse;
+import way.presentation.schedule.mapper.ScheduleResponseMapper;
 import way.presentation.schedule.validates.DeleteScheduleValidator;
 import way.presentation.schedule.validates.ModifyScheduleValidator;
 
@@ -50,6 +51,8 @@ public class ScheduleController {
 	private final DeleteScheduleValidator deleteScheduleValidator;
 
 	private final ScheduleService scheduleService;
+
+	private final ScheduleResponseMapper scheduleResponseMapper;
 
 	@PostMapping(name = "일정 생성")
 	@Operation(summary = "일정 생성 API", description = "Request: SaveScheduleRequest, Response: SaveScheduleResponse")
@@ -93,8 +96,11 @@ public class ScheduleController {
 		@Valid
 		@RequestBody SaveScheduleRequest request
 	) {
+		// REQUEST Validate
+		request.saveScheduleRequestValidate();
+
 		SaveScheduleResponseDto responseDto = scheduleService.createSchedule(request.toSaveScheduleRequestDto());
-		SaveScheduleResponse response = new SaveScheduleResponse(responseDto.scheduleSeq());
+		SaveScheduleResponse response = scheduleResponseMapper.toSaveScheduleResponse(responseDto);
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.CREATED.value(), response));
 	}
