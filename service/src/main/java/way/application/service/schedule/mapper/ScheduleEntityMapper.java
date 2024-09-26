@@ -1,6 +1,9 @@
 package way.application.service.schedule.mapper;
 
 import static way.application.service.schedule.dto.request.ScheduleRequestDto.*;
+import static way.application.service.schedule.dto.response.ScheduleResponseDto.*;
+
+import java.util.List;
 
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -13,4 +16,6 @@ import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
 public interface ScheduleEntityMapper {
 	@Mapping(target = "scheduleSeq", ignore = true)
 	ScheduleEntity toScheduleEntity(SaveScheduleRequestDto scheduleDto);
+
+	GetScheduleResponseDto toGetScheduleResponseDto(ScheduleEntity scheduleEntity, List<String> userNames);
 }
