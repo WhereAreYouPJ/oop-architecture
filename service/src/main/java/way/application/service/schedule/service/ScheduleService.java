@@ -225,24 +225,26 @@ public class ScheduleService {
 	@Cacheable(value = "schedules", key = "#scheduleSeq + '-' + #memberSeq")
 	@Transactional(readOnly = true)
 	public GetScheduleResponseDto getSchedule(Long scheduleSeq, Long memberSeq) {
-		// 유효성 검사 (Repository 에서 처리)
+		/*
+		 1. Member 유효성 검사
+		 2. Schedule 유혀성 검사
+		 3. Schdule Member 존재 유효성 검사
+		*/
 		memberRepository.findByMemberSeq(memberSeq);
 		ScheduleEntity scheduleEntity = scheduleRepository.findByScheduleSeq(scheduleSeq);
 		scheduleMemberRepository.findAcceptedScheduleMemberInSchedule(scheduleSeq, memberSeq);
 
-		// ScheduleEntity 에서 ScheduleMemberEntity 추출
-		// Schedule accept = true 인 경우만
+		/*
+		 ScheduleEntity 에서 ScheduleMemberEntity 추출
+		 Schedule accept = true 인 경우만
+		*/
 		List<ScheduleMemberEntity> scheduleEntities
 			= scheduleMemberRepository.findAllAcceptedScheduleMembersInSchedule(scheduleEntity);
 
-		// userName 추출 (Domain Layer)
+		// userName 추출
 		List<String> userName = scheduleMemberDomain.extractUserNameFromScheduleMemberEntities(scheduleEntities);
 
-		return new GetScheduleResponseDto(
-			scheduleEntity.getTitle(), scheduleEntity.getStartTime(), scheduleEntity.getEndTime(),
-			scheduleEntity.getLocation(), scheduleEntity.getStreetName(), scheduleEntity.getX(), scheduleEntity.getY(),
-			scheduleEntity.getColor(), scheduleEntity.getMemo(), userName
-		);
+		return scheduleEntityMapper.toGetScheduleResponseDto(scheduleEntity, userName);
 	}
 
 	@Transactional(readOnly = true)
