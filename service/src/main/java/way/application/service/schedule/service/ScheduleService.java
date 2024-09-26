@@ -3,6 +3,7 @@ package way.application.service.schedule.service;
 import static way.application.service.schedule.dto.request.ScheduleRequestDto.*;
 import static way.application.service.schedule.dto.response.ScheduleResponseDto.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -248,29 +249,24 @@ public class ScheduleService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<GetScheduleByDateResponseDto> getScheduleByDate(
-		GetScheduleByDateRequestDto getScheduleByDateRequestDto
-	) {
-		// 유효성 검사 (Repository 에서 처리)
-		memberRepository.findByMemberSeq(getScheduleByDateRequestDto.memberSeq());
+	public List<GetScheduleByDateResponseDto> getScheduleByDate(Long memberSeq, LocalDate date) {
+		/*
+		 1. Member 유효성 검사
+		*/
+		memberRepository.findByMemberSeq(memberSeq);
 
-		// ScheduleEntity 추출
-		// Schedule accept = true 인 경우만
-		List<ScheduleEntity> scheduleEntities = scheduleRepository.findAcceptedSchedulesByMemberAndDate(
-			getScheduleByDateRequestDto.memberSeq(), getScheduleByDateRequestDto.date()
-		);
+		/*
+		 ScheduleEntity 추출
+		 Schedule accept = true 인 경우만
+		*/
+		List<ScheduleEntity> scheduleEntities
+			= scheduleRepository.findAcceptedSchedulesByMemberAndDate(memberSeq, date);
 
 		return scheduleEntities.stream()
-			.map(scheduleEntity -> new GetScheduleByDateResponseDto(
-				scheduleEntity.getScheduleSeq(),
-				scheduleEntity.getTitle(),
-				scheduleEntity.getLocation(),
-				scheduleEntity.getColor(),
-				scheduleEntity.getStartTime(),
-				scheduleEntity.getEndTime(),
-				scheduleMemberRepository.countBySchedule(scheduleEntity) > 1,
-				scheduleEntity.getAllDay())
-			).collect(Collectors.toList());
+			.map(scheduleEntity -> scheduleEntityMapper.toGetScheduleByDateResponseDto(
+				scheduleEntity,
+				scheduleMemberRepository.countBySchedule(scheduleEntity) > 1
+			)).collect(Collectors.toList());
 	}
 
 	@Transactional
