@@ -132,17 +132,6 @@ public class ScheduleRequestVo {
 		}
 	}
 
-	public record GetScheduleByDateRequest(
-		Long memberSeq,
-		LocalDate date
-	) {
-		public GetScheduleByDateRequestDto toGetScheduleByDateRequestDto() {
-			return new GetScheduleByDateRequestDto(
-				this.memberSeq,
-				this.date
-			);
-		}
-	}
 
 	public record AcceptScheduleRequest(
 		@Schema(description = "수락하고자 하는 Schedule Seq")
