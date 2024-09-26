@@ -40,14 +40,12 @@ import way.application.utils.exception.GlobalExceptionHandler;
 import way.presentation.base.BaseResponse;
 import way.presentation.schedule.mapper.ScheduleResponseMapper;
 import way.presentation.schedule.validates.DeleteScheduleValidator;
-import way.presentation.schedule.validates.ModifyScheduleValidator;
 
 @RestController
 @RequestMapping("/schedule")
 @RequiredArgsConstructor
 @Tag(name = "일정", description = "담당자 (박종훈)")
 public class ScheduleController {
-	private final ModifyScheduleValidator modifyScheduleValidator;
 	private final DeleteScheduleValidator deleteScheduleValidator;
 
 	private final ScheduleService scheduleService;
@@ -55,7 +53,7 @@ public class ScheduleController {
 	private final ScheduleResponseMapper scheduleResponseMapper;
 
 	@PostMapping(name = "일정 생성")
-	@Operation(summary = "일정 생성 API", description = "Request: SaveScheduleRequest, Response: SaveScheduleResponse")
+	@Operation(summary = "일정 생성 API")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "201",
@@ -106,7 +104,7 @@ public class ScheduleController {
 	}
 
 	@PutMapping(name = "일정 수정")
-	@Operation(summary = "일정 수정 API", description = "Request: ModifyScheduleRequest, Response: ModifyScheduleResponse")
+	@Operation(summary = "일정 수정 API")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -159,16 +157,11 @@ public class ScheduleController {
 		@Valid
 		@RequestBody ModifyScheduleRequest request
 	) {
-		// DTO 유효성 검사
-		modifyScheduleValidator.validate(request);
+		// REQUEST VALIDATE
+		request.modifyScheduleRequestValidate();
 
-		// VO -> DTO 변환
-		ModifyScheduleResponseDto modifyScheduleResponseDto
-			= scheduleService.modifySchedule(request.toModifyScheduleRequestDto());
-
-		// DTO -> VO 변환
-		ModifyScheduleResponse response
-			= new ModifyScheduleResponse(modifyScheduleResponseDto.scheduleSeq());
+		ModifyScheduleResponseDto responseDto = scheduleService.modifySchedule(request.toModifyScheduleRequestDto());
+		ModifyScheduleResponse response = scheduleResponseMapper.toModifyScheduleResponse(responseDto);
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
