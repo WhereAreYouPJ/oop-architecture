@@ -1,4 +1,4 @@
-package way.presentation.schedule.vo.res;
+package way.presentation.schedule.vo.response;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

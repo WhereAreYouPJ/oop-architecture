@@ -1,4 +1,4 @@
-package way.presentation.schedule.vo.req;
+package way.presentation.schedule.vo.request;
 
 import static way.application.service.schedule.dto.request.ScheduleRequestDto.*;
 
@@ -8,43 +8,36 @@ import java.time.YearMonth;
 import java.util.List;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 
 public class ScheduleRequestVo {
 	public record SaveScheduleRequest(
-		@Schema(description = "Schedule 제목")
+		@NotNull
 		String title,
 
-		@Schema(description = "Schedule 시작 시간")
+		@NotNull
 		LocalDateTime startTime,
 
-		@Schema(description = "Schedule 끝나는 시간")
+		@NotNull
 		LocalDateTime endTime,
 
-		@Schema(description = "Schedule 장소")
 		String location,
 
-		@Schema(description = "Schedule 도로명 주소")
 		String streetName,
 
-		@Schema(description = "위치 X 좌표")
 		Double x,
 
-		@Schema(description = "위치 Y 좌표")
 		Double y,
 
-		@Schema(description = "Schedule 색")
 		String color,
 
-		@Schema(description = "Schedule 메모")
 		String memo,
 
-		@Schema(description = "하루 종일 여부")
 		Boolean allDay,
 
-		@Schema(description = "Schedule 초대 Member Seq (중복으로 넘겨도 괜찮도록 구현해놨습니다.)")
 		List<Long> invitedMemberSeqs,
 
-		@Schema(description = "Schedule 생성자 Member Seq")
+		@NotNull
 		Long createMemberSeq
 	) {
 		public SaveScheduleRequestDto toSaveScheduleRequestDto() {

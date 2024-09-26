@@ -2,8 +2,8 @@ package way.presentation.schedule.controller;
 
 import static way.application.service.schedule.dto.request.ScheduleRequestDto.*;
 import static way.application.service.schedule.dto.response.ScheduleResponseDto.*;
-import static way.presentation.schedule.vo.req.ScheduleRequestVo.*;
-import static way.presentation.schedule.vo.res.ScheduleResponseVo.*;
+import static way.presentation.schedule.vo.request.ScheduleRequestVo.*;
+import static way.presentation.schedule.vo.response.ScheduleResponseVo.*;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -40,14 +40,12 @@ import way.application.utils.exception.GlobalExceptionHandler;
 import way.presentation.base.BaseResponse;
 import way.presentation.schedule.validates.DeleteScheduleValidator;
 import way.presentation.schedule.validates.ModifyScheduleValidator;
-import way.presentation.schedule.validates.SaveScheduleValidator;
 
 @RestController
 @RequestMapping("/schedule")
 @RequiredArgsConstructor
 @Tag(name = "일정", description = "담당자 (박종훈)")
 public class ScheduleController {
-	private final SaveScheduleValidator saveScheduleValidator;
 	private final ModifyScheduleValidator modifyScheduleValidator;
 	private final DeleteScheduleValidator deleteScheduleValidator;
 
@@ -95,16 +93,8 @@ public class ScheduleController {
 		@Valid
 		@RequestBody SaveScheduleRequest request
 	) {
-		// DTO 유효성 검사
-		saveScheduleValidator.validate(request);
-
-		// VO -> DTO 변환
-		SaveScheduleResponseDto saveScheduleResponseDto
-			= scheduleService.createSchedule(request.toSaveScheduleRequestDto());
-
-		// DTO -> VO 변환
-		SaveScheduleResponse response
-			= new SaveScheduleResponse(saveScheduleResponseDto.scheduleSeq());
+		SaveScheduleResponseDto responseDto = scheduleService.createSchedule(request.toSaveScheduleRequestDto());
+		SaveScheduleResponse response = new SaveScheduleResponse(responseDto.scheduleSeq());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.CREATED.value(), response));
 	}

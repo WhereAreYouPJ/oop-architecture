@@ -65,31 +65,19 @@ public class ScheduleService {
 	private final ScheduleMapper scheduleMapper;
 	private final ScheduleMemberMapper scheduleMemberMapper;
 
-	/**
-	 * 유효성 검사 -> Repository Interface 에서 처리
-	 * 비즈니스 로직 -> Domain 단에서 처리
-	 * Service 로직 -> Domain 호출 및 저장
-	 *
-	 * Service Layer -> Repo의 CRUD만 처리
-	 */
-
 	@Transactional
-	public SaveScheduleResponseDto createSchedule(SaveScheduleRequestDto saveScheduleRequestDto) {
+	public SaveScheduleResponseDto createSchedule(SaveScheduleRequestDto request) {
 		/*
-		 1. Member 유효성 검사 (Repository 에서 처리)
+		 1. Member 유효성 검사
 		 2. 친구 목록 검사
 		*/
-		MemberEntity createMemberEntity = memberRepository.findByMemberSeq(saveScheduleRequestDto.createMemberSeq());
-		List<MemberEntity> invitedMemberEntity = memberRepository.findByMemberSeqs(
-			saveScheduleRequestDto.invitedMemberSeqs()
-		);
+		MemberEntity createMemberEntity = memberRepository.findByMemberSeq(request.createMemberSeq());
+		List<MemberEntity> invitedMemberEntity = memberRepository.findByMemberSeqs(request.invitedMemberSeqs());
 		List<FriendEntity> friendEntities = friendRepository.findByOwner(createMemberEntity);
 		friendDomain.checkFriends(invitedMemberEntity, friendEntities);
 
 		// Schedule 저장
-		ScheduleEntity savedSchedule = scheduleRepository.saveSchedule(
-			scheduleMapper.toScheduleEntity(saveScheduleRequestDto)
-		);
+		ScheduleEntity savedSchedule = scheduleRepository.saveSchedule(scheduleMapper.toScheduleEntity(request));
 
 		// ScheduleMember 저장
 		Set<MemberEntity> invitedMembers = memberDomain.createMemberSet(createMemberEntity, invitedMemberEntity);

@@ -1,6 +1,6 @@
 package way.presentation.schedule.validates;
 
-import static way.presentation.schedule.vo.req.ScheduleRequestVo.*;
+import static way.presentation.schedule.vo.request.ScheduleRequestVo.*;
 
 import org.springframework.stereotype.Component;
 
