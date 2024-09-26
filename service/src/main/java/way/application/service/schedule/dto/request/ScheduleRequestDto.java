@@ -36,29 +36,17 @@ public class ScheduleRequestDto {
 
 	public record ModifyScheduleRequestDto(
 		Long scheduleSeq,
-
 		String title,
-
 		LocalDateTime startTime,
-
 		LocalDateTime endTime,
-
 		String location,
-
 		String streetName,
-
 		Double x,
-
 		Double y,
-
 		String color,
-
 		String memo,
-
 		Boolean allDay,
-
 		List<Long> invitedMemberSeqs,
-
 		Long createMemberSeq
 	) {
 		public SaveScheduleRequestDto toSaveScheduleRequestDto() {
