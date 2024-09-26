@@ -270,20 +270,19 @@ public class ScheduleService {
 	}
 
 	@Transactional
-	public void acceptSchedule(AcceptScheduleRequestDto request) {
-		// 유효성 검사 (Repository 에서 처리)
-		memberRepository.findByMemberSeq(request.memberSeq());
-		scheduleRepository.findByScheduleSeq(request.scheduleSeq());
+	public void acceptSchedule(AcceptScheduleRequestDto requestDto) {
+		/*
+		 1. Member 유효성 검사
+		 2. Schedule 유효성 검사
+		*/
+		memberRepository.findByMemberSeq(requestDto.memberSeq());
+		scheduleRepository.findByScheduleSeq(requestDto.scheduleSeq());
 
 		// ScheduleEntity 추출
 		ScheduleMemberEntity scheduleMemberEntity
-			= scheduleMemberRepository.findScheduleMemberInSchedule(
-			request.memberSeq(),
-			request.scheduleSeq()
-		);
+			= scheduleMemberRepository.findScheduleMemberInSchedule(requestDto.memberSeq(), requestDto.scheduleSeq());
 
 		scheduleMemberEntity.updateAcceptSchedule();
-
 		scheduleMemberRepository.saveScheduleMemberEntity(scheduleMemberEntity);
 	}
 
