@@ -38,7 +38,7 @@ import way.application.infrastructure.jpa.schedule.repository.ScheduleRepository
 import way.application.infrastructure.jpa.scheduleMember.entity.ScheduleMemberEntity;
 import way.application.infrastructure.jpa.scheduleMember.repository.ScheduleMemberRepository;
 import way.application.infrastructure.mongo.chat.repository.ChatRepository;
-import way.application.service.schedule.mapper.ScheduleMapper;
+import way.application.service.schedule.mapper.ScheduleEntityMapper;
 import way.application.service.scheduleMember.mapper.ScheduleMemberMapper;
 
 @Service
@@ -62,7 +62,7 @@ public class ScheduleService {
 	private final FirebaseNotificationDomain firebaseNotificationDomain;
 	private final FriendDomain friendDomain;
 
-	private final ScheduleMapper scheduleMapper;
+	private final ScheduleEntityMapper scheduleEntityMapper;
 	private final ScheduleMemberMapper scheduleMemberMapper;
 
 	@Transactional
@@ -77,7 +77,7 @@ public class ScheduleService {
 		friendDomain.checkFriends(invitedMemberEntity, friendEntities);
 
 		// Schedule 저장
-		ScheduleEntity savedSchedule = scheduleRepository.saveSchedule(scheduleMapper.toScheduleEntity(request));
+		ScheduleEntity savedSchedule = scheduleRepository.saveSchedule(scheduleEntityMapper.toScheduleEntity(request));
 
 		// ScheduleMember 저장
 		Set<MemberEntity> invitedMembers = memberDomain.createMemberSet(createMemberEntity, invitedMemberEntity);
