@@ -39,15 +39,12 @@ import way.application.service.schedule.service.ScheduleService;
 import way.application.utils.exception.GlobalExceptionHandler;
 import way.presentation.base.BaseResponse;
 import way.presentation.schedule.mapper.ScheduleResponseMapper;
-import way.presentation.schedule.validates.DeleteScheduleValidator;
 
 @RestController
 @RequestMapping("/schedule")
 @RequiredArgsConstructor
 @Tag(name = "일정", description = "담당자 (박종훈)")
 public class ScheduleController {
-	private final DeleteScheduleValidator deleteScheduleValidator;
-
 	private final ScheduleService scheduleService;
 
 	private final ScheduleResponseMapper scheduleResponseMapper;
@@ -167,7 +164,7 @@ public class ScheduleController {
 	}
 
 	@DeleteMapping(value = "creator", name = "일정 삭제(일정 생성자인 경우)")
-	@Operation(summary = "일정 삭제(일정 생성자인 경우) API", description = "Request: DeleteScheduleRequest")
+	@Operation(summary = "일정 삭제(일정 생성자인 경우) API")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -217,10 +214,9 @@ public class ScheduleController {
 		@Valid
 		@RequestBody DeleteScheduleRequest request
 	) {
-		// DTO 유효성 검사
-		deleteScheduleValidator.validate(request);
+		// REQUEST VALIDATE
+		request.deleteScheduleRequestValidate();
 
-		// VO -> DTO
 		DeleteScheduleRequestDto deleteScheduleRequestDto = request.toDeleteScheduleRequestDto();
 		scheduleService.deleteScheduleByCreator(deleteScheduleRequestDto);
 
@@ -278,10 +274,8 @@ public class ScheduleController {
 		@Valid
 		@RequestBody DeleteScheduleRequest request
 	) {
-		// DTO 유효성 검사
-		deleteScheduleValidator.validate(request);
+		request.deleteScheduleRequestValidate();
 
-		// VO -> DTO
 		scheduleService.deleteScheduleMemberByInvitor(request.toDeleteScheduleRequestDto());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
