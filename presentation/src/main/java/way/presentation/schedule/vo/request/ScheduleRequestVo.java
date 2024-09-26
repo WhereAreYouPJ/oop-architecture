@@ -112,10 +112,7 @@ public class ScheduleRequestVo {
 	}
 
 	public record DeleteScheduleRequest(
-		@Schema(description = "삭제하고자 하는 Schedule Seq")
 		Long scheduleSeq,
-
-		@Schema(description = "Schedule 생성 Member Seq")
 		Long memberSeq
 	) {
 		public DeleteScheduleRequestDto toDeleteScheduleRequestDto() {
@@ -123,6 +120,15 @@ public class ScheduleRequestVo {
 				this.scheduleSeq,
 				this.memberSeq
 			);
+		}
+
+		public void deleteScheduleRequestValidate() {
+			if (scheduleSeq == null) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
+			if (memberSeq == null) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
 		}
 	}
 
