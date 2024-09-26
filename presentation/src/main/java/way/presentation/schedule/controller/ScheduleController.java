@@ -326,7 +326,8 @@ public class ScheduleController {
 	public ResponseEntity<BaseResponse<GetScheduleResponse>> getSchedule(
 		@Valid
 		@RequestParam(name = "scheduleSeq") Long scheduleSeq,
-		@RequestParam(name = "memberSeq") Long memberSeq) {
+		@RequestParam(name = "memberSeq") Long memberSeq
+	) {
 		GetScheduleResponseDto responseDto = scheduleService.getSchedule(scheduleSeq, memberSeq);
 		GetScheduleResponse response = scheduleResponseMapper.toGetScheduleResponse(responseDto);
 
@@ -366,26 +367,12 @@ public class ScheduleController {
 	public ResponseEntity<BaseResponse<List<GetScheduleByDateResponse>>> getScheduleByDate(
 		@Valid
 		@RequestParam(name = "date") LocalDate date,
-		@RequestParam(name = "memberSeq") Long memberSeq) {
-		// Param -> VO
-		GetScheduleByDateRequest request = new GetScheduleByDateRequest(memberSeq, date);
+		@RequestParam(name = "memberSeq") Long memberSeq
+	) {
+		List<GetScheduleByDateResponseDto> responseDto = scheduleService.getScheduleByDate(memberSeq, date);
 
-		// VO -> DTO
-		List<GetScheduleByDateResponseDto> scheduleByDateResponseDto
-			= scheduleService.getScheduleByDate(request.toGetScheduleByDateRequestDto());
-
-		// DTO -> VO
-		List<GetScheduleByDateResponse> response = scheduleByDateResponseDto.stream()
-			.map(dto -> new GetScheduleByDateResponse(
-				dto.scheduleSeq(),
-				dto.title(),
-				dto.location(),
-				dto.color(),
-				dto.startTime(),
-				dto.endTime(),
-				dto.group(),
-				dto.allDay())
-			).collect(Collectors.toList());
+		List<GetScheduleByDateResponse> response = responseDto.stream()
+			.map(scheduleResponseMapper::toGetScheduleByDateResponse).collect(Collectors.toList());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
