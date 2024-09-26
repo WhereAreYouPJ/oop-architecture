@@ -416,7 +416,8 @@ public class ScheduleController {
 		@Valid
 		@RequestBody AcceptScheduleRequest request
 	) {
-		// VO -> DTO
+		request.acceptScheduleRequestValidate();
+
 		scheduleService.acceptSchedule(request.toAcceptScheduleRequestDto());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
