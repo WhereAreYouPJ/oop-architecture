@@ -18,4 +18,6 @@ public interface ScheduleEntityMapper {
 	ScheduleEntity toScheduleEntity(SaveScheduleRequestDto scheduleDto);
 
 	GetScheduleResponseDto toGetScheduleResponseDto(ScheduleEntity scheduleEntity, List<String> userNames);
+
+	GetScheduleByDateResponseDto toGetScheduleByDateResponseDto(ScheduleEntity scheduleEntity, Boolean isGroup);
 }
