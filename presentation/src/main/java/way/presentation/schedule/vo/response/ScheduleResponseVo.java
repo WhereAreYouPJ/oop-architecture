@@ -14,7 +14,6 @@ public class ScheduleResponseVo {
 	}
 
 	public record ModifyScheduleResponse(
-		@Schema(description = "Schedule DB에 저장한 이후 반환되는 Seq 값")
 		Long scheduleSeq
 	) {
 
