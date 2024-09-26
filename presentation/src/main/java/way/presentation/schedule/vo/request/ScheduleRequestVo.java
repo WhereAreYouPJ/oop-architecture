@@ -2,12 +2,10 @@ package way.presentation.schedule.vo.request;
 
 import static way.application.service.schedule.dto.request.ScheduleRequestDto.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.List;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import way.application.utils.exception.BadRequestException;
 import way.application.utils.exception.ErrorResult;
 
@@ -132,12 +130,8 @@ public class ScheduleRequestVo {
 		}
 	}
 
-
 	public record AcceptScheduleRequest(
-		@Schema(description = "수락하고자 하는 Schedule Seq")
 		Long scheduleSeq,
-
-		@Schema(description = "수락하고자 하는 Member Seq")
 		Long memberSeq
 	) {
 		public AcceptScheduleRequestDto toAcceptScheduleRequestDto() {
@@ -145,6 +139,15 @@ public class ScheduleRequestVo {
 				this.scheduleSeq,
 				this.memberSeq
 			);
+		}
+
+		public void acceptScheduleRequestValidate() {
+			if (scheduleSeq == null) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
+			if (memberSeq == null) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
 		}
 	}
 
