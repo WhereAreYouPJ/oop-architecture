@@ -48,37 +48,16 @@ public class ScheduleResponseVo {
 	}
 
 	public record GetScheduleByMonthResponse(
-		@Schema(description = "조회한 Schedule Seq")
 		Long scheduleSeq,
-
-		@Schema(description = "Schedule 제목")
 		String title,
-
-		@Schema(description = "Schedule 시작 시간")
 		LocalDateTime startTime,
-
-		@Schema(description = "Schedule 끝나는 시간")
 		LocalDateTime endTime,
-
-		@Schema(description = "Schedule 장소")
 		String location,
-
-		@Schema(description = "Schedule 도로명 주소")
 		String streetName,
-
-		@Schema(description = "위치 X 좌표")
 		Double x,
-
-		@Schema(description = "위치 Y 좌표")
 		Double y,
-
-		@Schema(description = "Schedule 색")
 		String color,
-
-		@Schema(description = "Schedule 메모")
 		String memo,
-
-		@Schema(description = "하루 종일 여부")
 		Boolean allDay
 	) {
 

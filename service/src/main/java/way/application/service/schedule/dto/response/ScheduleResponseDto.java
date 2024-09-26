@@ -53,7 +53,6 @@ public class ScheduleResponseDto {
 		LocalDateTime endTime,
 		String location,
 		String streetName,
-
 		Double x,
 		Double y,
 		String color,
