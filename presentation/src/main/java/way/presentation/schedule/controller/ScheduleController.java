@@ -335,7 +335,7 @@ public class ScheduleController {
 	}
 
 	@GetMapping(value = "/date", name = "해당 날짜 일정 조회")
-	@Operation(summary = "해당 날짜 일정 조회 API", description = "Response: GetScheduleByDateResponse")
+	@Operation(summary = "해당 날짜 일정 조회 API")
 	@Parameters({
 		@Parameter(
 			name = "date",
@@ -378,7 +378,7 @@ public class ScheduleController {
 	}
 
 	@PostMapping(value = "/accept", name = "일정 초대 수락")
-	@Operation(summary = "일정 초대 수락 API", description = "Request: AcceptScheduleRequest")
+	@Operation(summary = "일정 초대 수락 API")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -430,7 +430,7 @@ public class ScheduleController {
 	}
 
 	@GetMapping(value = "/month", name = "월별 일정 조회")
-	@Operation(summary = "월별 일정 조회 API", description = "Response: GetScheduleByMonthResponse")
+	@Operation(summary = "월별 일정 조회 API")
 	@Parameters({
 		@Parameter(
 			name = "yearMonth",
@@ -502,23 +502,12 @@ public class ScheduleController {
 	})
 	public ResponseEntity<BaseResponse<List<GetDdayScheduleResponse>>> getDdaySchedule(
 		@Valid
-		@RequestParam("memberSeq") Long memberSeq) {
+		@RequestParam("memberSeq") Long memberSeq
+	) {
+		List<GetDdayScheduleResponseDto> responseDto = scheduleService.getDdaySchedule(memberSeq);
 
-		// Param -> VO
-		GetDdaySchedule requestVo = new GetDdaySchedule(memberSeq);
-
-		// VO -> DTO
-
-		List<GetDdayScheduleResponseDto> responseDto = scheduleService.getDdaySchedule(
-			requestVo.toGetDdayScheduleDto());
-
-		// DTO -> VO
 		List<GetDdayScheduleResponse> response = responseDto.stream()
-			.map(scheduleEntity -> new GetDdayScheduleResponse(
-				scheduleEntity.scheduleSeq(),
-				scheduleEntity.title(),
-				scheduleEntity.dDay()
-			))
+			.map(scheduleResponseMapper::toGetDdayScheduleResponse)
 			.collect(Collectors.toList());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
