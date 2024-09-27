@@ -82,7 +82,9 @@ public class ScheduleResponseDto {
 	public record GetScheduleListResponseDto(
 		Long scheduleSeq,
 		LocalDateTime startTime,
-		String title
+		String title,
+		Boolean feedExists,
+		String location
 	) {
 
 	}
