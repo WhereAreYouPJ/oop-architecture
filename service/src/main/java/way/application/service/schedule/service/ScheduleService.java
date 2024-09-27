@@ -323,7 +323,7 @@ public class ScheduleService {
 	}
 
 	@Transactional(readOnly = true)
-	public Page<GetScheduleListDto> getScheduleList(Long memberSeq, Pageable pageable) {
+	public Page<GetScheduleListResponseDto> getScheduleList(Long memberSeq, Pageable pageable) {
 		/*
 		 1. Member 유효성 검사
 		*/
@@ -334,11 +334,7 @@ public class ScheduleService {
 			pageable
 		);
 
-		return scheduleEntityPage.map(scheduleEntity -> new GetScheduleListDto(
-			scheduleEntity.getScheduleSeq(),
-			scheduleEntity.getStartTime(),
-			scheduleEntity.getTitle()
-		));
+		return scheduleEntityPage.map(scheduleEntityMapper::toGetScheduleListResponseDto);
 	}
 
 	@Transactional
