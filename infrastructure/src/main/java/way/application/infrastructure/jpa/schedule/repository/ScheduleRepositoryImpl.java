@@ -122,7 +122,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 	) {
 		QScheduleEntity schedule = QScheduleEntity.scheduleEntity;
 		QScheduleMemberEntity scheduleMember = QScheduleMemberEntity.scheduleMemberEntity;
-		QMemberEntity member = QMemberEntity.memberEntity;  // 추가된 QMemberEntity
+		QMemberEntity member = QMemberEntity.memberEntity;
 
 		QueryResults<ScheduleEntity> results = queryFactory
 			.select(schedule)
