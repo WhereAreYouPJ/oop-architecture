@@ -554,7 +554,7 @@ public class ScheduleController {
 	}
 
 	@DeleteMapping(value = "/refuse", name = "일정 거절")
-	@Operation(summary = "일정 거절 API", description = "일정 거절 API")
+	@Operation(summary = "일정 거절 API")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -601,6 +601,9 @@ public class ScheduleController {
 		@Valid
 		@RequestBody RefuseScheduleRequest request
 	) {
+		// REQUEST VALIDATE
+		request.refuseScheduleRequestValidate();
+
 		scheduleService.refuseSchedule(request.toRefuseScheduleRequestDto());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
