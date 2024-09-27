@@ -475,7 +475,7 @@ public class ScheduleController {
 	}
 
 	@GetMapping(value = "/dday", name = "일정 D-DAY 조회")
-	@Operation(summary = "일정 D-DAY 조회 API", description = "일정 D-DAY 조회 API")
+	@Operation(summary = "일정 D-DAY 조회 API")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -514,7 +514,7 @@ public class ScheduleController {
 	}
 
 	@GetMapping(value = "/list", name = "일정 List 조회")
-	@Operation(summary = "일정 List 조회 API", description = "일정 List 조회 API")
+	@Operation(summary = "일정 List 조회 API")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -538,7 +538,7 @@ public class ScheduleController {
 		@Parameter(name = "page", description = "페이지 처리 페이지 수", example = "0"),
 		@Parameter(name = "size", description = "페이지 당 응답 받을 데이터 개수", example = "10"),
 	})
-	public ResponseEntity<BaseResponse<Page<GetScheduleListDto>>> getScheduleList(
+	public ResponseEntity<BaseResponse<Page<GetScheduleListResponse>>> getScheduleList(
 		@Valid
 		@RequestParam("memberSeq") Long memberSeq,
 		@RequestParam(defaultValue = "0") int page,
@@ -546,7 +546,9 @@ public class ScheduleController {
 	) {
 
 		Pageable pageable = PageRequest.of(page, size);
-		Page<GetScheduleListDto> response = scheduleService.getScheduleList(memberSeq, pageable);
+		Page<GetScheduleListResponseDto> responseDtoPage = scheduleService.getScheduleList(memberSeq, pageable);
+
+		Page<GetScheduleListResponse> response = responseDtoPage.map(scheduleResponseMapper::toGetScheduleListResponse);
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
