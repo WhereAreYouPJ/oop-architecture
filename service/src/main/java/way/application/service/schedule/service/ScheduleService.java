@@ -337,7 +337,13 @@ public class ScheduleService {
 			pageable
 		);
 
-		return scheduleEntityPage.map(scheduleEntityMapper::toGetScheduleListResponseDto);
+		return scheduleEntityPage.map(scheduleEntity -> {
+			// Feed Entity 존재 여부 확인
+			Boolean feedExists
+				= feedRepository.findByScheduleEntityAndMemberEntity(scheduleEntity, memberEntity).isPresent();
+
+			return scheduleEntityMapper.toGetScheduleListResponseDto(scheduleEntity, feedExists);
+		});
 	}
 
 	@Transactional

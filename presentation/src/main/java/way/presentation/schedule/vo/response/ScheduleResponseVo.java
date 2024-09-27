@@ -75,7 +75,9 @@ public class ScheduleResponseVo {
 	public record GetScheduleListResponse(
 		Long scheduleSeq,
 		LocalDateTime startTime,
-		String title
+		String title,
+		Boolean feedExists,
+		String location
 	) {
 
 	}
