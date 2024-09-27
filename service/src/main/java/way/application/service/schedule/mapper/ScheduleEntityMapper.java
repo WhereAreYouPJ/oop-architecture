@@ -22,4 +22,6 @@ public interface ScheduleEntityMapper {
 	GetScheduleByDateResponseDto toGetScheduleByDateResponseDto(ScheduleEntity scheduleEntity, Boolean isGroup);
 
 	GetScheduleByMonthResponseDto toGetScheduleByMonthResponseDto(ScheduleEntity scheduleEntity);
+
+	GetDdayScheduleResponseDto toGetDdayScheduleResponseDto(ScheduleEntity scheduleEntity, String dDay);
 }
