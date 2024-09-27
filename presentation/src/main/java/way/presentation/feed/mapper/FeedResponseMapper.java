@@ -10,4 +10,6 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface FeedResponseMapper {
 	SaveFeedResponse toSaveFeedResponse(SaveFeedResponseDto responseDto);
+
+	ModifyFeedResponse toModifyFeedResponse(ModifyFeedResponseDto responseDto);
 }
