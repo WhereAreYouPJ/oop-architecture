@@ -78,28 +78,24 @@ public class FeedService {
 	}
 
 	@Transactional
-	public ModifyFeedResponseDto modifyFeed(ModifyFeedRequestDto modifyFeedRequestDto) throws IOException {
+	public ModifyFeedResponseDto modifyFeed(ModifyFeedRequestDto requestDto) throws IOException {
 		/*
 		 1. Member 유효성 검사
 		 2. Feed 유효성 검사
 		 3. Feed 작성자 검사
 		*/
-		MemberEntity creatorMemberEntity = memberRepository.findByMemberSeq(modifyFeedRequestDto.memberSeq());
-		feedRepository.findByFeedSeq(modifyFeedRequestDto.feedSeq());
-		FeedEntity savedFeed = feedRepository.findByCreatorMemberAndFeedSeq(
-			creatorMemberEntity,
-			modifyFeedRequestDto.feedSeq()
-		);
+		MemberEntity creatorMemberEntity = memberRepository.findByMemberSeq(requestDto.memberSeq());
+		feedRepository.findByFeedSeq(requestDto.feedSeq());
+		FeedEntity savedFeed = feedRepository.findByCreatorMemberAndFeedSeq(creatorMemberEntity, requestDto.feedSeq());
 
 		// Feed, Feed Image
 		feedRepository.deleteAllByFeedSeq(savedFeed.getFeedSeq());
 		feedImageRepository.deleteAllByFeedEntity(savedFeed);
 
-		SaveFeedResponseDto saveFeedResponseDto = saveFeed(
-			modifyFeedRequestDto.toSaveFeedRequestDto(savedFeed.getSchedule().getScheduleSeq())
-		);
+		SaveFeedResponseDto saveFeedResponseDto
+			= saveFeed(requestDto.toSaveFeedRequestDto(savedFeed.getSchedule().getScheduleSeq()));
 
-		return new ModifyFeedResponseDto(saveFeedResponseDto.feedSeq());
+		return saveFeedResponseDto.toModifyFeedResponseDto();
 	}
 
 	@Transactional(readOnly = true)
