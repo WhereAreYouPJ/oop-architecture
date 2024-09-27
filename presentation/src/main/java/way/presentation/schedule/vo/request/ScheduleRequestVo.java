@@ -151,28 +151,6 @@ public class ScheduleRequestVo {
 		}
 	}
 
-	public record GetScheduleByMonthRequest(
-		YearMonth yearMonth,
-		Long memberSeq
-	) {
-		public GetScheduleByMonthRequestDto toGetScheduleByMonthRequestDto() {
-			return new GetScheduleByMonthRequestDto(
-				this.yearMonth,
-				this.memberSeq
-			);
-		}
-	}
-
-	public record GetDdaySchedule(
-		Long memberSeq
-	) {
-		public GetDdayScheduleDto toGetDdayScheduleDto() {
-			return new GetDdayScheduleDto(
-				this.memberSeq
-			);
-		}
-	}
-
 	public record RefuseScheduleRequest(
 		Long memberSeq,
 		Long scheduleSeq

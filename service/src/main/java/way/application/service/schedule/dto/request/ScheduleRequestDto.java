@@ -74,12 +74,6 @@ public class ScheduleRequestDto {
 
 	}
 
-	public record GetScheduleByDateRequestDto(
-		Long memberSeq,
-		LocalDate date
-	) {
-
-	}
 
 	public record AcceptScheduleRequestDto(
 		Long scheduleSeq,
@@ -88,18 +82,6 @@ public class ScheduleRequestDto {
 
 	}
 
-	public record GetScheduleByMonthRequestDto(
-		YearMonth yearMonth,
-		Long memberSeq
-	) {
-
-	}
-
-	public record GetDdayScheduleDto(
-			Long memberSeq
-	) {
-
-	}
 
 	public record RefuseScheduleRequestDto(
 		Long memberSeq,
