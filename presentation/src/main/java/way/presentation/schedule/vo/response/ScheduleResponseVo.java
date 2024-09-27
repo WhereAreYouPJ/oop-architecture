@@ -1,10 +1,10 @@
 package way.presentation.schedule.vo.response;
 
+import static way.application.service.schedule.dto.response.ScheduleResponseDto.GetScheduleResponseDto.*;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
-
-import io.swagger.v3.oas.annotations.media.Schema;
 
 public class ScheduleResponseVo {
 	public record SaveScheduleResponse(
@@ -29,7 +29,8 @@ public class ScheduleResponseVo {
 		Double y,
 		String color,
 		String memo,
-		List<String> userName
+		Boolean allDay,
+		List<GetScheduleMemberInfoDto> memberInfos
 	) implements Serializable {
 		private static final long serialVersionUID = 1L;
 	}

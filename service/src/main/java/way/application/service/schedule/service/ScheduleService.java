@@ -2,11 +2,13 @@ package way.application.service.schedule.service;
 
 import static way.application.service.schedule.dto.request.ScheduleRequestDto.*;
 import static way.application.service.schedule.dto.response.ScheduleResponseDto.*;
+import static way.application.service.schedule.dto.response.ScheduleResponseDto.GetScheduleResponseDto.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -243,10 +245,11 @@ public class ScheduleService {
 		List<ScheduleMemberEntity> scheduleEntities
 			= scheduleMemberRepository.findAllAcceptedScheduleMembersInSchedule(scheduleEntity);
 
-		// userName 추출
-		List<String> userName = scheduleMemberDomain.extractUserNameFromScheduleMemberEntities(scheduleEntities);
+		// Get Schedule Member Info 추출
+		Map<Long, String> memberInfo = scheduleMemberDomain.extractGetScheduleMemberInfo(scheduleEntities);
+		List<GetScheduleMemberInfoDto> memberInfos = scheduleEntityMapper.mapToGetScheduleMemberInfo(memberInfo);
 
-		return scheduleEntityMapper.toGetScheduleResponseDto(scheduleEntity, userName);
+		return scheduleEntityMapper.toGetScheduleResponseDto(scheduleEntity, memberInfos);
 	}
 
 	@Transactional(readOnly = true)
