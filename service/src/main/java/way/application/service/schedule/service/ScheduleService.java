@@ -3,7 +3,9 @@ package way.application.service.schedule.service;
 import static way.application.service.schedule.dto.request.ScheduleRequestDto.*;
 import static way.application.service.schedule.dto.response.ScheduleResponseDto.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -38,7 +40,7 @@ import way.application.infrastructure.jpa.schedule.repository.ScheduleRepository
 import way.application.infrastructure.jpa.scheduleMember.entity.ScheduleMemberEntity;
 import way.application.infrastructure.jpa.scheduleMember.repository.ScheduleMemberRepository;
 import way.application.infrastructure.mongo.chat.repository.ChatRepository;
-import way.application.service.schedule.mapper.ScheduleMapper;
+import way.application.service.schedule.mapper.ScheduleEntityMapper;
 import way.application.service.scheduleMember.mapper.ScheduleMemberMapper;
 
 @Service
@@ -62,34 +64,22 @@ public class ScheduleService {
 	private final FirebaseNotificationDomain firebaseNotificationDomain;
 	private final FriendDomain friendDomain;
 
-	private final ScheduleMapper scheduleMapper;
+	private final ScheduleEntityMapper scheduleEntityMapper;
 	private final ScheduleMemberMapper scheduleMemberMapper;
 
-	/**
-	 * 유효성 검사 -> Repository Interface 에서 처리
-	 * 비즈니스 로직 -> Domain 단에서 처리
-	 * Service 로직 -> Domain 호출 및 저장
-	 *
-	 * Service Layer -> Repo의 CRUD만 처리
-	 */
-
 	@Transactional
-	public SaveScheduleResponseDto createSchedule(SaveScheduleRequestDto saveScheduleRequestDto) {
+	public SaveScheduleResponseDto createSchedule(SaveScheduleRequestDto request) {
 		/*
-		 1. Member 유효성 검사 (Repository 에서 처리)
+		 1. Member 유효성 검사
 		 2. 친구 목록 검사
 		*/
-		MemberEntity createMemberEntity = memberRepository.findByMemberSeq(saveScheduleRequestDto.createMemberSeq());
-		List<MemberEntity> invitedMemberEntity = memberRepository.findByMemberSeqs(
-			saveScheduleRequestDto.invitedMemberSeqs()
-		);
+		MemberEntity createMemberEntity = memberRepository.findByMemberSeq(request.createMemberSeq());
+		List<MemberEntity> invitedMemberEntity = memberRepository.findByMemberSeqs(request.invitedMemberSeqs());
 		List<FriendEntity> friendEntities = friendRepository.findByOwner(createMemberEntity);
 		friendDomain.checkFriends(invitedMemberEntity, friendEntities);
 
 		// Schedule 저장
-		ScheduleEntity savedSchedule = scheduleRepository.saveSchedule(
-			scheduleMapper.toScheduleEntity(saveScheduleRequestDto)
-		);
+		ScheduleEntity savedSchedule = scheduleRepository.saveSchedule(scheduleEntityMapper.toScheduleEntity(request));
 
 		// ScheduleMember 저장
 		Set<MemberEntity> invitedMembers = memberDomain.createMemberSet(createMemberEntity, invitedMemberEntity);
@@ -110,47 +100,46 @@ public class ScheduleService {
 	}
 
 	@Transactional
-	public ModifyScheduleResponseDto modifySchedule(ModifyScheduleRequestDto modifyScheduleRequestDto) {
+	public ModifyScheduleResponseDto modifySchedule(ModifyScheduleRequestDto requestDto) {
 		/*
 		 1. Member 유효성 검사
 		 2. 초대 Member 유효성 검사
 		 3. Schedule 유효성 검사
-		 4. 시작 시간 확인 (전 후 1시간 기준)
+		 4. Schedule 작성자 확인
+		 5. 시작 시간 확인 (전 후 1시간 기준)
 		*/
-		memberRepository.findByMemberSeq(modifyScheduleRequestDto.createMemberSeq());
-		memberRepository.findByMemberSeqs(modifyScheduleRequestDto.invitedMemberSeqs());
-		scheduleRepository.findByScheduleSeq(modifyScheduleRequestDto.scheduleSeq());
+		memberRepository.findByMemberSeq(requestDto.createMemberSeq());
+		memberRepository.findByMemberSeqs(requestDto.invitedMemberSeqs());
+		scheduleRepository.findByScheduleSeq(requestDto.scheduleSeq());
 		ScheduleEntity scheduleEntity = scheduleMemberRepository.findScheduleIfCreatedByMember(
-			modifyScheduleRequestDto.scheduleSeq(),
-			modifyScheduleRequestDto.createMemberSeq()
+			requestDto.scheduleSeq(),
+			requestDto.createMemberSeq()
 		);
 		scheduleDomain.validateScheduleStartTime(scheduleEntity.getStartTime());
 
-		// 삭제 (Repository 에서 처리)
-		scheduleRepository.deleteById(modifyScheduleRequestDto.scheduleSeq());
+		// 전체 삭제
+		scheduleRepository.deleteById(requestDto.scheduleSeq());
 		scheduleMemberRepository.deleteAllBySchedule(scheduleEntity);
 
 		// 재저장
-		SaveScheduleResponseDto saveScheduleResponseDto = createSchedule(
-			modifyScheduleRequestDto.toSaveScheduleRequestDto()
-		);
+		SaveScheduleResponseDto saveScheduleResponseDto = createSchedule(requestDto.toSaveScheduleRequestDto());
 
 		return new ModifyScheduleResponseDto(saveScheduleResponseDto.scheduleSeq());
 	}
 
 	@Transactional
-	public void deleteScheduleByCreator(DeleteScheduleRequestDto deleteScheduleRequestDto) {
+	public void deleteScheduleByCreator(DeleteScheduleRequestDto requestDto) {
 		/*
 		 1. Member 유효성 검사
 		 2. Schedule 유효성 검사
 		 3. 생성자 여부 확인
 		 4. Chat Room 유효성 검사
 		*/
-		memberRepository.findByMemberSeq(deleteScheduleRequestDto.memberSeq());
-		scheduleRepository.findByScheduleSeq(deleteScheduleRequestDto.scheduleSeq());
+		memberRepository.findByMemberSeq(requestDto.memberSeq());
+		scheduleRepository.findByScheduleSeq(requestDto.scheduleSeq());
 		ScheduleEntity scheduleEntity = scheduleMemberRepository.findScheduleIfCreatedByMember(
-			deleteScheduleRequestDto.scheduleSeq(),
-			deleteScheduleRequestDto.memberSeq()
+			requestDto.scheduleSeq(),
+			requestDto.memberSeq()
 		);
 		ChatRoomEntity chatRoomEntity = chatRoomRepository.findByScheduleEntity(scheduleEntity);
 
@@ -182,7 +171,7 @@ public class ScheduleService {
 	}
 
 	@Transactional
-	public void deleteScheduleMemberByInvitor(DeleteScheduleRequestDto deleteScheduleRequestDto) {
+	public void deleteScheduleMemberByInvitor(DeleteScheduleRequestDto requestDto) {
 		/*
 		 1. Member 유효성 검사
 		 2. Schedule 유효성 검사
@@ -190,11 +179,11 @@ public class ScheduleService {
 		 4. Chat Room 유효성 검사
 		 TODO 생성자가 아닌 초대자임을 확인
 		*/
-		MemberEntity memberEntity = memberRepository.findByMemberSeq(deleteScheduleRequestDto.memberSeq());
-		scheduleRepository.findByScheduleSeq(deleteScheduleRequestDto.scheduleSeq());
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(requestDto.memberSeq());
+		scheduleRepository.findByScheduleSeq(requestDto.scheduleSeq());
 		ScheduleEntity scheduleEntity = scheduleMemberRepository.findAcceptedScheduleMemberInSchedule(
-			deleteScheduleRequestDto.scheduleSeq(),
-			deleteScheduleRequestDto.memberSeq()
+			requestDto.scheduleSeq(),
+			requestDto.memberSeq()
 		).getSchedule();
 		ChatRoomEntity chatRoomEntity = chatRoomRepository.findByScheduleEntity(scheduleEntity);
 
@@ -202,7 +191,11 @@ public class ScheduleService {
 		Optional<FeedEntity> feedEntity
 			= feedRepository.findByScheduleEntityAndMemberEntity(scheduleEntity, memberEntity);
 
-		// 해당 Member 의 채팅 삭제
+		/*
+		 해당 Member 의 채팅 삭제
+		 1. Chat Room Member 삭제
+		 2. Chat Room 삭제
+		*/
 		chatRoomMemberRepository.deleteByChatRoomEntityAndMemberEntity(chatRoomEntity, memberEntity);
 		chatRepository.deleteByChatRoomEntityAndMemberEntity(chatRoomEntity, memberEntity);
 
@@ -234,123 +227,103 @@ public class ScheduleService {
 	@Cacheable(value = "schedules", key = "#scheduleSeq + '-' + #memberSeq")
 	@Transactional(readOnly = true)
 	public GetScheduleResponseDto getSchedule(Long scheduleSeq, Long memberSeq) {
-		// 유효성 검사 (Repository 에서 처리)
+		/*
+		 1. Member 유효성 검사
+		 2. Schedule 유혀성 검사
+		 3. Schdule Member 존재 유효성 검사
+		*/
 		memberRepository.findByMemberSeq(memberSeq);
 		ScheduleEntity scheduleEntity = scheduleRepository.findByScheduleSeq(scheduleSeq);
 		scheduleMemberRepository.findAcceptedScheduleMemberInSchedule(scheduleSeq, memberSeq);
 
-		// ScheduleEntity 에서 ScheduleMemberEntity 추출
-		// Schedule accept = true 인 경우만
+		/*
+		 ScheduleEntity 에서 ScheduleMemberEntity 추출
+		 Schedule accept = true 인 경우만
+		*/
 		List<ScheduleMemberEntity> scheduleEntities
 			= scheduleMemberRepository.findAllAcceptedScheduleMembersInSchedule(scheduleEntity);
 
-		// userName 추출 (Domain Layer)
+		// userName 추출
 		List<String> userName = scheduleMemberDomain.extractUserNameFromScheduleMemberEntities(scheduleEntities);
 
-		return new GetScheduleResponseDto(
-			scheduleEntity.getTitle(), scheduleEntity.getStartTime(), scheduleEntity.getEndTime(),
-			scheduleEntity.getLocation(), scheduleEntity.getStreetName(), scheduleEntity.getX(), scheduleEntity.getY(),
-			scheduleEntity.getColor(), scheduleEntity.getMemo(), userName
-		);
+		return scheduleEntityMapper.toGetScheduleResponseDto(scheduleEntity, userName);
 	}
 
 	@Transactional(readOnly = true)
-	public List<GetScheduleByDateResponseDto> getScheduleByDate(
-		GetScheduleByDateRequestDto getScheduleByDateRequestDto
-	) {
-		// 유효성 검사 (Repository 에서 처리)
-		memberRepository.findByMemberSeq(getScheduleByDateRequestDto.memberSeq());
+	public List<GetScheduleByDateResponseDto> getScheduleByDate(Long memberSeq, LocalDate date) {
+		/*
+		 1. Member 유효성 검사
+		*/
+		memberRepository.findByMemberSeq(memberSeq);
 
-		// ScheduleEntity 추출
-		// Schedule accept = true 인 경우만
-		List<ScheduleEntity> scheduleEntities = scheduleRepository.findAcceptedSchedulesByMemberAndDate(
-			getScheduleByDateRequestDto.memberSeq(), getScheduleByDateRequestDto.date()
-		);
+		/*
+		 ScheduleEntity 추출
+		 Schedule accept = true 인 경우만
+		*/
+		List<ScheduleEntity> scheduleEntities
+			= scheduleRepository.findAcceptedSchedulesByMemberAndDate(memberSeq, date);
 
 		return scheduleEntities.stream()
-			.map(scheduleEntity -> new GetScheduleByDateResponseDto(
-				scheduleEntity.getScheduleSeq(),
-				scheduleEntity.getTitle(),
-				scheduleEntity.getLocation(),
-				scheduleEntity.getColor(),
-				scheduleEntity.getStartTime(),
-				scheduleEntity.getEndTime(),
-				scheduleMemberRepository.countBySchedule(scheduleEntity) > 1,
-				scheduleEntity.getAllDay())
-			).collect(Collectors.toList());
+			.map(scheduleEntity -> scheduleEntityMapper.toGetScheduleByDateResponseDto(
+				scheduleEntity,
+				scheduleMemberRepository.countBySchedule(scheduleEntity) > 1
+			)).collect(Collectors.toList());
 	}
 
 	@Transactional
-	public void acceptSchedule(AcceptScheduleRequestDto request) {
-		// 유효성 검사 (Repository 에서 처리)
-		memberRepository.findByMemberSeq(request.memberSeq());
-		scheduleRepository.findByScheduleSeq(request.scheduleSeq());
+	public void acceptSchedule(AcceptScheduleRequestDto requestDto) {
+		/*
+		 1. Member 유효성 검사
+		 2. Schedule 유효성 검사
+		*/
+		memberRepository.findByMemberSeq(requestDto.memberSeq());
+		scheduleRepository.findByScheduleSeq(requestDto.scheduleSeq());
 
 		// ScheduleEntity 추출
 		ScheduleMemberEntity scheduleMemberEntity
-			= scheduleMemberRepository.findScheduleMemberInSchedule(
-			request.memberSeq(),
-			request.scheduleSeq()
-		);
+			= scheduleMemberRepository.findScheduleMemberInSchedule(requestDto.memberSeq(), requestDto.scheduleSeq());
 
 		scheduleMemberEntity.updateAcceptSchedule();
-
 		scheduleMemberRepository.saveScheduleMemberEntity(scheduleMemberEntity);
 	}
 
 	@Transactional(readOnly = true)
-	public List<GetScheduleByMonthResponseDto> getScheduleByMonth(
-		GetScheduleByMonthRequestDto getScheduleByMonthRequestDto
-	) {
-		// 유효성 검사 (Repository 에서 처리)
-		memberRepository.findByMemberSeq(getScheduleByMonthRequestDto.memberSeq());
+	public List<GetScheduleByMonthResponseDto> getScheduleByMonth(YearMonth yearMonth, Long memberSeq) {
+		/*
+		 1. Member 유효성 검사
+		*/
+		memberRepository.findByMemberSeq(memberSeq);
 
-		// Domain 에서 처리
-		LocalDateTime startOfMonth = scheduleDomain.getStartOfMonth(getScheduleByMonthRequestDto.yearMonth());
-		LocalDateTime endOfMonth = scheduleDomain.getEndOfMonth(getScheduleByMonthRequestDto.yearMonth());
+		// 해당 월 날짜 정보
+		LocalDateTime startOfMonth = scheduleDomain.getStartOfMonth(yearMonth);
+		LocalDateTime endOfMonth = scheduleDomain.getEndOfMonth(yearMonth);
 
-		List<ScheduleEntity> scheduleEntities = scheduleRepository.findSchedulesByYearMonth(
-			startOfMonth,
-			endOfMonth,
-			getScheduleByMonthRequestDto.memberSeq()
-		);
+		List<ScheduleEntity> scheduleEntities
+			= scheduleRepository.findSchedulesByYearMonth(startOfMonth, endOfMonth, memberSeq);
 
 		return scheduleEntities.stream()
-			.map(scheduleEntity -> new GetScheduleByMonthResponseDto(
-				scheduleEntity.getScheduleSeq(),
-				scheduleEntity.getTitle(),
-				scheduleEntity.getStartTime(),
-				scheduleEntity.getEndTime(),
-				scheduleEntity.getLocation(),
-				scheduleEntity.getStreetName(),
-				scheduleEntity.getX(),
-				scheduleEntity.getY(),
-				scheduleEntity.getColor(),
-				scheduleEntity.getMemo(),
-				scheduleEntity.getAllDay()
-			))
+			.map(scheduleEntityMapper::toGetScheduleByMonthResponseDto)
 			.collect(Collectors.toList());
 	}
 
 	@Transactional(readOnly = true)
-	public List<GetDdayScheduleResponseDto> getDdaySchedule(GetDdayScheduleDto getDdayScheduleDto) {
-
-		// 유효성 검사 (Repository 에서 처리)
-		MemberEntity memberEntity = memberRepository.findByMemberSeq(getDdayScheduleDto.memberSeq());
+	public List<GetDdayScheduleResponseDto> getDdaySchedule(Long memberSeq) {
+		/*
+		 1. Member 유효성 검사
+		*/
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
 
 		List<ScheduleEntity> scheduleEntities = scheduleRepository.findSchedulesByMember(memberEntity);
 
 		return scheduleEntities.stream()
-			.map(scheduleEntity -> new GetDdayScheduleResponseDto(
-				scheduleEntity.getScheduleSeq(),
-				scheduleEntity.getTitle(),
+			.map(scheduleEntity -> scheduleEntityMapper.toGetDdayScheduleResponseDto(
+				scheduleEntity,
 				scheduleDomain.getDdaySchedule(scheduleEntity.getStartTime())
-			))
-			.collect(Collectors.toList());
+			)).collect(Collectors.toList());
 	}
 
 	@Transactional(readOnly = true)
-	public Page<GetScheduleListDto> getScheduleList(Long memberSeq, Pageable pageable) {
+	public Page<GetScheduleListResponseDto> getScheduleList(Long memberSeq, Pageable pageable) {
 		/*
 		 1. Member 유효성 검사
 		*/
@@ -361,15 +334,11 @@ public class ScheduleService {
 			pageable
 		);
 
-		return scheduleEntityPage.map(scheduleEntity -> new GetScheduleListDto(
-			scheduleEntity.getScheduleSeq(),
-			scheduleEntity.getStartTime(),
-			scheduleEntity.getTitle()
-		));
+		return scheduleEntityPage.map(scheduleEntityMapper::toGetScheduleListResponseDto);
 	}
 
 	@Transactional
-	public void refuseSchedule(RefuseScheduleRequestDto refuseScheduleRequestDto) {
+	public void refuseSchedule(RefuseScheduleRequestDto requestDto) {
 		/*
 		 1. Member 유효성 검사
 		 2. Schedule 유효성 검사
@@ -377,8 +346,8 @@ public class ScheduleService {
 		 4. Creator 일 경우 삭제 불가능
 		 5. 이미 수락할 경우 삭제 불가능
 		*/
-		MemberEntity memberEntity = memberRepository.findByMemberSeq(refuseScheduleRequestDto.memberSeq());
-		ScheduleEntity scheduleEntity = scheduleRepository.findByScheduleSeq(refuseScheduleRequestDto.scheduleSeq());
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(requestDto.memberSeq());
+		ScheduleEntity scheduleEntity = scheduleRepository.findByScheduleSeq(requestDto.scheduleSeq());
 		scheduleMemberRepository.findScheduleMemberInSchedule(
 			memberEntity.getMemberSeq(),
 			scheduleEntity.getScheduleSeq()

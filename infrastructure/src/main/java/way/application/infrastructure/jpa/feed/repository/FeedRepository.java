@@ -21,10 +21,7 @@ public interface FeedRepository {
 
 	void deleteAllByFeedSeq(Long feedSeq);
 
-	FeedEntity findByScheduleExcludingHiddenRand(
-		ScheduleEntity scheduleEntity,
-		MemberEntity memberEntity
-	);
+	FeedEntity findByScheduleExcludingHiddenRand(ScheduleEntity scheduleEntity, MemberEntity memberEntity);
 
 	void deleteFeedEntity(FeedEntity feedEntity);
 

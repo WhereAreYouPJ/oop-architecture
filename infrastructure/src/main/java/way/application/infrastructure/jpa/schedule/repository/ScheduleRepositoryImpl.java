@@ -102,14 +102,16 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 		QScheduleMemberEntity scheduleMember = QScheduleMemberEntity.scheduleMemberEntity;
 
 		return queryFactory
-				.select(schedule)
-				.from(schedule)
-				.join(scheduleMember).on(schedule.scheduleSeq.eq(scheduleMember.schedule.scheduleSeq))
-				.where(
-						scheduleMember.invitedMember.eq(memberEntity)
-						.and(schedule.startTime.goe(LocalDate.now().atStartOfDay()))
-				)
-				.fetch();
+			.select(schedule)
+			.from(schedule)
+			.join(scheduleMember).on(schedule.scheduleSeq.eq(scheduleMember.schedule.scheduleSeq))
+			.where(
+				scheduleMember.invitedMember.eq(memberEntity)
+					.and(scheduleMember.acceptSchedule.isTrue())
+					.and(schedule.startTime.goe(LocalDate.now().atStartOfDay()))
+			)
+			.orderBy(schedule.startTime.asc())
+			.fetch();
 	}
 
 	@Override

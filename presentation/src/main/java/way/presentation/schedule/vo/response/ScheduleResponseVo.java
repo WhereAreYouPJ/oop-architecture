@@ -1,23 +1,25 @@
-package way.application.service.schedule.dto.response;
+package way.presentation.schedule.vo.response;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class ScheduleResponseDto {
-	public record SaveScheduleResponseDto(
+import io.swagger.v3.oas.annotations.media.Schema;
+
+public class ScheduleResponseVo {
+	public record SaveScheduleResponse(
 		Long scheduleSeq
 	) {
 
 	}
 
-	public record ModifyScheduleResponseDto(
+	public record ModifyScheduleResponse(
 		Long scheduleSeq
 	) {
 
 	}
 
-	public record GetScheduleResponseDto(
+	public record GetScheduleResponse(
 		String title,
 		LocalDateTime startTime,
 		LocalDateTime endTime,
@@ -30,23 +32,22 @@ public class ScheduleResponseDto {
 		List<String> userName
 	) implements Serializable {
 		private static final long serialVersionUID = 1L;
-
 	}
 
-	public record GetScheduleByDateResponseDto(
+	public record GetScheduleByDateResponse(
 		Long scheduleSeq,
 		String title,
 		String location,
 		String color,
 		LocalDateTime startTime,
 		LocalDateTime endTime,
-		Boolean group,
+		boolean group,
 		Boolean allDay
 	) {
 
 	}
 
-	public record GetScheduleByMonthResponseDto(
+	public record GetScheduleByMonthResponse(
 		Long scheduleSeq,
 		String title,
 		LocalDateTime startTime,
@@ -62,15 +63,15 @@ public class ScheduleResponseDto {
 
 	}
 
-	public record GetDdayScheduleResponseDto(
-			Long scheduleSeq,
-			String title,
-			String dDay
+	public record GetDdayScheduleResponse(
+		Long scheduleSeq,
+		String title,
+		String dDay
 	) {
 
 	}
 
-	public record GetScheduleListResponseDto(
+	public record GetScheduleListResponse(
 		Long scheduleSeq,
 		LocalDateTime startTime,
 		String title

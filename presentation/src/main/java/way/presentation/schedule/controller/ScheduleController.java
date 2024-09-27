@@ -2,8 +2,8 @@ package way.presentation.schedule.controller;
 
 import static way.application.service.schedule.dto.request.ScheduleRequestDto.*;
 import static way.application.service.schedule.dto.response.ScheduleResponseDto.*;
-import static way.presentation.schedule.vo.req.ScheduleRequestVo.*;
-import static way.presentation.schedule.vo.res.ScheduleResponseVo.*;
+import static way.presentation.schedule.vo.request.ScheduleRequestVo.*;
+import static way.presentation.schedule.vo.response.ScheduleResponseVo.*;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -38,23 +38,19 @@ import lombok.RequiredArgsConstructor;
 import way.application.service.schedule.service.ScheduleService;
 import way.application.utils.exception.GlobalExceptionHandler;
 import way.presentation.base.BaseResponse;
-import way.presentation.schedule.validates.DeleteScheduleValidator;
-import way.presentation.schedule.validates.ModifyScheduleValidator;
-import way.presentation.schedule.validates.SaveScheduleValidator;
+import way.presentation.schedule.mapper.ScheduleResponseMapper;
 
 @RestController
 @RequestMapping("/schedule")
 @RequiredArgsConstructor
 @Tag(name = "일정", description = "담당자 (박종훈)")
 public class ScheduleController {
-	private final SaveScheduleValidator saveScheduleValidator;
-	private final ModifyScheduleValidator modifyScheduleValidator;
-	private final DeleteScheduleValidator deleteScheduleValidator;
-
 	private final ScheduleService scheduleService;
 
+	private final ScheduleResponseMapper scheduleResponseMapper;
+
 	@PostMapping(name = "일정 생성")
-	@Operation(summary = "일정 생성 API", description = "Request: SaveScheduleRequest, Response: SaveScheduleResponse")
+	@Operation(summary = "일정 생성 API")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "201",
@@ -95,22 +91,17 @@ public class ScheduleController {
 		@Valid
 		@RequestBody SaveScheduleRequest request
 	) {
-		// DTO 유효성 검사
-		saveScheduleValidator.validate(request);
+		// REQUEST Validate
+		request.saveScheduleRequestValidate();
 
-		// VO -> DTO 변환
-		SaveScheduleResponseDto saveScheduleResponseDto
-			= scheduleService.createSchedule(request.toSaveScheduleRequestDto());
-
-		// DTO -> VO 변환
-		SaveScheduleResponse response
-			= new SaveScheduleResponse(saveScheduleResponseDto.scheduleSeq());
+		SaveScheduleResponseDto responseDto = scheduleService.createSchedule(request.toSaveScheduleRequestDto());
+		SaveScheduleResponse response = scheduleResponseMapper.toSaveScheduleResponse(responseDto);
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.CREATED.value(), response));
 	}
 
 	@PutMapping(name = "일정 수정")
-	@Operation(summary = "일정 수정 API", description = "Request: ModifyScheduleRequest, Response: ModifyScheduleResponse")
+	@Operation(summary = "일정 수정 API")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -163,22 +154,17 @@ public class ScheduleController {
 		@Valid
 		@RequestBody ModifyScheduleRequest request
 	) {
-		// DTO 유효성 검사
-		modifyScheduleValidator.validate(request);
+		// REQUEST VALIDATE
+		request.modifyScheduleRequestValidate();
 
-		// VO -> DTO 변환
-		ModifyScheduleResponseDto modifyScheduleResponseDto
-			= scheduleService.modifySchedule(request.toModifyScheduleRequestDto());
-
-		// DTO -> VO 변환
-		ModifyScheduleResponse response
-			= new ModifyScheduleResponse(modifyScheduleResponseDto.scheduleSeq());
+		ModifyScheduleResponseDto responseDto = scheduleService.modifySchedule(request.toModifyScheduleRequestDto());
+		ModifyScheduleResponse response = scheduleResponseMapper.toModifyScheduleResponse(responseDto);
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
 
 	@DeleteMapping(value = "creator", name = "일정 삭제(일정 생성자인 경우)")
-	@Operation(summary = "일정 삭제(일정 생성자인 경우) API", description = "Request: DeleteScheduleRequest")
+	@Operation(summary = "일정 삭제(일정 생성자인 경우) API")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -228,10 +214,9 @@ public class ScheduleController {
 		@Valid
 		@RequestBody DeleteScheduleRequest request
 	) {
-		// DTO 유효성 검사
-		deleteScheduleValidator.validate(request);
+		// REQUEST VALIDATE
+		request.deleteScheduleRequestValidate();
 
-		// VO -> DTO
 		DeleteScheduleRequestDto deleteScheduleRequestDto = request.toDeleteScheduleRequestDto();
 		scheduleService.deleteScheduleByCreator(deleteScheduleRequestDto);
 
@@ -289,17 +274,15 @@ public class ScheduleController {
 		@Valid
 		@RequestBody DeleteScheduleRequest request
 	) {
-		// DTO 유효성 검사
-		deleteScheduleValidator.validate(request);
+		request.deleteScheduleRequestValidate();
 
-		// VO -> DTO
 		scheduleService.deleteScheduleMemberByInvitor(request.toDeleteScheduleRequestDto());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
 	}
 
 	@GetMapping(name = "일정 조회")
-	@Operation(summary = "일정 상세 조회 API", description = "Response: GetScheduleResponse")
+	@Operation(summary = "일정 상세 조회 API")
 	@Parameters({
 		@Parameter(
 			name = "scheduleSeq",
@@ -343,29 +326,16 @@ public class ScheduleController {
 	public ResponseEntity<BaseResponse<GetScheduleResponse>> getSchedule(
 		@Valid
 		@RequestParam(name = "scheduleSeq") Long scheduleSeq,
-		@RequestParam(name = "memberSeq") Long memberSeq) {
-		GetScheduleResponseDto getScheduleResponseDto = scheduleService.getSchedule(scheduleSeq,
-			memberSeq);
-
-		// DTO -> VO 변환
-		GetScheduleResponse response = new GetScheduleResponse(
-			getScheduleResponseDto.title(),
-			getScheduleResponseDto.startTime(),
-			getScheduleResponseDto.endTime(),
-			getScheduleResponseDto.location(),
-			getScheduleResponseDto.streetName(),
-			getScheduleResponseDto.x(),
-			getScheduleResponseDto.y(),
-			getScheduleResponseDto.color(),
-			getScheduleResponseDto.memo(),
-			getScheduleResponseDto.userName()
-		);
+		@RequestParam(name = "memberSeq") Long memberSeq
+	) {
+		GetScheduleResponseDto responseDto = scheduleService.getSchedule(scheduleSeq, memberSeq);
+		GetScheduleResponse response = scheduleResponseMapper.toGetScheduleResponse(responseDto);
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
 
 	@GetMapping(value = "/date", name = "해당 날짜 일정 조회")
-	@Operation(summary = "해당 날짜 일정 조회 API", description = "Response: GetScheduleByDateResponse")
+	@Operation(summary = "해당 날짜 일정 조회 API")
 	@Parameters({
 		@Parameter(
 			name = "date",
@@ -397,32 +367,18 @@ public class ScheduleController {
 	public ResponseEntity<BaseResponse<List<GetScheduleByDateResponse>>> getScheduleByDate(
 		@Valid
 		@RequestParam(name = "date") LocalDate date,
-		@RequestParam(name = "memberSeq") Long memberSeq) {
-		// Param -> VO
-		GetScheduleByDateRequest request = new GetScheduleByDateRequest(memberSeq, date);
+		@RequestParam(name = "memberSeq") Long memberSeq
+	) {
+		List<GetScheduleByDateResponseDto> responseDto = scheduleService.getScheduleByDate(memberSeq, date);
 
-		// VO -> DTO
-		List<GetScheduleByDateResponseDto> scheduleByDateResponseDto
-			= scheduleService.getScheduleByDate(request.toGetScheduleByDateRequestDto());
-
-		// DTO -> VO
-		List<GetScheduleByDateResponse> response = scheduleByDateResponseDto.stream()
-			.map(dto -> new GetScheduleByDateResponse(
-				dto.scheduleSeq(),
-				dto.title(),
-				dto.location(),
-				dto.color(),
-				dto.startTime(),
-				dto.endTime(),
-				dto.group(),
-				dto.allDay())
-			).collect(Collectors.toList());
+		List<GetScheduleByDateResponse> response = responseDto.stream()
+			.map(scheduleResponseMapper::toGetScheduleByDateResponse).collect(Collectors.toList());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
 
 	@PostMapping(value = "/accept", name = "일정 초대 수락")
-	@Operation(summary = "일정 초대 수락 API", description = "Request: AcceptScheduleRequest")
+	@Operation(summary = "일정 초대 수락 API")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -434,6 +390,12 @@ public class ScheduleController {
 		@ApiResponse(
 			responseCode = "S500",
 			description = "500 SERVER_ERROR (나도 몰라 ..)",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "B001",
+			description = "400 Invalid DTO Parameter errors / 요청 값 형식 요류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
@@ -460,14 +422,15 @@ public class ScheduleController {
 		@Valid
 		@RequestBody AcceptScheduleRequest request
 	) {
-		// VO -> DTO
+		request.acceptScheduleRequestValidate();
+
 		scheduleService.acceptSchedule(request.toAcceptScheduleRequestDto());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
 	}
 
 	@GetMapping(value = "/month", name = "월별 일정 조회")
-	@Operation(summary = "월별 일정 조회 API", description = "Response: GetScheduleByMonthResponse")
+	@Operation(summary = "월별 일정 조회 API")
 	@Parameters({
 		@Parameter(
 			name = "yearMonth",
@@ -502,36 +465,17 @@ public class ScheduleController {
 		@DateTimeFormat(pattern = "yyyy-MM") YearMonth yearMonth,
 		@RequestParam("memberSeq") Long memberSeq
 	) {
-		// Param -> VO
-		GetScheduleByMonthRequest requestVO = new GetScheduleByMonthRequest(yearMonth, memberSeq);
+		List<GetScheduleByMonthResponseDto> responseDto = scheduleService.getScheduleByMonth(yearMonth, memberSeq);
 
-		// VO -> DTO
-		List<GetScheduleByMonthResponseDto> responseDto = scheduleService.getScheduleByMonth(
-			requestVO.toGetScheduleByMonthRequestDto()
-		);
-
-		// DTO -> VO
 		List<GetScheduleByMonthResponse> response = responseDto.stream()
-			.map(scheduleEntity -> new GetScheduleByMonthResponse(
-				scheduleEntity.scheduleSeq(),
-				scheduleEntity.title(),
-				scheduleEntity.startTime(),
-				scheduleEntity.endTime(),
-				scheduleEntity.location(),
-				scheduleEntity.streetName(),
-				scheduleEntity.x(),
-				scheduleEntity.y(),
-				scheduleEntity.color(),
-				scheduleEntity.memo(),
-				scheduleEntity.allDay()
-			))
+			.map(scheduleResponseMapper::toGetScheduleByMonthResponse)
 			.collect(Collectors.toList());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
 
 	@GetMapping(value = "/dday", name = "일정 D-DAY 조회")
-	@Operation(summary = "일정 D-DAY 조회 API", description = "일정 D-DAY 조회 API")
+	@Operation(summary = "일정 D-DAY 조회 API")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -558,30 +502,19 @@ public class ScheduleController {
 	})
 	public ResponseEntity<BaseResponse<List<GetDdayScheduleResponse>>> getDdaySchedule(
 		@Valid
-		@RequestParam("memberSeq") Long memberSeq) {
+		@RequestParam("memberSeq") Long memberSeq
+	) {
+		List<GetDdayScheduleResponseDto> responseDto = scheduleService.getDdaySchedule(memberSeq);
 
-		// Param -> VO
-		GetDdaySchedule requestVo = new GetDdaySchedule(memberSeq);
-
-		// VO -> DTO
-
-		List<GetDdayScheduleResponseDto> responseDto = scheduleService.getDdaySchedule(
-			requestVo.toGetDdayScheduleDto());
-
-		// DTO -> VO
 		List<GetDdayScheduleResponse> response = responseDto.stream()
-			.map(scheduleEntity -> new GetDdayScheduleResponse(
-				scheduleEntity.scheduleSeq(),
-				scheduleEntity.title(),
-				scheduleEntity.dDay()
-			))
+			.map(scheduleResponseMapper::toGetDdayScheduleResponse)
 			.collect(Collectors.toList());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
 
 	@GetMapping(value = "/list", name = "일정 List 조회")
-	@Operation(summary = "일정 List 조회 API", description = "일정 List 조회 API")
+	@Operation(summary = "일정 List 조회 API")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -605,7 +538,7 @@ public class ScheduleController {
 		@Parameter(name = "page", description = "페이지 처리 페이지 수", example = "0"),
 		@Parameter(name = "size", description = "페이지 당 응답 받을 데이터 개수", example = "10"),
 	})
-	public ResponseEntity<BaseResponse<Page<GetScheduleListDto>>> getScheduleList(
+	public ResponseEntity<BaseResponse<Page<GetScheduleListResponse>>> getScheduleList(
 		@Valid
 		@RequestParam("memberSeq") Long memberSeq,
 		@RequestParam(defaultValue = "0") int page,
@@ -613,13 +546,15 @@ public class ScheduleController {
 	) {
 
 		Pageable pageable = PageRequest.of(page, size);
-		Page<GetScheduleListDto> response = scheduleService.getScheduleList(memberSeq, pageable);
+		Page<GetScheduleListResponseDto> responseDtoPage = scheduleService.getScheduleList(memberSeq, pageable);
+
+		Page<GetScheduleListResponse> response = responseDtoPage.map(scheduleResponseMapper::toGetScheduleListResponse);
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
 
 	@DeleteMapping(value = "/refuse", name = "일정 거절")
-	@Operation(summary = "일정 거절 API", description = "일정 거절 API")
+	@Operation(summary = "일정 거절 API")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -628,6 +563,12 @@ public class ScheduleController {
 		@ApiResponse(
 			responseCode = "S500",
 			description = "500 SERVER_ERROR (나도 몰라 ..)",
+			content = @Content(
+				schema = @Schema(
+					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(
+			responseCode = "B001",
+			description = "400 Invalid DTO Parameter errors / 요청 값 형식 요류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
@@ -666,6 +607,9 @@ public class ScheduleController {
 		@Valid
 		@RequestBody RefuseScheduleRequest request
 	) {
+		// REQUEST VALIDATE
+		request.refuseScheduleRequestValidate();
+
 		scheduleService.refuseSchedule(request.toRefuseScheduleRequestDto());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
