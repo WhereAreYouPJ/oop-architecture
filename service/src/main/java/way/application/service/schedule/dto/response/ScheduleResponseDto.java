@@ -29,6 +29,7 @@ public class ScheduleResponseDto {
 		Double y,
 		String color,
 		String memo,
+		Boolean allDay,
 		List<GetScheduleMemberInfoDto> memberInfos
 	) implements Serializable {
 		private static final long serialVersionUID = 1L;
