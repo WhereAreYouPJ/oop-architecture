@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import way.application.infrastructure.jpa.bookMark.repository.BookMarkRepository;
 import way.application.infrastructure.jpa.feed.entity.FeedEntity;
 import way.application.infrastructure.jpa.feed.repository.FeedRepository;
+import way.application.infrastructure.jpa.feedImage.entity.FeedImageEntity;
 import way.application.infrastructure.jpa.feedImage.repository.FeedImageRepository;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.member.repository.MemberRepository;
@@ -100,56 +101,25 @@ public class FeedService {
 
 	@Transactional(readOnly = true)
 	public Page<GetFeedResponseDto> getAllFeed(Long memberSeq, Pageable pageable) {
-		// Member 유효성 검사
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
 
-		// ScheduleMemberEntity를 통해 Schedule을 조회하고 각 Schedule에 대해 Feed 정보를 조회
 		return scheduleRepository.getScheduleEntityFromScheduleMember(
 			scheduleMemberRepository.findByMemberEntity(memberEntity, pageable)
 		).map(scheduleEntity -> {
-			// Schedule 정보 생성
-			ScheduleInfo scheduleInfo = new ScheduleInfo(
-				scheduleEntity.getScheduleSeq(),
-				scheduleEntity.getStartTime(),
-				scheduleEntity.getLocation()
-			);
+			ScheduleInfo scheduleInfo = feedEntityMapper.toScheduleInfo(scheduleEntity);
 
-			// 해당 Schedule의 Feed 조회 및 정보 생성
 			FeedEntity feedEntity = feedRepository.findByScheduleExcludingHiddenRand(scheduleEntity, memberEntity);
-			FeedInfo feedInfo = new FeedInfo(
-				feedEntity.getFeedSeq(),
-				feedEntity.getTitle(),
-				feedEntity.getContent()
-			);
+			boolean bookMarkInfo = bookMarkRepository.existsByFeedEntityAndMemberEntity(feedEntity, memberEntity);
+			List<FeedImageEntity> feedImageEntities = feedImageRepository.findAllByFeedEntity(feedEntity);
 
-			// Feed 작성자 정보
-			MemberEntity creatorMember = feedEntity.getCreatorMember();
-			MemberInfo memberInfo = new MemberInfo(
-				creatorMember.getMemberSeq(),
-				creatorMember.getUserName(),
-				creatorMember.getProfileImage()
-			);
-
-			// Book Mark 여부 확인
-			boolean bookMarkInfo = bookMarkRepository.isFeedBookMarkedByMember(feedEntity, memberEntity);
-
-			// Feed 이미지 정보 생성
-			List<FeedImageInfo> feedImageInfos = feedImageRepository.findAllByFeedEntity(feedEntity).stream()
-				.map(feedImageEntity -> new FeedImageInfo(
-					feedImageEntity.getFeedImageSeq(),
-					feedImageEntity.getFeedImageURL(),
-					feedImageEntity.getFeedImageOrder()
-				)).toList();
-
-			// ScheduleFeedInfo 생성 및 응답 객체 생성
-			ScheduleFeedInfo scheduleFeedInfo = new ScheduleFeedInfo(
-				memberInfo,
-				feedInfo,
-				feedImageInfos,
+			ScheduleFeedInfo scheduleFeedInfo = feedEntityMapper.toScheduleFeedInfo(
+				feedEntity.getCreatorMember(),
+				feedEntity,
+				feedImageEntities,
 				bookMarkInfo
 			);
 
-			return new GetFeedResponseDto(scheduleInfo, List.of(scheduleFeedInfo));
+			return feedEntityMapper.toGetFeedResponseDto(scheduleInfo, List.of(scheduleFeedInfo));
 		});
 	}
 
@@ -190,7 +160,7 @@ public class FeedService {
 					)).toList();
 
 				// Book Mark 여부 확인
-				boolean bookMarkInfo = bookMarkRepository.isFeedBookMarkedByMember(feedEntity, memberEntity);
+				boolean bookMarkInfo = bookMarkRepository.existsByFeedEntityAndMemberEntity(feedEntity, memberEntity);
 
 				// ScheduleFeedInfo 생성
 				return new ScheduleFeedInfo(memberInfo, feedInfo, feedImageInfos, bookMarkInfo);
