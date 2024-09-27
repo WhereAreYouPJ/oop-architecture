@@ -22,7 +22,7 @@ import way.application.infrastructure.jpa.member.repository.MemberRepository;
 import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
 import way.application.infrastructure.jpa.schedule.repository.ScheduleRepository;
 import way.application.infrastructure.jpa.scheduleMember.repository.ScheduleMemberRepository;
-import way.application.service.feed.mapper.FeedMapper;
+import way.application.service.feed.mapper.FeedEntityMapper;
 import way.application.service.feedImage.mapper.FeedImageMapper;
 import way.application.utils.s3.S3Utils;
 
@@ -38,39 +38,33 @@ public class FeedService {
 
 	private final S3Utils s3Utils;
 
-	private final FeedMapper feedMapper;
+	private final FeedEntityMapper feedEntityMapper;
 	private final FeedImageMapper feedImageMapper;
 
 	@Transactional
-	public SaveFeedResponseDto saveFeed(SaveFeedRequestDto saveFeedRequestDto) throws IOException {
+	public SaveFeedResponseDto saveFeed(SaveFeedRequestDto requestDto) throws IOException {
 		/*
 		 1. Member 유효성 검사
 		 2. Schedule 유효성 검사
 		 3. Schedule Member In (Accept = True) 유효성 검사
 		 4. 이미 Feed 생성 여부 검사
 		*/
-		MemberEntity memberEntity = memberRepository.findByMemberSeq(saveFeedRequestDto.memberSeq());
-		ScheduleEntity scheduleEntity = scheduleRepository.findByScheduleSeq(saveFeedRequestDto.scheduleSeq());
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(requestDto.memberSeq());
+		ScheduleEntity scheduleEntity = scheduleRepository.findByScheduleSeq(requestDto.scheduleSeq());
 		scheduleMemberRepository.findAcceptedScheduleMemberInSchedule(
-			saveFeedRequestDto.scheduleSeq(),
-			saveFeedRequestDto.memberSeq()
+			requestDto.scheduleSeq(),
+			requestDto.memberSeq()
 		);
 		feedRepository.findByCreatorMemberAndSchedule(memberEntity, scheduleEntity);
 
-		// Feed Entity 생성
-		FeedEntity feedEntity = feedMapper.toFeedEntity(
-			scheduleEntity,
-			memberEntity,
-			saveFeedRequestDto.title(),
-			saveFeedRequestDto.content()
-		);
-
 		// Feed Entity 저장
+		FeedEntity feedEntity
+			= feedEntityMapper.toFeedEntity(scheduleEntity, memberEntity, requestDto.title(), requestDto.content());
 		FeedEntity savedFeedEntity = feedRepository.saveFeedEntity(feedEntity);
 
 		// Feed Image Entity 저장
-		if (saveFeedRequestDto.feedImageInfos() != null) {
-			for (feedImageInfo feedImageInfo : saveFeedRequestDto.feedImageInfos()) {
+		if (requestDto.feedImageInfos() != null) {
+			for (feedImageInfo feedImageInfo : requestDto.feedImageInfos()) {
 				String imageURL = s3Utils.uploadMultipartFile(feedImageInfo.images());
 
 				// Feed Image Entity 생성
@@ -80,7 +74,7 @@ public class FeedService {
 			}
 		}
 
-		return new SaveFeedResponseDto(savedFeedEntity.getFeedSeq());
+		return feedEntityMapper.toSaveFeedResponseDto(feedEntity);
 	}
 
 	@Transactional
