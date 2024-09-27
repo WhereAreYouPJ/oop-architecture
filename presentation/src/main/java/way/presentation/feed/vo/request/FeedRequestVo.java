@@ -37,4 +37,34 @@ public class FeedRequestVo {
 			);
 		}
 	}
+
+	public record ModifyFeedRequest(
+		Long feedSeq,
+		Long memberSeq,
+		String title,
+		String content,
+		List<feedImageInfo> feedImageInfos
+	) {
+		public void modifyFeedRequestValidator() {
+			if (feedSeq == null) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
+			if (memberSeq == null) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
+			if (title == null || title.trim().isEmpty()) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
+		}
+
+		public ModifyFeedRequestDto toModifyFeedRequestDto() {
+			return new ModifyFeedRequestDto(
+				this.feedSeq,
+				this.memberSeq,
+				this.title,
+				this.content,
+				this.feedImageInfos
+			);
+		}
+	}
 }
