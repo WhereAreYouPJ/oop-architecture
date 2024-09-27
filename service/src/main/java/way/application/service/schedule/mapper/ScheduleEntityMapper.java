@@ -2,8 +2,11 @@ package way.application.service.schedule.mapper;
 
 import static way.application.service.schedule.dto.request.ScheduleRequestDto.*;
 import static way.application.service.schedule.dto.response.ScheduleResponseDto.*;
+import static way.application.service.schedule.dto.response.ScheduleResponseDto.GetScheduleResponseDto.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -17,7 +20,16 @@ public interface ScheduleEntityMapper {
 	@Mapping(target = "scheduleSeq", ignore = true)
 	ScheduleEntity toScheduleEntity(SaveScheduleRequestDto scheduleDto);
 
-	GetScheduleResponseDto toGetScheduleResponseDto(ScheduleEntity scheduleEntity, List<String> userNames);
+	GetScheduleResponseDto toGetScheduleResponseDto(
+		ScheduleEntity scheduleEntity,
+		List<GetScheduleMemberInfoDto> memberInfos
+	);
+
+	default List<GetScheduleMemberInfoDto> mapToGetScheduleMemberInfo(Map<Long, String> memberInfoMap) {
+		return memberInfoMap.entrySet().stream()
+			.map(entry -> new GetScheduleMemberInfoDto(entry.getKey(), entry.getValue()))
+			.collect(Collectors.toList());
+	}
 
 	GetScheduleByDateResponseDto toGetScheduleByDateResponseDto(ScheduleEntity scheduleEntity, Boolean isGroup);
 
