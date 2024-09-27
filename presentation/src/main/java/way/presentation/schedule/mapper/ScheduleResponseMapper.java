@@ -20,4 +20,6 @@ public interface ScheduleResponseMapper {
 	GetScheduleByMonthResponse toGetScheduleByMonthResponse(GetScheduleByMonthResponseDto responseDto);
 
 	GetDdayScheduleResponse toGetDdayScheduleResponse(GetDdayScheduleResponseDto responseDto);
+
+	GetScheduleListResponse toGetScheduleListResponse(GetScheduleListResponseDto responseDto);
 }
