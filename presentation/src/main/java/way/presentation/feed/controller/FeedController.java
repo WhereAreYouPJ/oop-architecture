@@ -2,7 +2,7 @@ package way.presentation.feed.controller;
 
 import static way.application.service.feed.dto.request.FeedRequestDto.*;
 import static way.application.service.feed.dto.response.FeedResponseDto.*;
-import static way.presentation.feed.vo.res.FeedResponseVo.*;
+import static way.presentation.feed.vo.response.FeedResponseVo.*;
 
 import java.io.IOException;
 
