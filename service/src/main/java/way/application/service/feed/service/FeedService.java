@@ -124,25 +124,26 @@ public class FeedService {
 	}
 
 	@Transactional(readOnly = true)
-	public GetFeedResponseDto getFeed(Long memberSeq, Long scheduleSeq) {
+	public GetFeedResponseDto getFeed(Long memberSeq, Long feedSeq) {
 		/*
 		 1. Member 유효성 검사
-		 2. Schedule 유효성 검사
+		 2. Feed 유효성 검사
 		 3. Member Schedule 유효성 검사
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
-		ScheduleEntity scheduleEntity = scheduleRepository.findByScheduleSeq(scheduleSeq);
-		scheduleMemberRepository.findAcceptedScheduleMemberInSchedule(scheduleSeq, memberSeq);
+		FeedEntity feedEntity = feedRepository.findByFeedSeq(feedSeq);
+		ScheduleEntity scheduleEntity = feedEntity.getSchedule();
+		scheduleMemberRepository.findAcceptedScheduleMemberInSchedule(scheduleEntity.getScheduleSeq(), memberSeq);
 
 		// Feed 조회 및 변환
 		List<ScheduleFeedInfo> scheduleFeedInfos = feedRepository.findByScheduleEntity(scheduleEntity).stream()
-			.map(feedEntity -> {
-				boolean bookMarkInfo = bookMarkRepository.existsByFeedEntityAndMemberEntity(feedEntity, memberEntity);
-				List<FeedImageEntity> feedImageEntities = feedImageRepository.findAllByFeedEntity(feedEntity);
+			.map(fe -> {
+				boolean bookMarkInfo = bookMarkRepository.existsByFeedEntityAndMemberEntity(fe, memberEntity);
+				List<FeedImageEntity> feedImageEntities = feedImageRepository.findAllByFeedEntity(fe);
 
 				return feedEntityMapper.toScheduleFeedInfo(
-					feedEntity.getCreatorMember(),
-					feedEntity,
+					fe.getCreatorMember(),
+					fe,
 					feedImageEntities,
 					bookMarkInfo
 				);
