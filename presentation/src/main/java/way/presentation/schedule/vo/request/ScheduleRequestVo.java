@@ -161,5 +161,14 @@ public class ScheduleRequestVo {
 				this.scheduleSeq
 			);
 		}
+
+		public void refuseScheduleRequestValidate() {
+			if (scheduleSeq == null) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
+			if (memberSeq == null) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
+		}
 	}
 }
