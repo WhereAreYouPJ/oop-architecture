@@ -1,6 +1,5 @@
 package way.presentation.feed.controller;
 
-import static way.application.service.feed.dto.request.FeedRequestDto.*;
 import static way.application.service.feed.dto.response.FeedResponseDto.*;
 import static way.presentation.feed.vo.request.FeedRequestVo.*;
 import static way.presentation.feed.vo.response.FeedResponseVo.*;
@@ -34,24 +33,20 @@ import way.application.service.feed.service.FeedService;
 import way.application.utils.exception.GlobalExceptionHandler;
 import way.presentation.base.BaseResponse;
 import way.presentation.feed.mapper.FeedResponseMapper;
-import way.presentation.feed.validates.GetAllFeedValidator;
 import way.presentation.feed.validates.GetFeedValidator;
-import way.presentation.feed.validates.ModifyFeedValidator;
 
 @RestController
 @RequestMapping("/feed")
 @RequiredArgsConstructor
 @Tag(name = "피드", description = "담당자 (박종훈)")
 public class FeedController {
-	private final ModifyFeedValidator modifyFeedValidator;
-	private final GetAllFeedValidator getAllFeedValidator;
 	private final GetFeedValidator getFeedValidator;
 
 	private final FeedResponseMapper feedResponseMapper;
 	private final FeedService feedService;
 
 	@PostMapping(name = "피드 생성")
-	@Operation(summary = "피드 생성 API", description = "Request: SaveFeedRequest, Response: SaveFeedResponse")
+	@Operation(summary = "피드 생성 API")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -98,7 +93,6 @@ public class FeedController {
 		@Valid
 		@ModelAttribute SaveFeedRequest request
 	) throws IOException {
-		// REQUEST VALIDATE
 		request.saveFeedRequestValidate();
 
 		SaveFeedResponseDto responseDto = feedService.saveFeed(request.toSaveFeedRequestDto());
@@ -108,7 +102,7 @@ public class FeedController {
 	}
 
 	@PutMapping(name = "피드 수정")
-	@Operation(summary = "피드 수정 API", description = "Request: ModifyReedRequest Response: ModifyFeedResponse")
+	@Operation(summary = "피드 수정 API")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -147,22 +141,33 @@ public class FeedController {
 	})
 	public ResponseEntity<BaseResponse<ModifyFeedResponse>> modifyFeed(
 		@Valid
-		@ModelAttribute ModifyFeedRequestDto request
+		@ModelAttribute ModifyFeedRequest request
 	) throws IOException {
-		// 유효성 검사
-		modifyFeedValidator.validate(request);
+		request.modifyFeedRequestValidator();
 
-		// VO -> DTO
-		ModifyFeedResponseDto modifyFeedResponseDto = feedService.modifyFeed(request);
-
-		// DTO -> VO
-		ModifyFeedResponse response = new ModifyFeedResponse(modifyFeedResponseDto.feedSeq());
+		ModifyFeedResponseDto responseDto = feedService.modifyFeed(request.toModifyFeedRequestDto());
+		ModifyFeedResponse response = feedResponseMapper.toModifyFeedResponse(responseDto);
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
 
 	@GetMapping(value = "/list", name = "피드 리스트 조회")
 	@Operation(summary = "피드 리스트 조회 API")
+	@Parameters({
+		@Parameter(
+			name = "memberSeq",
+			description = "Member Seq",
+			example = "1",
+			required = true),
+		@Parameter(
+			name = "page",
+			description = "페이지 번호 (기본값: 0)",
+			example = "0"),
+		@Parameter(
+			name = "size",
+			description = "페이지당 항목 수 (기본값: 10)",
+			example = "10")
+	})
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -187,30 +192,12 @@ public class FeedController {
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
-	@Parameters({
-		@Parameter(
-			name = "memberSeq",
-			description = "Member Seq",
-			example = "1",
-			required = true),
-		@Parameter(
-			name = "page",
-			description = "페이지 번호 (기본값: 0)",
-			example = "0"),
-		@Parameter(
-			name = "size",
-			description = "페이지당 항목 수 (기본값: 10)",
-			example = "10")
-	})
 	public ResponseEntity<BaseResponse<Page<GetFeedResponseDto>>> getAllFeed(
 		@Valid
 		@RequestParam(value = "memberSeq") Long memberSeq,
 		@RequestParam(value = "page", defaultValue = "0") int page,
 		@RequestParam(value = "size", defaultValue = "10") int size
-	) throws IOException {
-		// 유효성 검사
-		getAllFeedValidator.validate(memberSeq);
-
+	) {
 		Pageable pageable = PageRequest.of(page, size);
 		Page<GetFeedResponseDto> response = feedService.getAllFeed(memberSeq, pageable);
 
