@@ -70,11 +70,9 @@ public class ScheduleResponseDto {
 
 	}
 
-	public record GetScheduleListDto(
+	public record GetScheduleListResponseDto(
 		Long scheduleSeq,
-
 		LocalDateTime startTime,
-
 		String title
 	) {
 
