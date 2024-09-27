@@ -3,6 +3,8 @@ package way.application.service.schedule.dto.response;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ScheduleResponseDto {
 	public record SaveScheduleResponseDto(
@@ -27,10 +29,16 @@ public class ScheduleResponseDto {
 		Double y,
 		String color,
 		String memo,
-		List<String> userName
+		List<GetScheduleMemberInfoDto> memberInfos
 	) implements Serializable {
 		private static final long serialVersionUID = 1L;
 
+		public record GetScheduleMemberInfoDto(
+			Long memberSeq,
+			String userName
+		) {
+
+		}
 	}
 
 	public record GetScheduleByDateResponseDto(
@@ -63,9 +71,9 @@ public class ScheduleResponseDto {
 	}
 
 	public record GetDdayScheduleResponseDto(
-			Long scheduleSeq,
-			String title,
-			String dDay
+		Long scheduleSeq,
+		String title,
+		String dDay
 	) {
 
 	}
