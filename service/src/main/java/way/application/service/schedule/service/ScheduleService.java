@@ -338,7 +338,7 @@ public class ScheduleService {
 	}
 
 	@Transactional
-	public void refuseSchedule(RefuseScheduleRequestDto refuseScheduleRequestDto) {
+	public void refuseSchedule(RefuseScheduleRequestDto requestDto) {
 		/*
 		 1. Member 유효성 검사
 		 2. Schedule 유효성 검사
@@ -346,8 +346,8 @@ public class ScheduleService {
 		 4. Creator 일 경우 삭제 불가능
 		 5. 이미 수락할 경우 삭제 불가능
 		*/
-		MemberEntity memberEntity = memberRepository.findByMemberSeq(refuseScheduleRequestDto.memberSeq());
-		ScheduleEntity scheduleEntity = scheduleRepository.findByScheduleSeq(refuseScheduleRequestDto.scheduleSeq());
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(requestDto.memberSeq());
+		ScheduleEntity scheduleEntity = scheduleRepository.findByScheduleSeq(requestDto.scheduleSeq());
 		scheduleMemberRepository.findScheduleMemberInSchedule(
 			memberEntity.getMemberSeq(),
 			scheduleEntity.getScheduleSeq()
