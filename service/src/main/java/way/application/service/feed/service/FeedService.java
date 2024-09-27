@@ -137,42 +137,20 @@ public class FeedService {
 		// Feed 조회 및 변환
 		List<ScheduleFeedInfo> scheduleFeedInfos = feedRepository.findByScheduleEntity(scheduleEntity).stream()
 			.map(feedEntity -> {
-				// Member Info 생성
-				MemberInfo memberInfo = new MemberInfo(
-					feedEntity.getCreatorMember().getMemberSeq(),
-					feedEntity.getCreatorMember().getUserName(),
-					feedEntity.getCreatorMember().getProfileImage()
-				);
-
-				// Feed Info 생성
-				FeedInfo feedInfo = new FeedInfo(
-					feedEntity.getFeedSeq(),
-					feedEntity.getTitle(),
-					feedEntity.getContent()
-				);
-
-				// Feed 이미지 정보 생성
-				List<FeedImageInfo> feedImageInfos = feedImageRepository.findAllByFeedEntity(feedEntity).stream()
-					.map(feedImageEntity -> new FeedImageInfo(
-						feedImageEntity.getFeedImageSeq(),
-						feedImageEntity.getFeedImageURL(),
-						feedImageEntity.getFeedImageOrder()
-					)).toList();
-
-				// Book Mark 여부 확인
 				boolean bookMarkInfo = bookMarkRepository.existsByFeedEntityAndMemberEntity(feedEntity, memberEntity);
+				List<FeedImageEntity> feedImageEntities = feedImageRepository.findAllByFeedEntity(feedEntity);
 
-				// ScheduleFeedInfo 생성
-				return new ScheduleFeedInfo(memberInfo, feedInfo, feedImageInfos, bookMarkInfo);
+				return feedEntityMapper.toScheduleFeedInfo(
+					feedEntity.getCreatorMember(),
+					feedEntity,
+					feedImageEntities,
+					bookMarkInfo
+				);
 			}).toList();
 
 		// Schedule Info 생성
-		ScheduleInfo scheduleInfo = new ScheduleInfo(
-			scheduleEntity.getScheduleSeq(),
-			scheduleEntity.getStartTime(),
-			scheduleEntity.getLocation()
-		);
+		ScheduleInfo scheduleInfo = feedEntityMapper.toScheduleInfo(scheduleEntity);
 
-		return new GetFeedResponseDto(scheduleInfo, scheduleFeedInfos);
+		return feedEntityMapper.toGetFeedResponseDto(scheduleInfo, scheduleFeedInfos);
 	}
 }
