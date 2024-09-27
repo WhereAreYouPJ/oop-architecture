@@ -33,15 +33,12 @@ import way.application.service.feed.service.FeedService;
 import way.application.utils.exception.GlobalExceptionHandler;
 import way.presentation.base.BaseResponse;
 import way.presentation.feed.mapper.FeedResponseMapper;
-import way.presentation.feed.validates.GetFeedValidator;
 
 @RestController
 @RequestMapping("/feed")
 @RequiredArgsConstructor
 @Tag(name = "피드", description = "담당자 (박종훈)")
 public class FeedController {
-	private final GetFeedValidator getFeedValidator;
-
 	private final FeedResponseMapper feedResponseMapper;
 	private final FeedService feedService;
 
@@ -180,12 +177,6 @@ public class FeedController {
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
-			responseCode = "B001",
-			description = "400 Invalid DTO Parameter errors / 요청 값 형식 요류",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class))),
-		@ApiResponse(
 			responseCode = "MSB002",
 			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
 			content = @Content(
@@ -206,6 +197,18 @@ public class FeedController {
 
 	@GetMapping(value = "/details", name = "피드 상세 조회")
 	@Operation(summary = "피드 상세 조회 API")
+	@Parameters({
+		@Parameter(
+			name = "memberSeq",
+			description = "Member Seq",
+			example = "1",
+			required = true),
+		@Parameter(
+			name = "scheduleSeq",
+			description = "Schedule Seq",
+			example = "1",
+			required = true)
+	})
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
@@ -214,12 +217,6 @@ public class FeedController {
 		@ApiResponse(
 			responseCode = "S500",
 			description = "500 SERVER_ERROR (나도 몰라 ..)",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class))),
-		@ApiResponse(
-			responseCode = "B001",
-			description = "400 Invalid DTO Parameter errors / 요청 값 형식 요류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
@@ -242,29 +239,13 @@ public class FeedController {
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
-	@Parameters({
-		@Parameter(
-			name = "memberSeq",
-			description = "Member Seq",
-			example = "1",
-			required = true),
-		@Parameter(
-			name = "scheduleSeq",
-			description = "Schedule Seq",
-			example = "1",
-			required = true)
-	})
 	public ResponseEntity<BaseResponse<GetFeedResponseDto>> getFeed(
 		@Valid
 		@RequestParam(value = "memberSeq") Long memberSeq,
 		@RequestParam(value = "scheduleSeq") Long scheduleSeq
 	) throws IOException {
-		// 유효성 검사
-		getFeedValidator.validate(memberSeq, scheduleSeq);
-
 		GetFeedResponseDto response = feedService.getFeed(memberSeq, scheduleSeq);
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
-
 }
