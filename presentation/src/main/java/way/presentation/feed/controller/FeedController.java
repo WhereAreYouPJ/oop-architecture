@@ -51,37 +51,37 @@ public class FeedController {
 			useReturnTypeSchema = true),
 		@ApiResponse(
 			responseCode = "S500",
-			description = "500 SERVER_ERROR (나도 몰라 ..)",
+			description = "서버 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "B001",
-			description = "400 Invalid DTO Parameter errors / 요청 값 형식 요류",
+			description = "요청 데이터 형식 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "SSB003",
-			description = "400 SCHEDULE_SEQ_BAD_REQUEST_EXCEPTION / SCHEDULE_ID 오류",
+			description = "SCHEDULE SEQ 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "MSB002",
-			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+			description = "MEMBER SEQ 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "MSNISB004",
-			description = "400 MEMBER_SEQ_NOT_IN_SCHEDULE_BAD_REQUEST_EXCEPTION / 일정에 존재하지 않는 Member의 경우 + Schedule에서 일정을 수락하지 않은 경우 조회 불가",
+			description = "일정에 존재하지 않는 MEMBER SEQ입니다.",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "FDC004",
-			description = "409 FEED_DUPLICATION_CONFLICT_EXCEPTION / 이미 작성한 피드가 존재할 때 발생 오류",
+			description = "이미 작성한 피드가 존재할 때 발생 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
@@ -107,31 +107,31 @@ public class FeedController {
 			useReturnTypeSchema = true),
 		@ApiResponse(
 			responseCode = "S500",
-			description = "500 SERVER_ERROR (나도 몰라 ..)",
+			description = "서버 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "B001",
-			description = "400 Invalid DTO Parameter errors / 요청 값 형식 요류",
+			description = "요청 데이터 형식 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "MSB002",
-			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+			description = "MEMBER SEQ 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "FSB019",
-			description = "400 FEED_SEQ_BAD_REQUEST_EXCEPTION / FEED_SEQ 오류",
+			description = "FEED SEQ 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "FDCBMB020",
-			description = "400 FEED_DIDNT_CREATED_BY_MEMBER_BAD_REQUEST_EXCEPTION / Member가 생성한 Feed가 아닌 경우",
+			description = "회원이 생성한 피드가 아닙니다.",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
@@ -172,13 +172,13 @@ public class FeedController {
 			useReturnTypeSchema = true),
 		@ApiResponse(
 			responseCode = "S500",
-			description = "500 SERVER_ERROR (나도 몰라 ..)",
+			description = "서버 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "MSB002",
-			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+			description = "MEMBER SEQ 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
@@ -204,8 +204,8 @@ public class FeedController {
 			example = "1",
 			required = true),
 		@Parameter(
-			name = "scheduleSeq",
-			description = "Schedule Seq",
+			name = "feedSeq",
+			description = "Feed Seq",
 			example = "1",
 			required = true)
 	})
@@ -216,25 +216,25 @@ public class FeedController {
 			useReturnTypeSchema = true),
 		@ApiResponse(
 			responseCode = "S500",
-			description = "500 SERVER_ERROR (나도 몰라 ..)",
+			description = "서버 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "MSB002",
-			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+			description = "MEMBER SEQ 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
-			responseCode = "SSB003",
-			description = "400 SCHEDULE_SEQ_BAD_REQUEST_EXCEPTION / SCHEDULE_ID 오류",
+			responseCode = "FSB019",
+			description = "FEED SEQ 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "MSNISB004",
-			description = "400 MEMBER_SEQ_NOT_IN_SCHEDULE_BAD_REQUEST_EXCEPTION / Member 가 해당 Schedule 에 존재 X 오류",
+			description = "일정에 존재하지 않는 MEMBER SEQ입니다.",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
@@ -242,9 +242,9 @@ public class FeedController {
 	public ResponseEntity<BaseResponse<GetFeedResponseDto>> getFeed(
 		@Valid
 		@RequestParam(value = "memberSeq") Long memberSeq,
-		@RequestParam(value = "scheduleSeq") Long scheduleSeq
+		@RequestParam(value = "feedSeq") Long feedSeq
 	) throws IOException {
-		GetFeedResponseDto response = feedService.getFeed(memberSeq, scheduleSeq);
+		GetFeedResponseDto response = feedService.getFeed(memberSeq, feedSeq);
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
