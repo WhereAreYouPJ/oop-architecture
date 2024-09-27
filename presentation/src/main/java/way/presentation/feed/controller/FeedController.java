@@ -2,6 +2,7 @@ package way.presentation.feed.controller;
 
 import static way.application.service.feed.dto.request.FeedRequestDto.*;
 import static way.application.service.feed.dto.response.FeedResponseDto.*;
+import static way.presentation.feed.vo.request.FeedRequestVo.*;
 import static way.presentation.feed.vo.response.FeedResponseVo.*;
 
 import java.io.IOException;
@@ -32,21 +33,21 @@ import lombok.RequiredArgsConstructor;
 import way.application.service.feed.service.FeedService;
 import way.application.utils.exception.GlobalExceptionHandler;
 import way.presentation.base.BaseResponse;
+import way.presentation.feed.mapper.FeedResponseMapper;
 import way.presentation.feed.validates.GetAllFeedValidator;
 import way.presentation.feed.validates.GetFeedValidator;
 import way.presentation.feed.validates.ModifyFeedValidator;
-import way.presentation.feed.validates.SaveFeedValidator;
 
 @RestController
 @RequestMapping("/feed")
 @RequiredArgsConstructor
 @Tag(name = "피드", description = "담당자 (박종훈)")
 public class FeedController {
-	private final SaveFeedValidator saveFeedValidator;
 	private final ModifyFeedValidator modifyFeedValidator;
 	private final GetAllFeedValidator getAllFeedValidator;
 	private final GetFeedValidator getFeedValidator;
 
+	private final FeedResponseMapper feedResponseMapper;
 	private final FeedService feedService;
 
 	@PostMapping(name = "피드 생성")
@@ -95,16 +96,13 @@ public class FeedController {
 	})
 	public ResponseEntity<BaseResponse<SaveFeedResponse>> createFeed(
 		@Valid
-		@ModelAttribute SaveFeedRequestDto request
+		@ModelAttribute SaveFeedRequest request
 	) throws IOException {
-		// 유효성 검사
-		saveFeedValidator.validate(request);
+		// REQUEST VALIDATE
+		request.saveFeedRequestValidate();
 
-		// VO -> DTO
-		SaveFeedResponseDto saveFeedResponseDto = feedService.saveFeed(request);
-
-		// DTO -> VO
-		SaveFeedResponse response = new SaveFeedResponse(saveFeedResponseDto.feedSeq());
+		SaveFeedResponseDto responseDto = feedService.saveFeed(request.toSaveFeedRequestDto());
+		SaveFeedResponse response = feedResponseMapper.toSaveFeedResponse(responseDto);
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
