@@ -20,9 +20,7 @@ import way.application.infrastructure.jpa.feedImage.entity.FeedImageEntity;
 import way.application.infrastructure.jpa.feedImage.repository.FeedImageRepository;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.member.repository.MemberRepository;
-import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
 import way.application.service.bookMark.mapper.BookMarkMapper;
-import way.application.service.hideFeed.dto.response.HideFeedResponseDto;
 
 @Service
 @RequiredArgsConstructor
@@ -35,36 +33,31 @@ public class BookMarkService {
 	private final BookMarkMapper bookMarkMapper;
 
 	@Transactional
-	public AddBookMarkResponseDto addBookMarkFeed(AddBookMarkRequestDto addBookMarkResponseDto) {
+	public AddBookMarkResponseDto addBookMarkFeed(AddBookMarkRequestDto requestDto) {
 		/*
 		 1. Member 확인
 		 2. Feed 확인
 		 3. Book Mark Feed 존재 여부 확인 (존재 시 Exception)
 		*/
-		MemberEntity memberEntity = memberRepository.findByMemberSeq(addBookMarkResponseDto.memberSeq());
-		FeedEntity feedEntity = feedRepository.findByFeedSeq(addBookMarkResponseDto.feedSeq());
-		bookMarkRepository.checkBookMarkFeedEntityByFeedEntityAndMemberEntity(
-			feedEntity,
-			memberEntity
-		);
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(requestDto.memberSeq());
+		FeedEntity feedEntity = feedRepository.findByFeedSeq(requestDto.feedSeq());
+		bookMarkRepository.checkBookMarkFeedEntityByFeedEntityAndMemberEntity(feedEntity, memberEntity);
 
 		// Hide Feed 저장
-		BookMarkEntity bookMarkEntity = bookMarkRepository.saveBookMarkEntity(
-			bookMarkMapper.toBookMarkEntity(feedEntity, memberEntity)
-		);
+		BookMarkEntity bookMarkEntity
+			= bookMarkRepository.saveBookMarkEntity(bookMarkMapper.toBookMarkEntity(feedEntity, memberEntity));
 
-		return new AddBookMarkResponseDto(bookMarkEntity.getBookMarkSeq());
+		return bookMarkMapper.toAddBookMarkResponseDto(bookMarkEntity);
 	}
 
 	@Transactional
-	public void deleteBookMarkFeed(DeleteBookMarkRequestDto deleteBookMarkRequestDto) {
+	public void deleteBookMarkFeed(DeleteBookMarkRequestDto requestDto) {
 		/*
 		 1. Member 확인
 		 2. Book Mark 확인
 		*/
-		memberRepository.findByMemberSeq(deleteBookMarkRequestDto.memberSeq());
-		BookMarkEntity bookMarkEntity
-			= bookMarkRepository.findByBookMarkSeq(deleteBookMarkRequestDto.bookMarkFeedSeq());
+		memberRepository.findByMemberSeq(requestDto.memberSeq());
+		BookMarkEntity bookMarkEntity = bookMarkRepository.findByBookMarkSeq(requestDto.bookMarkFeedSeq());
 
 		// Book Mark Feed 삭제
 		bookMarkRepository.deleteBookMarkEntity(bookMarkEntity);
@@ -81,29 +74,10 @@ public class BookMarkService {
 			= bookMarkRepository.findAllByMemberEntityOrderByScheduleStartTimeDesc(memberEntity, pageable);
 
 		return bookMarkEntityPage.map(bookMarkEntity -> {
-			FeedEntity feedEntity = bookMarkEntity.getFeedEntity();
-			ScheduleEntity scheduleEntity = feedEntity.getSchedule();
-			MemberEntity creatorMemberEntity = feedEntity.getCreatorMember();
+			List<FeedImageEntity> feedImageEntities
+				= feedImageRepository.findAllByFeedEntity(bookMarkEntity.getFeedEntity());
 
-			// Feed 이미지 가져오기
-			List<BookMarkImageInfo> bookMarkImageInfos = feedImageRepository.findAllByFeedEntity(feedEntity).stream()
-				.map(feedImageEntity -> new BookMarkImageInfo(
-					feedImageEntity.getFeedImageSeq(),
-					feedImageEntity.getFeedImageURL(),
-					feedImageEntity.getFeedImageOrder()
-				))
-				.toList();
-
-			return new GetBookMarkResponseDto(
-				creatorMemberEntity.getMemberSeq(),
-				bookMarkEntity.getMemberEntity().getProfileImage(),
-				scheduleEntity.getStartTime(),
-				scheduleEntity.getLocation(),
-				feedEntity.getTitle(),
-				bookMarkImageInfos,
-				feedEntity.getContent(),
-				true
-			);
+			return bookMarkMapper.toGetBookMarkResponseDto(bookMarkEntity, feedImageEntities);
 		});
 	}
 }
