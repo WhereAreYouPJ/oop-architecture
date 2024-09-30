@@ -1,5 +1,7 @@
 package way.application.service.bookMark.mapper;
 
+import static way.application.service.bookMark.dto.response.BookMarkResponseDto.*;
+
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,4 +17,6 @@ public interface BookMarkMapper {
 	@Mapping(target = "feedEntity", source = "feedEntity")
 	@Mapping(target = "memberEntity", source = "memberEntity")
 	BookMarkEntity toBookMarkEntity(FeedEntity feedEntity, MemberEntity memberEntity);
+
+	AddBookMarkResponseDto toAddBookMarkResponseDto(BookMarkEntity bookMarkEntity);
 }
