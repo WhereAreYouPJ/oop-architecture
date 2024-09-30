@@ -16,13 +16,13 @@ public class FeedRequestVo {
 		List<feedImageInfo> feedImageInfos
 	) {
 		public void saveFeedRequestValidate() {
-			if (scheduleSeq == null) {
+			if (this.scheduleSeq == null) {
 				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 			}
-			if (memberSeq == null) {
+			if (this.memberSeq == null) {
 				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 			}
-			if (title == null || title.trim().isEmpty()) {
+			if (this.title == null || this.title.isEmpty()) {
 				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 			}
 		}
@@ -46,13 +46,13 @@ public class FeedRequestVo {
 		List<feedImageInfo> feedImageInfos
 	) {
 		public void modifyFeedRequestValidator() {
-			if (feedSeq == null) {
+			if (this.feedSeq == null) {
 				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 			}
-			if (memberSeq == null) {
+			if (this.memberSeq == null) {
 				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 			}
-			if (title == null || title.trim().isEmpty()) {
+			if (this.title == null || this.title.isEmpty()) {
 				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 			}
 		}
