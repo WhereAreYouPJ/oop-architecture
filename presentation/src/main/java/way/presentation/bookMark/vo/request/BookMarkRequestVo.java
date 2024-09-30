@@ -19,10 +19,10 @@ public class BookMarkRequestVo {
 		}
 
 		public void addBookMarkRequestValidate() {
-			if (feedSeq == null) {
+			if (this.feedSeq == null) {
 				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 			}
-			if (memberSeq == null) {
+			if (this.memberSeq == null) {
 				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 			}
 		}
@@ -40,10 +40,10 @@ public class BookMarkRequestVo {
 		}
 
 		public void deleteBookMarkRequestValidate() {
-			if (bookMarkFeedSeq == null) {
+			if (this.bookMarkFeedSeq == null) {
 				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 			}
-			if (memberSeq == null) {
+			if (this.memberSeq == null) {
 				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 			}
 		}
