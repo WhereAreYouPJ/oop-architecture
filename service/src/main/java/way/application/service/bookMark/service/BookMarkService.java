@@ -51,14 +51,13 @@ public class BookMarkService {
 	}
 
 	@Transactional
-	public void deleteBookMarkFeed(DeleteBookMarkRequestDto deleteBookMarkRequestDto) {
+	public void deleteBookMarkFeed(DeleteBookMarkRequestDto requestDto) {
 		/*
 		 1. Member 확인
 		 2. Book Mark 확인
 		*/
-		memberRepository.findByMemberSeq(deleteBookMarkRequestDto.memberSeq());
-		BookMarkEntity bookMarkEntity
-			= bookMarkRepository.findByBookMarkSeq(deleteBookMarkRequestDto.bookMarkFeedSeq());
+		memberRepository.findByMemberSeq(requestDto.memberSeq());
+		BookMarkEntity bookMarkEntity = bookMarkRepository.findByBookMarkSeq(requestDto.bookMarkFeedSeq());
 
 		// Book Mark Feed 삭제
 		bookMarkRepository.deleteBookMarkEntity(bookMarkEntity);
