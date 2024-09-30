@@ -16,10 +16,10 @@ import way.application.infrastructure.jpa.bookMark.entity.BookMarkEntity;
 import way.application.infrastructure.jpa.bookMark.repository.BookMarkRepository;
 import way.application.infrastructure.jpa.feed.entity.FeedEntity;
 import way.application.infrastructure.jpa.feed.repository.FeedRepository;
+import way.application.infrastructure.jpa.feedImage.entity.FeedImageEntity;
 import way.application.infrastructure.jpa.feedImage.repository.FeedImageRepository;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.member.repository.MemberRepository;
-import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
 import way.application.service.bookMark.mapper.BookMarkMapper;
 
 @Service
@@ -74,29 +74,10 @@ public class BookMarkService {
 			= bookMarkRepository.findAllByMemberEntityOrderByScheduleStartTimeDesc(memberEntity, pageable);
 
 		return bookMarkEntityPage.map(bookMarkEntity -> {
-			FeedEntity feedEntity = bookMarkEntity.getFeedEntity();
-			ScheduleEntity scheduleEntity = feedEntity.getSchedule();
-			MemberEntity creatorMemberEntity = feedEntity.getCreatorMember();
+			List<FeedImageEntity> feedImageEntities
+				= feedImageRepository.findAllByFeedEntity(bookMarkEntity.getFeedEntity());
 
-			// Feed 이미지 가져오기
-			List<BookMarkImageInfo> bookMarkImageInfos = feedImageRepository.findAllByFeedEntity(feedEntity).stream()
-				.map(feedImageEntity -> new BookMarkImageInfo(
-					feedImageEntity.getFeedImageSeq(),
-					feedImageEntity.getFeedImageURL(),
-					feedImageEntity.getFeedImageOrder()
-				))
-				.toList();
-
-			return new GetBookMarkResponseDto(
-				creatorMemberEntity.getMemberSeq(),
-				bookMarkEntity.getMemberEntity().getProfileImage(),
-				scheduleEntity.getStartTime(),
-				scheduleEntity.getLocation(),
-				feedEntity.getTitle(),
-				bookMarkImageInfos,
-				feedEntity.getContent(),
-				true
-			);
+			return bookMarkMapper.toGetBookMarkResponseDto(bookMarkEntity, feedImageEntities);
 		});
 	}
 }
