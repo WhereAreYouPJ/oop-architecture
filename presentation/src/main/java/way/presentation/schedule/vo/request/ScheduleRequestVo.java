@@ -3,7 +3,6 @@ package way.presentation.schedule.vo.request;
 import static way.application.service.schedule.dto.request.ScheduleRequestDto.*;
 
 import java.time.LocalDateTime;
-import java.time.YearMonth;
 import java.util.List;
 
 import way.application.utils.exception.BadRequestException;
@@ -91,19 +90,19 @@ public class ScheduleRequestVo {
 		}
 
 		public void modifyScheduleRequestValidate() {
-			if (scheduleSeq == null) {
+			if (this.scheduleSeq == null) {
 				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 			}
-			if (title == null || title.isEmpty()) {
+			if (this.title == null || this.title.isEmpty()) {
 				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 			}
-			if (startTime == null) {
+			if (this.startTime == null) {
 				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 			}
-			if (endTime == null) {
+			if (this.endTime == null) {
 				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 			}
-			if (createMemberSeq == null) {
+			if (this.createMemberSeq == null) {
 				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 			}
 		}
@@ -121,10 +120,10 @@ public class ScheduleRequestVo {
 		}
 
 		public void deleteScheduleRequestValidate() {
-			if (scheduleSeq == null) {
+			if (this.scheduleSeq == null) {
 				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 			}
-			if (memberSeq == null) {
+			if (this.memberSeq == null) {
 				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 			}
 		}
@@ -142,10 +141,10 @@ public class ScheduleRequestVo {
 		}
 
 		public void acceptScheduleRequestValidate() {
-			if (scheduleSeq == null) {
+			if (this.scheduleSeq == null) {
 				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 			}
-			if (memberSeq == null) {
+			if (this.memberSeq == null) {
 				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 			}
 		}
@@ -163,10 +162,10 @@ public class ScheduleRequestVo {
 		}
 
 		public void refuseScheduleRequestValidate() {
-			if (scheduleSeq == null) {
+			if (this.scheduleSeq == null) {
 				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 			}
-			if (memberSeq == null) {
+			if (this.memberSeq == null) {
 				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 			}
 		}
