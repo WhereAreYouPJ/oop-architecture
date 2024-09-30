@@ -100,29 +100,29 @@ public class BookMarkController {
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
-			description = "요청에 성공하였습니다.",
+			description = "200 요청에 성공하였습니다.",
 			useReturnTypeSchema = true),
 		@ApiResponse(
 			responseCode = "S500",
-			description = "500 SERVER_ERROR (나도 몰라 ..)",
+			description = "500 서버 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "B001",
-			description = "400 Invalid DTO Parameter errors / 요청 값 형식 요류",
+			description = "400 요청 데이터 형식 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "MSB002",
-			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+			description = "400 MEMBER SEQ 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "BMSB024",
-			description = "400 BOOK_MARK_SEQ_BAD_REQUEST_EXCEPTION / Book Mark Seq 오류",
+			description = "400 BOOK MARK SEQ 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
@@ -145,23 +145,23 @@ public class BookMarkController {
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
-			description = "요청에 성공하였습니다.",
+			description = "200 요청에 성공하였습니다.",
 			useReturnTypeSchema = true),
 		@ApiResponse(
 			responseCode = "S500",
-			description = "500 SERVER_ERROR (나도 몰라 ..)",
+			description = "500 서버 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "B001",
-			description = "400 Invalid DTO Parameter errors / 요청 값 형식 요류",
+			description = "400 요청 데이터 형식 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "MSB002",
-			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+			description = "400 MEMBER SEQ 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
