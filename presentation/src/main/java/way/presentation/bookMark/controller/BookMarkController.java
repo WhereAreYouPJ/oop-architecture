@@ -31,7 +31,6 @@ import way.application.service.bookMark.service.BookMarkService;
 import way.application.utils.exception.GlobalExceptionHandler;
 import way.presentation.base.BaseResponse;
 import way.presentation.bookMark.mapper.BookMarkResponseMapper;
-import way.presentation.bookMark.validates.DeleteBookMarkValidator;
 import way.presentation.bookMark.validates.GetBookMarkValidator;
 
 @RestController
@@ -39,7 +38,6 @@ import way.presentation.bookMark.validates.GetBookMarkValidator;
 @RequiredArgsConstructor
 @Tag(name = "책갈피", description = "담당자 (박종훈)")
 public class BookMarkController {
-	private final DeleteBookMarkValidator deleteBookMarkValidator;
 	private final GetBookMarkValidator getBookMarkValidator;
 
 	private final BookMarkResponseMapper bookMarkResponseMapper;
@@ -127,14 +125,12 @@ public class BookMarkController {
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
-	public ResponseEntity<BaseResponse> deleteBookMark(
+	public ResponseEntity<BaseResponse<String>> deleteBookMark(
 		@Valid
 		@RequestBody DeleteBookMarkRequest request
 	) {
-		// 유효성 검사
-		deleteBookMarkValidator.validate(request);
+		request.deleteBookMarkRequestValidate();
 
-		// VO -> DTO
 		bookMarkService.deleteBookMarkFeed(request.toDeleteBookMarkRequestDto());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
