@@ -1,15 +1,14 @@
-package way.presentation.bookMark.vo.req;
+package way.presentation.bookMark.vo.request;
 
 import static way.application.service.bookMark.dto.request.BookMarkRequestDto.*;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import way.application.utils.exception.BadRequestException;
+import way.application.utils.exception.ErrorResult;
 
 public class BookMarkRequestVo {
-	public record AddBookMarRequest(
-		@Schema(description = "Book Mark 하고자 하는 Feed Seq")
+	public record AddBookMarkRequest(
 		Long feedSeq,
-
-		@Schema(description = "저장하는 Member Seq")
 		Long memberSeq
 	) {
 		public AddBookMarkRequestDto toAddBookMarkRequestDto() {
@@ -17,6 +16,15 @@ public class BookMarkRequestVo {
 				this.feedSeq,
 				this.memberSeq
 			);
+		}
+
+		public void addBookMarkRequestValidate() {
+			if (feedSeq == null) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
+			if (memberSeq == null) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
 		}
 	}
 
