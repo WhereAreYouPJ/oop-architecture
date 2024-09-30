@@ -31,55 +31,24 @@ import way.application.service.bookMark.service.BookMarkService;
 import way.application.utils.exception.GlobalExceptionHandler;
 import way.presentation.base.BaseResponse;
 import way.presentation.bookMark.mapper.BookMarkResponseMapper;
-import way.presentation.bookMark.validates.GetBookMarkValidator;
 
 @RestController
 @RequestMapping("/book-mark")
 @RequiredArgsConstructor
 @Tag(name = "책갈피", description = "담당자 (박종훈)")
 public class BookMarkController {
-	private final GetBookMarkValidator getBookMarkValidator;
-
 	private final BookMarkResponseMapper bookMarkResponseMapper;
 	private final BookMarkService bookMarkService;
 
 	@PostMapping(name = "책갈피 추가")
 	@Operation(summary = "책갈피 추가 API")
 	@ApiResponses(value = {
-		@ApiResponse(
-			responseCode = "200",
-			description = "요청에 성공하였습니다.",
-			useReturnTypeSchema = true),
-		@ApiResponse(
-			responseCode = "S500",
-			description = "서버 오류",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class))),
-		@ApiResponse(
-			responseCode = "B001",
-			description = "400 요청 데이터 형식 오류",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class))),
-		@ApiResponse(
-			responseCode = "MSB002",
-			description = "400 MEMBER SEQ 오류",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class))),
-		@ApiResponse(
-			responseCode = "FSB019",
-			description = "400 FEED SEQ 오류",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class))),
-		@ApiResponse(
-			responseCode = "BMFDC005",
-			description = "409 이미 존재하는 FEED 중복 오류",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(responseCode = "200", description = "200 요청에 성공하였습니다.", useReturnTypeSchema = true),
+		@ApiResponse(responseCode = "S500", description = "500 서버 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(responseCode = "B001", description = "400 요청 데이터 형식 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(responseCode = "MSB002", description = "400 MEMBER SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(responseCode = "FSB019", description = "400 FEED SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(responseCode = "BMFDC005", description = "409 이미 존재하는 BOOK MARK FEED 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
 	public ResponseEntity<BaseResponse<AddBookMarkResponse>> addHideFeed(
 		@Valid
@@ -96,34 +65,11 @@ public class BookMarkController {
 	@DeleteMapping(name = "피드 책갈피 복원")
 	@Operation(summary = "피드 책갈피 복원 API")
 	@ApiResponses(value = {
-		@ApiResponse(
-			responseCode = "200",
-			description = "200 요청에 성공하였습니다.",
-			useReturnTypeSchema = true),
-		@ApiResponse(
-			responseCode = "S500",
-			description = "500 서버 오류",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class))),
-		@ApiResponse(
-			responseCode = "B001",
-			description = "400 요청 데이터 형식 오류",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class))),
-		@ApiResponse(
-			responseCode = "MSB002",
-			description = "400 MEMBER SEQ 오류",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class))),
-		@ApiResponse(
-			responseCode = "BMSB024",
-			description = "400 BOOK MARK SEQ 오류",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class)))
+		@ApiResponse(responseCode = "200", description = "200 요청에 성공하였습니다.", useReturnTypeSchema = true),
+		@ApiResponse(responseCode = "S500", description = "500 서버 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(responseCode = "B001", description = "400 요청 데이터 형식 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(responseCode = "MSB002", description = "400 MEMBER SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(responseCode = "BMSB024", description = "400 BOOK MARK SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
 	public ResponseEntity<BaseResponse<String>> deleteBookMark(
 		@Valid
@@ -137,35 +83,16 @@ public class BookMarkController {
 	}
 
 	@GetMapping(name = "책갈피 조회")
-	@Operation(summary = "피드 책갈피 조회 API", description = "Response: GetBookMarkResponse")
-	@ApiResponses(value = {
-		@ApiResponse(
-			responseCode = "200",
-			description = "200 요청에 성공하였습니다.",
-			useReturnTypeSchema = true),
-		@ApiResponse(
-			responseCode = "S500",
-			description = "500 서버 오류",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class))),
-		@ApiResponse(
-			responseCode = "B001",
-			description = "400 요청 데이터 형식 오류",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class))),
-		@ApiResponse(
-			responseCode = "MSB002",
-			description = "400 MEMBER SEQ 오류",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class)))
-	})
+	@Operation(summary = "피드 책갈피 조회 API")
 	@Parameters({
 		@Parameter(name = "memberSeq", description = "회원 PK 값", example = "1"),
 		@Parameter(name = "page", description = "페이지 처리 페이지 수", example = "0"),
-		@Parameter(name = "size", description = "페이지 당 응답 받을 데이터 개수", example = "10"),
+		@Parameter(name = "size", description = "페이지 당 응답 받을 데이터 개수", example = "10")
+	})
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "200 요청에 성공하였습니다.", useReturnTypeSchema = true),
+		@ApiResponse(responseCode = "S500", description = "500 서버 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(responseCode = "MSB002", description = "400 MEMBER SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
 	public ResponseEntity<BaseResponse<Page<GetBookMarkResponseDto>>> getBookMark(
 		@Valid
@@ -173,9 +100,6 @@ public class BookMarkController {
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "10") int size
 	) {
-		// Validate
-		getBookMarkValidator.validate(memberSeq);
-
 		Pageable pageable = PageRequest.of(page, size);
 		Page<GetBookMarkResponseDto> responses = bookMarkService.getBookMark(memberSeq, pageable);
 
