@@ -16,13 +16,11 @@ import way.application.infrastructure.jpa.bookMark.entity.BookMarkEntity;
 import way.application.infrastructure.jpa.bookMark.repository.BookMarkRepository;
 import way.application.infrastructure.jpa.feed.entity.FeedEntity;
 import way.application.infrastructure.jpa.feed.repository.FeedRepository;
-import way.application.infrastructure.jpa.feedImage.entity.FeedImageEntity;
 import way.application.infrastructure.jpa.feedImage.repository.FeedImageRepository;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.member.repository.MemberRepository;
 import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
 import way.application.service.bookMark.mapper.BookMarkMapper;
-import way.application.service.hideFeed.dto.response.HideFeedResponseDto;
 
 @Service
 @RequiredArgsConstructor
@@ -35,25 +33,21 @@ public class BookMarkService {
 	private final BookMarkMapper bookMarkMapper;
 
 	@Transactional
-	public AddBookMarkResponseDto addBookMarkFeed(AddBookMarkRequestDto addBookMarkResponseDto) {
+	public AddBookMarkResponseDto addBookMarkFeed(AddBookMarkRequestDto requestDto) {
 		/*
 		 1. Member 확인
 		 2. Feed 확인
 		 3. Book Mark Feed 존재 여부 확인 (존재 시 Exception)
 		*/
-		MemberEntity memberEntity = memberRepository.findByMemberSeq(addBookMarkResponseDto.memberSeq());
-		FeedEntity feedEntity = feedRepository.findByFeedSeq(addBookMarkResponseDto.feedSeq());
-		bookMarkRepository.checkBookMarkFeedEntityByFeedEntityAndMemberEntity(
-			feedEntity,
-			memberEntity
-		);
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(requestDto.memberSeq());
+		FeedEntity feedEntity = feedRepository.findByFeedSeq(requestDto.feedSeq());
+		bookMarkRepository.checkBookMarkFeedEntityByFeedEntityAndMemberEntity(feedEntity, memberEntity);
 
 		// Hide Feed 저장
-		BookMarkEntity bookMarkEntity = bookMarkRepository.saveBookMarkEntity(
-			bookMarkMapper.toBookMarkEntity(feedEntity, memberEntity)
-		);
+		BookMarkEntity bookMarkEntity
+			= bookMarkRepository.saveBookMarkEntity(bookMarkMapper.toBookMarkEntity(feedEntity, memberEntity));
 
-		return new AddBookMarkResponseDto(bookMarkEntity.getBookMarkSeq());
+		return bookMarkMapper.toAddBookMarkResponseDto(bookMarkEntity);
 	}
 
 	@Transactional
