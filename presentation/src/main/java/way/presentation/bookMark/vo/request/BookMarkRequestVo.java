@@ -29,10 +29,7 @@ public class BookMarkRequestVo {
 	}
 
 	public record DeleteBookMarkRequest(
-		@Schema(description = "Book Mark PK Seq 값")
 		Long bookMarkFeedSeq,
-
-		@Schema(description = "삭제하는 Member Seq")
 		Long memberSeq
 	) {
 		public DeleteBookMarkRequestDto toDeleteBookMarkRequestDto() {
@@ -40,6 +37,15 @@ public class BookMarkRequestVo {
 				this.bookMarkFeedSeq,
 				this.memberSeq
 			);
+		}
+
+		public void deleteBookMarkRequestValidate() {
+			if (bookMarkFeedSeq == null) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
+			if (memberSeq == null) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
 		}
 	}
 }
