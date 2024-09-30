@@ -47,41 +47,41 @@ public class FeedController {
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
-			description = "요청에 성공하였습니다.",
+			description = "200 요청에 성공하였습니다.",
 			useReturnTypeSchema = true),
 		@ApiResponse(
 			responseCode = "S500",
-			description = "서버 오류",
+			description = "500 서버 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "B001",
-			description = "요청 데이터 형식 오류",
+			description = "400 요청 데이터 형식 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "SSB003",
-			description = "SCHEDULE SEQ 오류",
+			description = "400 SCHEDULE SEQ 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "MSB002",
-			description = "MEMBER SEQ 오류",
+			description = "400 MEMBER SEQ 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "MSNISB004",
-			description = "일정에 존재하지 않는 MEMBER SEQ입니다.",
+			description = "400 일정에 존재하지 않는 MEMBER SEQ입니다.",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "FDC004",
-			description = "이미 작성한 피드가 존재할 때 발생 오류",
+			description = "400 이미 작성한 피드가 존재할 때 발생 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
@@ -103,35 +103,35 @@ public class FeedController {
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
-			description = "요청에 성공하였습니다.",
+			description = "200 요청에 성공하였습니다.",
 			useReturnTypeSchema = true),
 		@ApiResponse(
 			responseCode = "S500",
-			description = "서버 오류",
+			description = "500 서버 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "B001",
-			description = "요청 데이터 형식 오류",
+			description = "400 요청 데이터 형식 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "MSB002",
-			description = "MEMBER SEQ 오류",
+			description = "400 MEMBER SEQ 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "FSB019",
-			description = "FEED SEQ 오류",
+			description = "400 FEED SEQ 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "FDCBMB020",
-			description = "회원이 생성한 피드가 아닙니다.",
+			description = "400 회원이 생성한 피드가 아닙니다.",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
@@ -168,17 +168,17 @@ public class FeedController {
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
-			description = "요청에 성공하였습니다.",
+			description = "200 요청에 성공하였습니다.",
 			useReturnTypeSchema = true),
 		@ApiResponse(
 			responseCode = "S500",
-			description = "서버 오류",
+			description = "500 서버 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "MSB002",
-			description = "MEMBER SEQ 오류",
+			description = "400 MEMBER SEQ 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
@@ -212,29 +212,29 @@ public class FeedController {
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
-			description = "요청에 성공하였습니다.",
+			description = "200 요청에 성공하였습니다.",
 			useReturnTypeSchema = true),
 		@ApiResponse(
 			responseCode = "S500",
-			description = "서버 오류",
+			description = "500 서버 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "MSB002",
-			description = "MEMBER SEQ 오류",
+			description = "400 MEMBER SEQ 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "FSB019",
-			description = "FEED SEQ 오류",
+			description = "400 FEED SEQ 오류",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(
 			responseCode = "MSNISB004",
-			description = "일정에 존재하지 않는 MEMBER SEQ입니다.",
+			description = "400 일정에 존재하지 않는 MEMBER SEQ입니다.",
 			content = @Content(
 				schema = @Schema(
 					implementation = GlobalExceptionHandler.ErrorResponse.class)))
@@ -243,7 +243,7 @@ public class FeedController {
 		@Valid
 		@RequestParam(value = "memberSeq") Long memberSeq,
 		@RequestParam(value = "feedSeq") Long feedSeq
-	) throws IOException {
+	) {
 		GetFeedResponseDto response = feedService.getFeed(memberSeq, feedSeq);
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
