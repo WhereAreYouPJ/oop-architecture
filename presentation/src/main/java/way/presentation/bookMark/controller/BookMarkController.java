@@ -94,7 +94,7 @@ public class BookMarkController {
 	}
 
 	@DeleteMapping(name = "피드 책갈피 복원")
-	@Operation(summary = "피드 책갈피 복원 API", description = "Request: DeleteBookMarkRequest")
+	@Operation(summary = "피드 책갈피 복원 API")
 	@ApiResponses(value = {
 		@ApiResponse(
 			responseCode = "200",
