@@ -72,22 +72,6 @@ public class BookMarkRepositoryImpl implements BookMarkRepository {
 	}
 
 	@Override
-	public boolean isFeedBookMarkedByMember(FeedEntity feedEntity, MemberEntity memberEntity) {
-		QBookMarkEntity bookMark = QBookMarkEntity.bookMarkEntity;
-
-		Integer count = queryFactory
-			.selectOne()
-			.from(bookMark)
-			.where(
-				bookMark.feedEntity.eq(feedEntity)
-					.and(bookMark.memberEntity.eq(memberEntity))
-			)
-			.fetchFirst();
-
-		return count != null;
-	}
-
-	@Override
 	public void deleteByScheduleEntity(ScheduleEntity scheduleEntity) {
 		QBookMarkEntity bookMark = QBookMarkEntity.bookMarkEntity;
 

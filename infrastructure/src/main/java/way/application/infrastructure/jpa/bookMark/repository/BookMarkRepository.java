@@ -22,8 +22,6 @@ public interface BookMarkRepository {
 		Pageable pageable
 	);
 
-	boolean isFeedBookMarkedByMember(FeedEntity feedEntity, MemberEntity memberEntity);
-
 	void deleteByScheduleEntity(ScheduleEntity scheduleEntity);
 
 	void deleteByFeedEntity(FeedEntity feedEntity);

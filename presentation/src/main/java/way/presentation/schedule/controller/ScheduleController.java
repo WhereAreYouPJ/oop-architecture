@@ -97,7 +97,7 @@ public class ScheduleController {
 		SaveScheduleResponseDto responseDto = scheduleService.createSchedule(request.toSaveScheduleRequestDto());
 		SaveScheduleResponse response = scheduleResponseMapper.toSaveScheduleResponse(responseDto);
 
-		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.CREATED.value(), response));
+		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
 
 	@PutMapping(name = "일정 수정")
