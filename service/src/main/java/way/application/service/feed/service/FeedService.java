@@ -6,8 +6,12 @@ import static way.application.service.feed.dto.response.FeedResponseDto.GetFeedR
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -104,23 +108,29 @@ public class FeedService {
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
 
 		return scheduleRepository.getScheduleEntityFromScheduleMember(
-			scheduleMemberRepository.findByMemberEntity(memberEntity, pageable)
-		).map(scheduleEntity -> {
-			ScheduleInfo scheduleInfo = feedEntityMapper.toScheduleInfo(scheduleEntity);
+				scheduleMemberRepository.findByMemberEntity(memberEntity, pageable)
+			).map(scheduleEntity -> {
+				FeedEntity feedEntity = feedRepository.findByScheduleExcludingHiddenRand(scheduleEntity, memberEntity);
+				return Optional.ofNullable(feedEntity)
+					.map(fe -> {
+						ScheduleInfo scheduleInfo = feedEntityMapper.toScheduleInfo(scheduleEntity);
+						boolean bookMarkInfo = bookMarkRepository.existsByFeedEntityAndMemberEntity(fe, memberEntity);
+						List<FeedImageEntity> feedImageEntities = feedImageRepository.findAllByFeedEntity(fe);
 
-			FeedEntity feedEntity = feedRepository.findByScheduleExcludingHiddenRand(scheduleEntity, memberEntity);
-			boolean bookMarkInfo = bookMarkRepository.existsByFeedEntityAndMemberEntity(feedEntity, memberEntity);
-			List<FeedImageEntity> feedImageEntities = feedImageRepository.findAllByFeedEntity(feedEntity);
+						ScheduleFeedInfo scheduleFeedInfo = feedEntityMapper.toScheduleFeedInfo(
+							fe.getCreatorMember(),
+							fe,
+							feedImageEntities,
+							bookMarkInfo
+						);
 
-			ScheduleFeedInfo scheduleFeedInfo = feedEntityMapper.toScheduleFeedInfo(
-				feedEntity.getCreatorMember(),
-				feedEntity,
-				feedImageEntities,
-				bookMarkInfo
-			);
-
-			return feedEntityMapper.toGetFeedResponseDto(scheduleInfo, List.of(scheduleFeedInfo));
-		});
+						return feedEntityMapper.toGetFeedResponseDto(scheduleInfo, List.of(scheduleFeedInfo));
+					})
+					.orElse(null);
+			})
+			.filter(Objects::nonNull)
+			.stream().collect(Collectors.collectingAndThen(Collectors.toList(), list ->
+				new PageImpl<>(list, pageable, list.size())));
 	}
 
 	@Transactional(readOnly = true)
