@@ -77,7 +77,10 @@ public class BookMarkService {
 			List<FeedImageEntity> feedImageEntities
 				= feedImageRepository.findAllByFeedEntity(bookMarkEntity.getFeedEntity());
 
-			return bookMarkMapper.toGetBookMarkResponseDto(bookMarkEntity, feedImageEntities);
+			List<MemberEntity> memberEntities
+					= memberRepository.findByFeedEntity(bookMarkEntity.getFeedEntity());
+
+			return bookMarkMapper.toGetBookMarkResponseDto(bookMarkEntity, feedImageEntities, memberEntities);
 		});
 	}
 }
