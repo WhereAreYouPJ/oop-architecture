@@ -4,12 +4,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import com.querydsl.core.Tuple;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
+import way.application.infrastructure.jpa.bookMark.entity.QBookMarkEntity;
+import way.application.infrastructure.jpa.feed.entity.FeedEntity;
+import way.application.infrastructure.jpa.feed.entity.QFeedEntity;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
+import way.application.infrastructure.jpa.member.entity.QMemberEntity;
+import way.application.infrastructure.jpa.schedule.entity.QScheduleEntity;
+import way.application.infrastructure.jpa.scheduleMember.entity.QScheduleMemberEntity;
 import way.application.utils.exception.BadRequestException;
 import way.application.utils.exception.ConflictException;
 import way.application.utils.exception.ErrorResult;
@@ -21,6 +29,7 @@ public class MemberRepositoryImpl implements MemberRepository {
 	private final RedisTemplate<String, String> redisTemplate;
 	@Value("${jwt.refreshTokenExpiration}")
 	private long refreshTokenExpiration;
+	private final JPAQueryFactory queryFactory;
 
 
 	@Override
@@ -104,6 +113,24 @@ public class MemberRepositoryImpl implements MemberRepository {
 
 		return memberJpaRepository.findByMemberCode(memberCode)
 				.orElseThrow(() -> new BadRequestException(ErrorResult.MEMBER_CODE_BAD_REQUEST_EXCEPTION));
+
+	}
+
+	@Override
+	public List<MemberEntity> findByFeedEntity(FeedEntity feedEntity) {
+		QBookMarkEntity bookMark = QBookMarkEntity.bookMarkEntity;
+		QScheduleEntity scheduleEntity = QScheduleEntity.scheduleEntity;
+		QScheduleMemberEntity scheduleMemberEntity = QScheduleMemberEntity.scheduleMemberEntity;
+		QMemberEntity memberEntity = QMemberEntity.memberEntity;
+		QFeedEntity feed = QFeedEntity.feedEntity;
+
+        return queryFactory.select(memberEntity)
+				.from(memberEntity)
+				.join(scheduleMemberEntity).on(scheduleMemberEntity.invitedMember.memberSeq.eq(memberEntity.memberSeq))
+				.join(scheduleEntity).on(scheduleEntity.scheduleSeq.eq(scheduleMemberEntity.schedule.scheduleSeq))
+				.join(feed).on(scheduleEntity.scheduleSeq.eq(feedEntity.getSchedule().getScheduleSeq()))
+				.join(bookMark).on(bookMark.feedEntity.feedSeq.eq(feedEntity.getFeedSeq()))
+				.fetch();
 
 	}
 }

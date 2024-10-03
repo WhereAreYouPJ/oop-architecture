@@ -17,6 +17,7 @@ public class BookMarkResponseDto {
 		String location,
 		String title,
 		List<BookMarkImageInfo> bookMarkImageInfos,
+		List<BookMarkFriendInfo> bookMarkFriendInfos,
 		String content,
 		Boolean bookMark
 	) {
@@ -27,6 +28,13 @@ public class BookMarkResponseDto {
 		Long feedImageSeq,
 		String feedImageURL,
 		Long feedImageOrder
+	) {
+
+	}
+
+	public record BookMarkFriendInfo(
+			Long memberSeq,
+			String profileImageURL
 	) {
 
 	}

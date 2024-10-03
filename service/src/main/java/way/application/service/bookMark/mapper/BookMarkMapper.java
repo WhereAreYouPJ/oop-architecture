@@ -26,7 +26,8 @@ public interface BookMarkMapper {
 
 	default GetBookMarkResponseDto toGetBookMarkResponseDto(
 		BookMarkEntity bookMarkEntity,
-		List<FeedImageEntity> feedImageEntities
+		List<FeedImageEntity> feedImageEntities,
+		List<MemberEntity> memberEntities
 	) {
 		FeedEntity feedEntity = bookMarkEntity.getFeedEntity();
 		ScheduleEntity scheduleEntity = feedEntity.getSchedule();
@@ -39,6 +40,7 @@ public interface BookMarkMapper {
 			scheduleEntity.getLocation(),
 			feedEntity.getTitle(),
 			toBookMarkImageInfoList(feedImageEntities),
+			toBookMarkFriendInfoList(memberEntities),
 			feedEntity.getContent(),
 			true
 		);
@@ -57,4 +59,18 @@ public interface BookMarkMapper {
 			feedImageEntity.getFeedImageOrder()
 		);
 	}
+
+	default List<BookMarkFriendInfo> toBookMarkFriendInfoList(List<MemberEntity> memberEntities) {
+		return memberEntities.stream()
+				.map(this::toBookMarkFriendInfoList)
+				.toList();
+	}
+
+	default BookMarkFriendInfo toBookMarkFriendInfoList(MemberEntity memberEntity) {
+		return new BookMarkFriendInfo(
+				memberEntity.getMemberSeq(),
+				memberEntity.getProfileImage()
+		);
+	}
+
 }
