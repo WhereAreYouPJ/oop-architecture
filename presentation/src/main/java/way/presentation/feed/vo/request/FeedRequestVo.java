@@ -13,7 +13,8 @@ public class FeedRequestVo {
 		Long memberSeq,
 		String title,
 		String content,
-		List<feedImageInfo> feedImageInfos
+		List<feedImageInfo> feedImageInfos,
+		List<feedImageOrder> feedImageOrders
 	) {
 		public void saveFeedRequestValidate() {
 			if (this.scheduleSeq == null) {
@@ -33,7 +34,8 @@ public class FeedRequestVo {
 				this.memberSeq,
 				this.title,
 				this.content,
-				this.feedImageInfos
+				this.feedImageInfos,
+				this.feedImageOrders
 			);
 		}
 	}
@@ -43,7 +45,8 @@ public class FeedRequestVo {
 		Long memberSeq,
 		String title,
 		String content,
-		List<feedImageInfo> feedImageInfos
+		List<feedImageInfo> feedImageInfos,
+		List<feedImageOrder> feedImageOrders
 	) {
 		public void modifyFeedRequestValidator() {
 			if (this.feedSeq == null) {
@@ -63,7 +66,8 @@ public class FeedRequestVo {
 				this.memberSeq,
 				this.title,
 				this.content,
-				this.feedImageInfos
+				this.feedImageInfos,
+				this.feedImageOrders
 			);
 		}
 	}

@@ -69,14 +69,19 @@ public class FeedService {
 
 		// Feed Image Entity 저장
 		if (requestDto.feedImageInfos() != null) {
-			for (feedImageInfo feedImageInfo : requestDto.feedImageInfos()) {
+            List<feedImageInfo> feedImageInfos = requestDto.feedImageInfos();
+			List<feedImageOrder> feedImageOrders = requestDto.feedImageOrders();
+			for (int i = 0; i < feedImageInfos.size(); i++) {
+                feedImageInfo feedImageInfo = feedImageInfos.get(i);
+				feedImageOrder feedImageOrder = feedImageOrders.get(i);
+
 				String imageURL = s3Utils.uploadMultipartFile(feedImageInfo.images());
 
-				// Feed Image Entity 생성
-				feedImageRepository.saveFeedImageEntity(
-					feedImageMapper.toFeedImageEntity(savedFeedEntity, imageURL, feedImageInfo.feedImageOrder())
-				);
-			}
+                // Feed Image Entity 생성
+                feedImageRepository.saveFeedImageEntity(
+                        feedImageMapper.toFeedImageEntity(savedFeedEntity, imageURL, feedImageOrder.feedImageOrder())
+                );
+            }
 		}
 
 		return feedEntityMapper.toSaveFeedResponseDto(feedEntity);

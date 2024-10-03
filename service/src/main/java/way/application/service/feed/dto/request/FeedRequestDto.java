@@ -11,7 +11,8 @@ public class FeedRequestDto {
 		Long memberSeq,
 		String title,
 		String content,
-		List<feedImageInfo> feedImageInfos
+		List<feedImageInfo> feedImageInfos,
+		List<feedImageOrder> feedImageOrders
 	) {
 
 	}
@@ -21,7 +22,8 @@ public class FeedRequestDto {
 		Long memberSeq,
 		String title,
 		String content,
-		List<feedImageInfo> feedImageInfos
+		List<feedImageInfo> feedImageInfos,
+		List<feedImageOrder> feedImageOrders
 	) {
 		public SaveFeedRequestDto toSaveFeedRequestDto(Long scheduleSeq) {
 			return new SaveFeedRequestDto(
@@ -29,13 +31,19 @@ public class FeedRequestDto {
 				this.memberSeq,
 				this.title,
 				this.content,
-				this.feedImageInfos != null ? this.feedImageInfos : Collections.emptyList()
+				this.feedImageInfos != null ? this.feedImageInfos : Collections.emptyList(),
+				this.feedImageOrders != null ? this.feedImageOrders : Collections.emptyList()
 			);
 		}
 	}
 
 	public record feedImageInfo(
-		MultipartFile images,
+		MultipartFile images
+	) {
+
+	}
+
+	public record feedImageOrder(
 		Long feedImageOrder
 	) {
 
