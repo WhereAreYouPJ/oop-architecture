@@ -269,7 +269,7 @@ public class ScheduleService {
 		return scheduleEntities.stream()
 			.map(scheduleEntity -> scheduleEntityMapper.toGetScheduleByDateResponseDto(
 				scheduleEntity,
-				scheduleMemberRepository.countBySchedule(scheduleEntity) > 1
+				scheduleMemberRepository.findAllAcceptedScheduleMembersInSchedule(scheduleEntity).size() > 1
 			)).collect(Collectors.toList());
 	}
 
