@@ -32,8 +32,11 @@ public class MemberEntity {
 	@Column(nullable = false)
 	private String userName;
 
-	@Column(nullable = false)
 	private String encodedPassword;
+
+	private String kakaoPassword;
+
+	private String applePassword;
 
 	private String email;
 
@@ -70,5 +73,13 @@ public class MemberEntity {
 
 	public void updateUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public void updateKakaoPassword(String kakaoPassword) {
+		this.kakaoPassword = kakaoPassword;
+	}
+
+	public void updateApplePassword(String applePassword) {
+		this.applePassword = applePassword;
 	}
 }

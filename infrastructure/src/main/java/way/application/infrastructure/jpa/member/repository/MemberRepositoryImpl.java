@@ -2,6 +2,7 @@ package way.application.infrastructure.jpa.member.repository;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import com.querydsl.core.Tuple;
@@ -131,6 +132,14 @@ public class MemberRepositoryImpl implements MemberRepository {
 				.join(feed).on(scheduleEntity.scheduleSeq.eq(feedEntity.getSchedule().getScheduleSeq()))
 				.join(bookMark).on(bookMark.feedEntity.feedSeq.eq(feedEntity.getFeedSeq()))
 				.fetch();
+
+	}
+
+	@Override
+	public MemberEntity findByEmail(String email) {
+		Optional<MemberEntity> byEmail = memberJpaRepository.findByEmail(email);
+
+        return byEmail.orElseThrow(() -> new BadRequestException(ErrorResult.EMAIL_BAD_REQUEST_EXCEPTION));
 
 	}
 }

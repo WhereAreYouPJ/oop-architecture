@@ -6,15 +6,21 @@ import way.application.utils.exception.ErrorResult;
 import way.presentation.Member.vo.req.MemberRequestVo;
 
 @Component
-public class LoginValidator {
+public class SaveSnsMemberValidator {
 
-    public void validate(MemberRequestVo.LoginRequest request) {
+    public void validate(MemberRequestVo.SaveSnsMemberRequest request) {
 
+        validateUserName(request.userName());
         validateEmail(request.email());
         validatePassword(request.password());
-        validateFcmToken(request.fcmToken());
-        validatePassword(request.loginType());
+        validateLoginType(request.loginType());
 
+    }
+
+    private void validateUserName(String userName) {
+        if (userName == null || userName.isEmpty()) {
+            throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+        }
     }
 
     private void validateEmail(String email) {
@@ -25,12 +31,6 @@ public class LoginValidator {
 
     private void validatePassword(String password) {
         if (password == null || password.isEmpty()) {
-            throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
-        }
-    }
-
-    private void validateFcmToken(String fcmToken) {
-        if (fcmToken == null || fcmToken.isEmpty()) {
             throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
         }
     }

@@ -1,5 +1,7 @@
 package way.application.service.member.dto.response;
 
+import java.util.List;
+
 public class MemberResponseDto {
 
     public record CheckIdResponseDto(
@@ -11,7 +13,8 @@ public class MemberResponseDto {
 
     public record CheckEmailResponseDto(
 
-            String email
+            String email,
+            List<String> loginTypeList
     ) {
 
     }
