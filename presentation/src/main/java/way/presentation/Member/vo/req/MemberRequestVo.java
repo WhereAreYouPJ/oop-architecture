@@ -23,6 +23,25 @@ public class MemberRequestVo {
         }
     }
 
+    public record SaveSnsMemberRequest(
+            String userName,
+            String email,
+            String password,
+            String loginType,
+            String fcmToken
+
+    ) {
+        public SaveSnsMemberRequestDto toSaveSnsMemberRequestDto() {
+            return new SaveSnsMemberRequestDto(
+                    this.userName,
+                    this.password,
+                    this.email,
+                    this.loginType,
+                    this.fcmToken
+            );
+        }
+    }
+
     public record CheckIdRequest(
             String userId
     ) {
@@ -48,13 +67,15 @@ public class MemberRequestVo {
 
             String email,
             String password,
-            String fcmToken
+            String fcmToken,
+            String loginType
     ) {
         public MemberRequestDto.LoginRequestDto toLoginRequestDto() {
             return new MemberRequestDto.LoginRequestDto(
                     this.email,
                     this.password,
-                    this.fcmToken
+                    this.fcmToken,
+                    this.loginType
             );
         }
     }

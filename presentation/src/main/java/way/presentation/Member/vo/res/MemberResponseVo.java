@@ -1,5 +1,7 @@
 package way.presentation.Member.vo.res;
 
+import java.util.List;
+
 public class MemberResponseVo {
 
     public record CheckIdResponse(
@@ -10,7 +12,9 @@ public class MemberResponseVo {
     }
 
     public record CheckEmailResponse(
-            String email
+            String email,
+
+            List<String> type
 
     ) {
 

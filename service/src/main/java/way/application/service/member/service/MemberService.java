@@ -10,9 +10,12 @@ import way.application.service.member.dto.request.MemberRequestDto;
 import way.application.service.member.dto.request.MemberRequestDto.SaveMemberRequestDto;
 import way.application.service.member.mapper.MemberMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import way.application.utils.exception.ConflictException;
 import way.application.utils.s3.S3Utils;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static way.application.service.member.dto.request.MemberRequestDto.*;
 import static way.application.service.member.dto.response.MemberResponseDto.*;
@@ -48,15 +51,31 @@ public class MemberService {
 				memberMapper.toMemberEntity(saveMemberRequestDto,encoder.encode(saveMemberRequestDto.password()),memberCode)
 		);
 
-
 	}
 
 	public CheckEmailResponseDto checkEmail(CheckEmailRequestDto checkEmailRequestDto) {
 
 		//email 중복 검사
-		memberRepository.isDuplicatedEmail(checkEmailRequestDto.email());
+		List<String> type = new ArrayList<>();
+		try {
+			memberRepository.isDuplicatedEmail(checkEmailRequestDto.email());
+		} catch (ConflictException e) {
+			MemberEntity memberEntity = memberRepository.findByEmail(checkEmailRequestDto.email());
 
-		return new CheckEmailResponseDto(checkEmailRequestDto.email());
+			if(memberEntity.getEncodedPassword() != null) {
+				type.add("normal");
+			}
+			if(memberEntity.getKakaoPassword() != null) {
+				type.add("kakao");
+			}
+			if(memberEntity.getApplePassword() != null) {
+				type.add("apple");
+			}
+
+			return new CheckEmailResponseDto(checkEmailRequestDto.email(), type);
+		}
+
+		return new CheckEmailResponseDto(checkEmailRequestDto.email(), type);
 	}
 
 	public LoginResponseDto login(LoginRequestDto loginRequestDto) {
@@ -64,8 +83,20 @@ public class MemberService {
 		// 이메일 검증
 		MemberEntity memberEntity = memberRepository.validateEmail(loginRequestDto.email());
 
-		// 비번 검증
-		memberDomain.checkPassword(loginRequestDto.password(), memberEntity.getEncodedPassword());
+		// 일반 로그인 비번 검증
+		if(loginRequestDto.loginType().equals("normal")) {
+			memberDomain.checkPassword(loginRequestDto.password(), memberEntity.getEncodedPassword());
+		}
+
+		// 카카오 로그인 비번 검증
+		if(loginRequestDto.loginType().equals("kakao")) {
+			memberDomain.checkPassword(loginRequestDto.password(), memberEntity.getKakaoPassword());
+		}
+
+		// 애플 로그인 비번 검증
+		if(loginRequestDto.loginType().equals("apple")) {
+			memberDomain.checkPassword(loginRequestDto.password(), memberEntity.getApplePassword());
+		}
 
 		// jwt 생성
 		String accessToken = memberDomain.generateAccessToken(loginRequestDto.email());
@@ -199,5 +230,45 @@ public class MemberService {
 		// 변경 저장
 		memberRepository.saveMember(memberEntity);
 
+	}
+
+	public void saveSnsMember(SaveSnsMemberRequestDto saveSnsMemberRequestDto) {
+
+		//멤버 유효성 검사
+//		memberRepository.isDuplicatedEmail(saveSnsMemberRequestDto.email());
+
+		String memberCode = memberDomain.generateMemberCode();
+
+		// Member 저장
+		if(saveSnsMemberRequestDto.loginType().equals("kakao")) {
+			memberRepository.saveMember(
+					memberMapper.toKakaoMemberEntity(saveSnsMemberRequestDto, encoder.encode(saveSnsMemberRequestDto.password()), memberCode)
+			);
+		}
+
+		if(saveSnsMemberRequestDto.loginType().equals("apple")) {
+			memberRepository.saveMember(
+					memberMapper.toAppleMemberEntity(saveSnsMemberRequestDto, encoder.encode(saveSnsMemberRequestDto.password()), memberCode)
+			);
+		}
+	}
+
+	public void linkMember(SaveSnsMemberRequestDto saveSnsMemberRequestDto) {
+
+		MemberEntity memberEntity = memberRepository.findByEmail(saveSnsMemberRequestDto.email());
+
+		if(saveSnsMemberRequestDto.loginType().equals("kakao")) {
+			memberEntity.updateKakaoPassword(encoder.encode(saveSnsMemberRequestDto.password()));
+		}
+
+		if(saveSnsMemberRequestDto.loginType().equals("apple")) {
+			memberEntity.updateApplePassword(encoder.encode(saveSnsMemberRequestDto.password()));
+		}
+
+		if (saveSnsMemberRequestDto.loginType().equals("normal")) {
+			memberEntity.updateEncodedPassword(encoder.encode(saveSnsMemberRequestDto.password()));
+		}
+
+		memberRepository.saveMember(memberEntity);
 	}
 }
