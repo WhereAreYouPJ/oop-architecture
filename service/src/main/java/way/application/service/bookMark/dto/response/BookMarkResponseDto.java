@@ -27,7 +27,7 @@ public class BookMarkResponseDto {
 	public record BookMarkImageInfo(
 		Long feedImageSeq,
 		String feedImageURL,
-		Long feedImageOrder
+		Integer feedImageOrder
 	) {
 
 	}
