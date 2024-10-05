@@ -26,7 +26,7 @@ public class HideFeedResponseDto {
 	public record hideFeedImageInfo(
 		Long feedImageSeq,
 		String feedImageURL,
-		Long feedImageOrder
+		Integer feedImageOrder
 	) {
 
 	}

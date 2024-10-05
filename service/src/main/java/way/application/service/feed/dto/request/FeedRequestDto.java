@@ -1,9 +1,6 @@
 package way.application.service.feed.dto.request;
 
-import java.util.Collections;
 import java.util.List;
-
-import org.springframework.web.multipart.MultipartFile;
 
 public class FeedRequestDto {
 	public record SaveFeedRequestDto(
@@ -11,8 +8,7 @@ public class FeedRequestDto {
 		Long memberSeq,
 		String title,
 		String content,
-		List<feedImageInfo> feedImageInfos,
-		List<feedImageOrder> feedImageOrders
+		List<Integer> feedImageOrders
 	) {
 
 	}
@@ -22,8 +18,7 @@ public class FeedRequestDto {
 		Long memberSeq,
 		String title,
 		String content,
-		List<feedImageInfo> feedImageInfos,
-		List<feedImageOrder> feedImageOrders
+		List<Integer> feedImageOrders
 	) {
 		public SaveFeedRequestDto toSaveFeedRequestDto(Long scheduleSeq) {
 			return new SaveFeedRequestDto(
@@ -31,21 +26,8 @@ public class FeedRequestDto {
 				this.memberSeq,
 				this.title,
 				this.content,
-				this.feedImageInfos != null ? this.feedImageInfos : Collections.emptyList(),
-				this.feedImageOrders != null ? this.feedImageOrders : Collections.emptyList()
+				this.feedImageOrders
 			);
 		}
-	}
-
-	public record feedImageInfo(
-		MultipartFile images
-	) {
-
-	}
-
-	public record feedImageOrder(
-		Long feedImageOrder
-	) {
-
 	}
 }
