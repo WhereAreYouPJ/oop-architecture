@@ -40,5 +40,5 @@ public class FeedImageEntity {
 	private String feedImageURL;
 
 	@Column(name = "feed_image_order", nullable = false)
-	private Long feedImageOrder;
+	private Integer feedImageOrder;
 }

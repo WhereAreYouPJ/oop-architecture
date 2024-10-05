@@ -14,5 +14,5 @@ public interface FeedImageMapper {
 	@Mapping(target = "feedEntity", source = "feed")
 	@Mapping(target = "feedImageURL", source = "feedImageURL")
 	@Mapping(target = "feedImageOrder", source = "feedImageOrder")
-	FeedImageEntity toFeedImageEntity(FeedEntity feed, String feedImageURL, Long feedImageOrder);
+	FeedImageEntity toFeedImageEntity(FeedEntity feed, String feedImageURL, Integer feedImageOrder);
 }
