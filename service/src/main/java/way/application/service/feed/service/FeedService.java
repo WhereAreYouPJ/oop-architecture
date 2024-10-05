@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 import way.application.infrastructure.jpa.bookMark.repository.BookMarkRepository;
@@ -47,7 +48,7 @@ public class FeedService {
 	private final FeedImageMapper feedImageMapper;
 
 	@Transactional
-	public SaveFeedResponseDto saveFeed(SaveFeedRequestDto requestDto) throws IOException {
+	public SaveFeedResponseDto saveFeed(SaveFeedRequestDto requestDto, List<MultipartFile> images) throws IOException {
 		/*
 		 1. Member 유효성 검사
 		 2. Schedule 유효성 검사
@@ -65,30 +66,27 @@ public class FeedService {
 		// Feed Entity 저장
 		FeedEntity feedEntity
 			= feedEntityMapper.toFeedEntity(scheduleEntity, memberEntity, requestDto.title(), requestDto.content());
-		FeedEntity savedFeedEntity = feedRepository.saveFeedEntity(feedEntity);
+		feedRepository.saveFeedEntity(feedEntity);
 
-		// Feed Image Entity 저장
-		if (requestDto.feedImageInfos() != null) {
-            List<feedImageInfo> feedImageInfos = requestDto.feedImageInfos();
-			List<feedImageOrder> feedImageOrders = requestDto.feedImageOrders();
-			for (int i = 0; i < feedImageInfos.size(); i++) {
-                feedImageInfo feedImageInfo = feedImageInfos.get(i);
-				feedImageOrder feedImageOrder = feedImageOrders.get(i);
+		if (images != null) {
+			for (int i = 0; i < images.size(); i++) {
+				MultipartFile multipartFile = images.get(i);
+				String feedImageURL = s3Utils.uploadMultipartFile(multipartFile);
+				Integer feedImageOrder = requestDto.feedImageOrders().get(i);
 
-				String imageURL = s3Utils.uploadMultipartFile(feedImageInfo.images());
-
-                // Feed Image Entity 생성
-                feedImageRepository.saveFeedImageEntity(
-                        feedImageMapper.toFeedImageEntity(savedFeedEntity, imageURL, feedImageOrder.feedImageOrder())
-                );
-            }
+				FeedImageEntity feedImageEntity = feedImageMapper.toFeedImageEntity(feedEntity, feedImageURL,
+					feedImageOrder);
+				feedImageRepository.saveFeedImageEntity(feedImageEntity);
+			}
 		}
 
 		return feedEntityMapper.toSaveFeedResponseDto(feedEntity);
 	}
 
 	@Transactional
-	public ModifyFeedResponseDto modifyFeed(ModifyFeedRequestDto requestDto) throws IOException {
+	public ModifyFeedResponseDto modifyFeed(
+		ModifyFeedRequestDto requestDto, List<MultipartFile> images
+	) throws IOException {
 		/*
 		 1. Member 유효성 검사
 		 2. Feed 유효성 검사
@@ -103,7 +101,7 @@ public class FeedService {
 		feedImageRepository.deleteAllByFeedEntity(savedFeed);
 
 		SaveFeedResponseDto saveFeedResponseDto
-			= saveFeed(requestDto.toSaveFeedRequestDto(savedFeed.getSchedule().getScheduleSeq()));
+			= saveFeed(requestDto.toSaveFeedRequestDto(savedFeed.getSchedule().getScheduleSeq()), images);
 
 		return saveFeedResponseDto.toModifyFeedResponseDto();
 	}
