@@ -2,6 +2,7 @@ package way.application.infrastructure.jpa.member.repository;
 
 import java.util.List;
 
+import way.application.infrastructure.jpa.feed.entity.FeedEntity;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 
 public interface MemberRepository {
@@ -26,4 +27,8 @@ public interface MemberRepository {
 	void deleteJwt(String email);
 
     MemberEntity findByMemberCode(String memberCode);
+
+    List<MemberEntity> findByFeedEntity(FeedEntity feedEntity);
+
+	MemberEntity findByEmail(String email);
 }

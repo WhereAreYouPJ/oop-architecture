@@ -12,6 +12,16 @@ public class MemberRequestDto {
 
     }
 
+    public record SaveSnsMemberRequestDto (
+            String userName,
+            String password,
+            String email,
+            String loginType,
+            String fcmToken
+    ) {
+
+    }
+
     public record CheckIdRequestDto (
             String userId
 
@@ -29,7 +39,8 @@ public class MemberRequestDto {
     public record LoginRequestDto (
             String email,
             String password,
-            String fcmToken
+            String fcmToken,
+            String loginType
     ) {
 
     }

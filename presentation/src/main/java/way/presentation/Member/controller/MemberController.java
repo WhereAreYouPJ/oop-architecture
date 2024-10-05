@@ -41,6 +41,7 @@ public class MemberController {
     private final ResetPasswordValidator resetPasswordValidator;
     private final LogoutValidator logoutValidator;
     private final ModifyUserNameValidator modifyUserNameValidator;
+    private final SaveSnsMemberValidator saveSnsMemberValidator;
 
     @PostMapping(name = "회원가입")
     @Operation(summary = "join Member API", description = "회원가입 API")
@@ -76,6 +77,82 @@ public class MemberController {
         // VO -> DTO 변환
         SaveMemberRequestDto saveMemberRequestDto = request.toSaveMemberRequestDto();
         memberService.saveMember(saveMemberRequestDto);
+
+        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
+    }
+
+    @PostMapping(value = "/sns", name = "Sns 회원가입")
+    @Operation(summary = "join Sns Member API", description = "Sns 회원가입 API")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청에 성공하였습니다.",
+                    useReturnTypeSchema = true),
+            @ApiResponse(
+                    responseCode = "S500",
+                    description = "500 SERVER_ERROR",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "B001",
+                    description = "400 Invalid DTO Parameter errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "EDC002",
+                    description = "409 EMAIL_DUPLICATION_CONFLICT_EXCEPTION",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class)))
+    })
+    public ResponseEntity<BaseResponse<String>> saveSnsMember(@Valid @RequestBody SaveSnsMemberRequest request) {
+
+        // DTO 유효성 검사
+        saveSnsMemberValidator.validate(request);
+
+        // VO -> DTO 변환
+        SaveSnsMemberRequestDto saveSnsMemberRequestDto = request.toSaveSnsMemberRequestDto();
+        memberService.saveSnsMember(saveSnsMemberRequestDto);
+
+        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
+    }
+
+    @PostMapping(value = "/link", name = "연동 하기")
+    @Operation(summary = "link Member API", description = "회원 연동 API")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청에 성공하였습니다.",
+                    useReturnTypeSchema = true),
+            @ApiResponse(
+                    responseCode = "S500",
+                    description = "500 SERVER_ERROR",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "B001",
+                    description = "400 Invalid DTO Parameter errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "EDC002",
+                    description = "409 EMAIL_DUPLICATION_CONFLICT_EXCEPTION",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class)))
+    })
+    public ResponseEntity<BaseResponse<String>> linkMember(@Valid @RequestBody SaveSnsMemberRequest request) {
+
+        // DTO 유효성 검사
+        saveSnsMemberValidator.validate(request);
+
+        // VO -> DTO 변환
+        SaveSnsMemberRequestDto saveSnsMemberRequestDto = request.toSaveSnsMemberRequestDto();
+        memberService.linkMember(saveSnsMemberRequestDto);
 
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
     }
@@ -121,7 +198,7 @@ public class MemberController {
         CheckEmailResponseDto checkEmailResponseDto = memberService.checkEmail(request.toCheckEmailRequestDto());
 
         // DTO -> VO
-        CheckEmailResponse checkEmailResponse = new CheckEmailResponse(checkEmailResponseDto.email());
+        CheckEmailResponse checkEmailResponse = new CheckEmailResponse(checkEmailResponseDto.email(),checkEmailResponseDto.loginTypeList());
 
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(),checkEmailResponse));
     }

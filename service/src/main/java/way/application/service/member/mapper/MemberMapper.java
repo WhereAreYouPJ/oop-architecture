@@ -15,4 +15,10 @@ public interface MemberMapper {
 	@Mapping(target = "memberSeq", ignore = true)
 	MemberEntity toMemberEntity(SaveMemberRequestDto request, String encodedPassword, String memberCode);
 
+	@Mapping(target = "memberSeq", ignore = true)
+	MemberEntity toKakaoMemberEntity(SaveSnsMemberRequestDto request, String kakaoPassword, String memberCode);
+
+	@Mapping(target = "memberSeq", ignore = true)
+	MemberEntity toAppleMemberEntity(SaveSnsMemberRequestDto request, String applePassword, String memberCode);
+
 }

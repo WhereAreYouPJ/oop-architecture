@@ -152,8 +152,18 @@ public class ScheduleMemberRepositoryImpl implements ScheduleMemberRepository {
 
 	@Override
 	public long countBySchedule(ScheduleEntity scheduleEntity) {
+		QScheduleMemberEntity scheduleMember = QScheduleMemberEntity.scheduleMemberEntity;
 
-		return scheduleMemberJpaRepository.countBySchedule(scheduleEntity);
+		List<ScheduleMemberEntity> scheduleMemberEntities = queryFactory.select(scheduleMember)
+				.from(scheduleMember)
+				.where(
+						scheduleMember.schedule.scheduleSeq.eq(scheduleEntity.getScheduleSeq())
+								.and(scheduleMember.acceptSchedule.isTrue())
+				).fetch();
+
+		return scheduleMemberEntities.size();
+
+//		return scheduleMemberJpaRepository.countBySchedule(scheduleEntity);
 	}
 
 	@Override
