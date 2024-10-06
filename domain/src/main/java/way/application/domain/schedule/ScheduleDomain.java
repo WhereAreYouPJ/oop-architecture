@@ -36,17 +36,11 @@ public class ScheduleDomain {
 		}
 	}
 
-	public String getDdaySchedule(LocalDateTime startTime) {
+	public Long getDdaySchedule(LocalDateTime startTime) {
 
 		LocalDateTime now = LocalDateTime.now();
 
-		long day = ChronoUnit.DAYS.between(now.toLocalDate(), startTime.toLocalDate());
-
-		if (day == 0) {
-			return "D-day";
-		}
-
-		return "D-" + day;
+		return ChronoUnit.DAYS.between(now.toLocalDate(), startTime.toLocalDate());
 	}
 
 	public Page<ScheduleEntity> getScheduleEntityFromScheduleMember(Page<ScheduleMemberEntity> scheduleMemberEntity) {
