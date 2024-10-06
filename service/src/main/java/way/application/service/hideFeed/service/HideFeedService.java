@@ -19,8 +19,7 @@ import way.application.infrastructure.jpa.hideFeed.entity.HideFeedEntity;
 import way.application.infrastructure.jpa.hideFeed.repository.HideFeedRepository;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.member.repository.MemberRepository;
-import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
-import way.application.service.hideFeed.mapper.HideFeedMapper;
+import way.application.service.hideFeed.mapper.HideFeedEntityMapper;
 
 @Service
 @RequiredArgsConstructor
@@ -31,38 +30,34 @@ public class HideFeedService {
 	private final FeedRepository feedRepository;
 	private final FeedImageRepository feedImageRepository;
 
-	private final HideFeedMapper hideFeedMapper;
+	private final HideFeedEntityMapper hideFeedMapper;
 
 	@Transactional
-	public AddHideFeedResponseDto addHideFeed(AddHideFeedRequestDto addHideFeedRequestDto) {
+	public AddHideFeedResponseDto addHideFeed(AddHideFeedRequestDto requestDto) {
 		/*
 		 1. Member 확인
 		 2. Feed 확인
 		 3. Hide Feed 존재 여부 확인 (존재 시 Exception)
 		*/
-		MemberEntity memberEntity = memberRepository.findByMemberSeq(addHideFeedRequestDto.memberSeq());
-		FeedEntity feedEntity = feedRepository.findByFeedSeq(addHideFeedRequestDto.feedSeq());
-		hideFeedRepository.verifyHideFeedNotExists(
-			feedEntity,
-			memberEntity
-		);
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(requestDto.memberSeq());
+		FeedEntity feedEntity = feedRepository.findByFeedSeq(requestDto.feedSeq());
+		hideFeedRepository.verifyHideFeedNotExists(feedEntity, memberEntity);
 
 		// Hide Feed 저장
-		HideFeedEntity hideFeedEntity = hideFeedRepository.saveHideFeedEntity(
-			hideFeedMapper.toHideFeedEntity(feedEntity, memberEntity)
-		);
+		HideFeedEntity hideFeedEntity = hideFeedMapper.toHideFeedEntity(feedEntity, memberEntity);
+		HideFeedEntity savedHideFeedEntity = hideFeedRepository.saveHideFeedEntity(hideFeedEntity);
 
-		return new AddHideFeedResponseDto(hideFeedEntity.getHideFeedSeq());
+		return hideFeedMapper.toAddHideFeedResponseDto(savedHideFeedEntity);
 	}
 
 	@Transactional
-	public void deleteHideFeed(DeleteHideFeedRequestDto hideFeedRequestDto) {
+	public void deleteHideFeed(DeleteHideFeedRequestDto requestDto) {
 		/*
 		 1. Member 확인
 		 2. Hide Feed 확인
 		*/
-		memberRepository.findByMemberSeq(hideFeedRequestDto.memberSeq());
-		HideFeedEntity hideFeedEntity = hideFeedRepository.findByHideFeedSeq(hideFeedRequestDto.hideFeedSeq());
+		memberRepository.findByMemberSeq(requestDto.memberSeq());
+		HideFeedEntity hideFeedEntity = hideFeedRepository.findByHideFeedSeq(requestDto.hideFeedSeq());
 
 		// Hide Feed 삭제
 		hideFeedRepository.deleteHideFeedEntity(hideFeedEntity);
@@ -79,18 +74,12 @@ public class HideFeedService {
 		Page<HideFeedEntity> hideFeedEntityPage
 			= hideFeedRepository.findAllByMemberEntityOrderByScheduleStartTimeDesc(memberEntity, pageable);
 
-		// HideFeedEntity를 GetHideFeedResponseDto로 변환
 		return hideFeedEntityPage.map(hideFeedEntity -> {
 			FeedEntity feedEntity = hideFeedEntity.getFeedEntity();
-			ScheduleEntity scheduleEntity = feedEntity.getSchedule();
 
 			// Feed 이미지 가져오기 및 ImageInfo로 변환
-			List<hideFeedImageInfo> imageInfos = feedImageRepository.findAllByFeedEntity(feedEntity).stream()
-				.map(feedImageEntity -> new hideFeedImageInfo(
-					feedImageEntity.getFeedImageSeq(),
-					feedImageEntity.getFeedImageURL(),
-					feedImageEntity.getFeedImageOrder()
-				))
+			List<hideFeedImageInfo> hideFeedImageInfos = feedImageRepository.findAllByFeedEntity(feedEntity).stream()
+				.map(hideFeedMapper::toHideFeedImageInfo)
 				.toList();
 
 			Boolean bookMark = bookMarkRepository.existsByFeedEntityAndMemberEntity(
@@ -98,15 +87,7 @@ public class HideFeedService {
 				hideFeedEntity.getMemberEntity()
 			);
 
-			return new GetHideFeedResponseDto(
-				hideFeedEntity.getMemberEntity().getProfileImage(),
-				scheduleEntity.getStartTime(),
-				scheduleEntity.getLocation(),
-				feedEntity.getTitle(),
-				imageInfos,
-				feedEntity.getContent(),
-				bookMark
-			);
+			return hideFeedMapper.toGetHideFeedResponseDto(hideFeedEntity, hideFeedImageInfos, bookMark);
 		});
 	}
 }
