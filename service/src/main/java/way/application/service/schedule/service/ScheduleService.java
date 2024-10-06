@@ -378,4 +378,25 @@ public class ScheduleService {
 		// ScheduleMember 삭제
 		scheduleMemberRepository.deleteByScheduleEntityAndMemberEntity(scheduleEntity, memberEntity);
 	}
+
+	@Transactional(readOnly = true)
+	public List<GetInvitedScheduleListResponseDto> getInvitedScheduleList(Long memberSeq) {
+		/*
+		 1. Member 유효성 검사
+		*/
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
+
+		// 초대 받은 일정 추출
+		List<ScheduleMemberEntity> scheduleMemberEntityList
+			= scheduleMemberRepository.findInvitedScheduleMemberEntity(memberEntity);
+		List<ScheduleEntity> scheduleEntityList
+			= scheduleMemberDomain.extractScheduleEntityList(scheduleMemberEntityList);
+
+		return scheduleEntityList.stream()
+			.map(scheduleEntity -> {
+				Long dDay = scheduleDomain.getDdaySchedule(scheduleEntity.getStartTime());
+				return scheduleEntityMapper.toGetInvitedScheduleListResponseDto(scheduleEntity, dDay);
+			})
+			.collect(Collectors.toList());
+	}
 }
