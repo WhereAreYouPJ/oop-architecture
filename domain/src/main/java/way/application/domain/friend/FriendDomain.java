@@ -12,11 +12,15 @@ import way.application.utils.exception.NotFoundRequestException;
 @Component
 public class FriendDomain {
 	public void checkFriends(List<MemberEntity> memberEntities, List<FriendEntity> friendEntities) {
-		boolean friend = memberEntities.stream()
-			.allMatch(invitedMember ->
+		List<Long> invitedMemberSeqs = memberEntities.stream()
+			.map(MemberEntity::getMemberSeq)
+			.toList();
+
+		boolean friend = invitedMemberSeqs.stream()
+			.allMatch(invitedMemberSeq ->
 				friendEntities.stream()
 					.anyMatch(friendEntity ->
-						friendEntity.getFriends().equals(invitedMember)
+						friendEntity.getFriends().getMemberSeq().equals(invitedMemberSeq)
 					)
 			);
 
