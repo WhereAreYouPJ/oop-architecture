@@ -344,7 +344,7 @@ public class ScheduleService {
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
 		Page<ScheduleEntity> scheduleEntityPage = scheduleRepository.findSchedulesByMemberEntityAndStartTime(
 			memberEntity,
-			LocalDateTime.now().plusHours(1),
+			LocalDateTime.now().minusHours(1),
 			pageable
 		);
 
