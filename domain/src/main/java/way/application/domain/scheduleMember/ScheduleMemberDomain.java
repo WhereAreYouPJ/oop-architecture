@@ -20,4 +20,10 @@ public class ScheduleMemberDomain {
 				sm -> sm.getInvitedMember().getUserName()   // value: userName
 			));
 	}
+
+	public List<String> extractUserNameFromList(List<ScheduleMemberEntity> scheduleMemberEntities) {
+		return scheduleMemberEntities.stream()
+			.map(entity -> entity.getInvitedMember().getUserName())
+			.collect(Collectors.toList());
+	}
 }
