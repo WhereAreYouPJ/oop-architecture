@@ -4,17 +4,13 @@ import static way.application.service.location.dto.request.LocationRequestDto.*;
 
 import java.util.List;
 
-import io.swagger.v3.oas.annotations.media.Schema;
+import way.application.utils.exception.BadRequestException;
+import way.application.utils.exception.ErrorResult;
 
 public class LocationRequestVo {
 	public record AddLocationRequest(
-		@Schema(description = "위치 즐겨찾기 추가하고자 하는 MemberSeq")
 		Long memberSeq,
-
-		@Schema(description = "위치 이름 (EX. 스타벅스, 여의도 한강 공원)")
 		String location,
-
-		@Schema(description = "실제 도로명 주소")
 		String streetName
 	) {
 		public AddLocationRequestDto toAddLocationRequestDto() {
@@ -24,12 +20,22 @@ public class LocationRequestVo {
 				this.streetName
 			);
 		}
+
+		public void validateAddLocationRequest() {
+			if (this.memberSeq == null) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
+			if (this.location == null || this.location.isEmpty()) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
+			if (this.streetName == null || this.streetName.isEmpty()) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
+		}
 	}
 
 	public record DeleteLocationRequest(
-		@Schema(description = "위치 즐겨찾기 삭제하고자 하는 MemberSeq")
 		Long memberSeq,
-		@Schema(description = "Location DB 저장 시 반환받은 Seqs")
 		List<Long> locationSeqs
 	) {
 		public DeleteLocationRequestDto toDeleteLocationRequestDto() {
@@ -37,6 +43,15 @@ public class LocationRequestVo {
 				this.memberSeq,
 				this.locationSeqs
 			);
+		}
+
+		public void validateDeleteLocationRequest() {
+			if (this.memberSeq == null) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
+			if (this.locationSeqs == null || this.locationSeqs.isEmpty()) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
 		}
 	}
 }

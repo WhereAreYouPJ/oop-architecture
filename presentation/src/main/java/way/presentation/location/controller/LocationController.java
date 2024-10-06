@@ -4,7 +4,6 @@ import static way.application.service.location.dto.response.LocationResponseDto.
 import static way.presentation.location.vo.req.LocationRequestVo.*;
 import static way.presentation.location.vo.res.LocationResponseVo.*;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -25,64 +24,34 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import way.application.service.location.service.LocationService;
 import way.application.utils.exception.GlobalExceptionHandler;
 import way.presentation.base.BaseResponse;
-import way.presentation.location.validates.AddLocationValidator;
-import way.presentation.location.validates.DeleteLocationValidator;
-import way.presentation.location.validates.GetLocationValidator;
+import way.presentation.location.mapper.LocationResponseMapper;
+import way.presentation.schedule.vo.response.ScheduleResponseVo;
 
 @RestController
 @RequestMapping("/location")
 @RequiredArgsConstructor
 @Tag(name = "위치 즐겨찾기", description = "담당자 (박종훈)")
 public class LocationController {
-	private final AddLocationValidator addLocationValidator;
-	private final DeleteLocationValidator deleteLocationValidator;
-	private final GetLocationValidator getLocationValidator;
-
+	private final LocationResponseMapper locationResponseMapper;
 	private final LocationService locationService;
 
 	@PostMapping(name = "위치 즐겨찾기 생성")
-	@Operation(summary = "위치 즐겨찾기 생성", description = "Request: AddLocationRequest, Response: AddLocationResponse")
+	@Operation(summary = "위치 즐겨찾기 생성")
 	@ApiResponses(value = {
-		@ApiResponse(
-			responseCode = "200",
-			description = "요청에 성공하였습니다.",
-			useReturnTypeSchema = true),
-		@ApiResponse(
-			responseCode = "S500",
-			description = "500 SERVER_ERROR (나도 몰라 ..)",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class))),
-		@ApiResponse(
-			responseCode = "B001",
-			description = "400 Invalid DTO Parameter errors / 요청 값 형식 요류",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class))),
-		@ApiResponse(
-			responseCode = "MSB002",
-			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / 존재하지 않는 MemberSeq 오류",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", useReturnTypeSchema = true),
+		@ApiResponse(responseCode = "S500", description = "서버 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(responseCode = "B001", description = "요청 데이터 형식 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(responseCode = "MSB002", description = "MEMBER SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
-	public ResponseEntity<BaseResponse<AddLocationResponse>> addLocation(
-		@Valid
-		@RequestBody AddLocationRequest request
-	) throws IOException {
-		// 유효성 검사
-		addLocationValidator.validate(request);
+	public ResponseEntity<BaseResponse<AddLocationResponse>> addLocation(@RequestBody AddLocationRequest request) {
+		request.validateAddLocationRequest();
 
-		// VO -> DTO
-		AddLocationResponseDto addLocationResponseDto = locationService.addLocation(request.toAddLocationRequestDto());
-
-		// DTO -> VO
-		AddLocationResponse response = new AddLocationResponse(addLocationResponseDto.locationSeq());
+		AddLocationResponseDto responseDto = locationService.addLocation(request.toAddLocationRequestDto());
+		AddLocationResponse response = locationResponseMapper.toAddLocationResponse(responseDto);
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
@@ -90,41 +59,14 @@ public class LocationController {
 	@DeleteMapping(name = "위치 즐겨찾기 삭제")
 	@Operation(summary = "위치 즐겨찾기 삭제", description = "Request: DeleteLocationRequest, Response: AddLocationResponse")
 	@ApiResponses(value = {
-		@ApiResponse(
-			responseCode = "200",
-			description = "요청에 성공하였습니다.",
-			useReturnTypeSchema = true),
-		@ApiResponse(
-			responseCode = "S500",
-			description = "500 SERVER_ERROR (나도 몰라 ..)",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class))),
-		@ApiResponse(
-			responseCode = "B001",
-			description = "400 Invalid DTO Parameter errors / 요청 값 형식 요류",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class))),
-		@ApiResponse(
-			responseCode = "MSB002",
-			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / 존재하지 않는 MemberSeq 오류",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class))),
-		@ApiResponse(
-			responseCode = "LSB025",
-			description = "400 LOCATION_SEQ_BAD_REQUEST_EXCEPTION / 존재하지 않는 LocationSeq 오류",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class)))
+		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", useReturnTypeSchema = true),
+		@ApiResponse(responseCode = "S500", description = "서버 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(responseCode = "B001", description = "요청 데이터 형식 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(responseCode = "MSB002", description = "MEMBER SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(responseCode = "LSB025", description = "LOCATION SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
-	public ResponseEntity<BaseResponse> deleteLocation(
-		@Valid
-		@RequestBody DeleteLocationRequest request
-	) {
-		// 유효성 검사
-		deleteLocationValidator.validate(request);
+	public ResponseEntity<BaseResponse<String>> deleteLocation(@RequestBody DeleteLocationRequest request) {
+		request.validateDeleteLocationRequest();
 
 		locationService.deleteLocation(request.toDeleteLocationRequestDto());
 
@@ -133,45 +75,23 @@ public class LocationController {
 
 	@GetMapping(name = "위치 즐겨찾기 조회")
 	@Operation(summary = "위치 즐겨찾기 조회 API")
-	@ApiResponses(value = {
-		@ApiResponse(
-			responseCode = "200",
-			description = "요청에 성공하였습니다.",
-			useReturnTypeSchema = true),
-		@ApiResponse(
-			responseCode = "S500",
-			description = "500 SERVER_ERROR (나도 몰라 ..)",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class))),
-		@ApiResponse(
-			responseCode = "B001",
-			description = "400 Invalid DTO Parameter errors / 요청 값 형식 요류",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class))),
-		@ApiResponse(
-			responseCode = "MSB002",
-			description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
-			content = @Content(
-				schema = @Schema(
-					implementation = GlobalExceptionHandler.ErrorResponse.class)))
-	})
 	@Parameters({
 		@Parameter(name = "memberSeq", description = "회원 PK 값", example = "1"),
 	})
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", useReturnTypeSchema = true),
+		@ApiResponse(responseCode = "S500", description = "서버 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(responseCode = "MSB002", description = "MEMBER SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
+	})
 	public ResponseEntity<BaseResponse<List<GetLocationResponse>>> getBookMark(
-		@Valid
-		@RequestParam(value = "memberSeq") Long memberSeq
+		@RequestParam(value = "memberSeq", required = true) Long memberSeq
 	) {
-		// Validate
-		getLocationValidator.validate(memberSeq);
+		List<GetLocationResponseDto> responseDto = locationService.getLocation(memberSeq);
 
-		List<GetLocationResponseDto> locationResponseDtos = locationService.getLocation(memberSeq);
-		List<GetLocationResponse> responses = locationResponseDtos.stream()
-			.map(dto -> new GetLocationResponse(dto.locationSeq(), dto.location(), dto.streetName()))
+		List<GetLocationResponse> response = responseDto.stream()
+			.map(locationResponseMapper::toGetLocationResponse)
 			.toList();
 
-		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), responses));
+		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
 }

@@ -14,7 +14,7 @@ import way.application.infrastructure.jpa.location.entity.LocationEntity;
 import way.application.infrastructure.jpa.location.repository.LocationRepository;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.member.repository.MemberRepository;
-import way.application.service.location.mapper.LocationMapper;
+import way.application.service.location.mapper.LocationEntityMapper;
 
 @Service
 @RequiredArgsConstructor
@@ -22,40 +22,34 @@ public class LocationService {
 	private final MemberRepository memberRepository;
 	private final LocationRepository locationRepository;
 
-	private final LocationMapper locationMapper;
+	private final LocationEntityMapper locationMapper;
 
 	@Transactional
-	public AddLocationResponseDto addLocation(AddLocationRequestDto addLocationRequestDto) {
+	public AddLocationResponseDto addLocation(AddLocationRequestDto requestDto) {
 		/*
 		 1. Member 존재 확인
 		*/
-		MemberEntity memberEntity = memberRepository.findByMemberSeq(addLocationRequestDto.memberSeq());
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(requestDto.memberSeq());
 
 		// 저장
 		LocationEntity locationEntity = locationRepository.saveLocationEntity(
-			locationMapper.toLocationMapper(
-				memberEntity,
-				addLocationRequestDto.location(),
-				addLocationRequestDto.streetName()
-			)
+			locationMapper.toLocationMapper(memberEntity, requestDto.location(), requestDto.streetName())
 		);
 
-		return new AddLocationResponseDto(locationEntity.getLocationSeq());
+		return locationMapper.toAddLocationResponseDto(locationEntity);
 	}
 
 	@Transactional
-	public void deleteLocation(DeleteLocationRequestDto deleteLocationRequestDto) {
+	public void deleteLocation(DeleteLocationRequestDto requestDto) {
 		/*
 		 1. Member 존재 확인
 		 2. Location 존재 확인
 		*/
-		MemberEntity memberEntity = memberRepository.findByMemberSeq(deleteLocationRequestDto.memberSeq());
-		List<LocationEntity> locationEntities = locationRepository.findAllByMemberEntityAndLocationSeqs(
-			memberEntity,
-			deleteLocationRequestDto.locationSeqs()
-		);
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(requestDto.memberSeq());
+		List<LocationEntity> locationEntityList
+			= locationRepository.findAllByMemberEntityAndLocationSeqs(memberEntity, requestDto.locationSeqs());
 
-		locationRepository.deleteAll(locationEntities);
+		locationRepository.deleteAll(locationEntityList);
 	}
 
 	@Transactional(readOnly = true)
@@ -65,14 +59,9 @@ public class LocationService {
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
 
-		// Location 조회 -> member
 		return locationRepository.findByMemberEntity(memberEntity)
 			.stream()
-			.map(locationEntity -> new GetLocationResponseDto(
-				locationEntity.getLocationSeq(),
-				locationEntity.getLocation(),
-				locationEntity.getStreetName()
-			))
+			.map(locationMapper::toGetLocationResponseDto)
 			.collect(Collectors.toList());
 	}
 }
