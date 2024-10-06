@@ -72,6 +72,6 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepository {
 				chatRoomEntity.scheduleEntity.eq(scheduleEntity)
 			)
 			.fetchOne()
-		).orElseThrow(() -> new NotFoundRequestException(ErrorResult.CHAT_ROOM_NOT_FOUND_EXCEPTION));
+		).orElseThrow(() -> new NotFoundRequestException(ErrorResult.UNKNOWN_EXCEPTION));
 	}
 }
