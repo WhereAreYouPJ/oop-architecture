@@ -132,9 +132,9 @@ public class FeedController {
 	public ResponseEntity<BaseResponse<GetFeedResponseDto>> getFeed(
 		@Valid
 		@RequestParam(value = "memberSeq") Long memberSeq,
-		@RequestParam(value = "feedSeq") Long feedSeq
+		@RequestParam(value = "scheduleSeq") Long scheduleSeq
 	) {
-		GetFeedResponseDto response = feedService.getFeed(memberSeq, feedSeq);
+		GetFeedResponseDto response = feedService.getFeed(memberSeq, scheduleSeq);
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
