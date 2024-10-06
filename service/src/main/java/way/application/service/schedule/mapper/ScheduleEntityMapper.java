@@ -38,4 +38,6 @@ public interface ScheduleEntityMapper {
 	GetDdayScheduleResponseDto toGetDdayScheduleResponseDto(ScheduleEntity scheduleEntity, String dDay);
 
 	GetScheduleListResponseDto toGetScheduleListResponseDto(ScheduleEntity scheduleEntity, Boolean feedExists);
+
+	SaveScheduleResponseDto toSaveScheduleResponseDto(Long scheduleSeq, String chatRoomSeq);
 }

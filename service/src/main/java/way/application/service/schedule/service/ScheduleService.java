@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.cache.annotation.Cacheable;
@@ -42,6 +43,7 @@ import way.application.infrastructure.jpa.schedule.repository.ScheduleRepository
 import way.application.infrastructure.jpa.scheduleMember.entity.ScheduleMemberEntity;
 import way.application.infrastructure.jpa.scheduleMember.repository.ScheduleMemberRepository;
 import way.application.infrastructure.mongo.chat.repository.ChatRepository;
+import way.application.service.chat.mapper.ChatRoomMapper;
 import way.application.service.schedule.mapper.ScheduleEntityMapper;
 import way.application.service.scheduleMember.mapper.ScheduleMemberMapper;
 
@@ -68,6 +70,7 @@ public class ScheduleService {
 
 	private final ScheduleEntityMapper scheduleEntityMapper;
 	private final ScheduleMemberMapper scheduleMemberMapper;
+	private final ChatRoomMapper chatRoomMapper;
 
 	@Transactional
 	public SaveScheduleResponseDto createSchedule(SaveScheduleRequestDto request) {
@@ -81,7 +84,8 @@ public class ScheduleService {
 		friendDomain.checkFriends(invitedMemberEntity, friendEntities);
 
 		// Schedule 저장
-		ScheduleEntity savedSchedule = scheduleRepository.saveSchedule(scheduleEntityMapper.toScheduleEntity(request));
+		ScheduleEntity savedScheduleEntity
+			= scheduleRepository.saveSchedule(scheduleEntityMapper.toScheduleEntity(request));
 
 		// ScheduleMember 저장
 		Set<MemberEntity> invitedMembers = memberDomain.createMemberSet(createMemberEntity, invitedMemberEntity);
@@ -90,7 +94,7 @@ public class ScheduleService {
 			// 일정 생성자 여부 확인 (Domain 처리)
 			boolean isCreator = memberDomain.checkIsCreator(invitedMember, createMemberEntity);
 			scheduleMemberRepository.saveScheduleMemberEntity(
-				scheduleMemberMapper.toScheduleMemberEntity(savedSchedule, invitedMember, isCreator, isCreator)
+				scheduleMemberMapper.toScheduleMemberEntity(savedScheduleEntity, invitedMember, isCreator, isCreator)
 			);
 
 			// 푸시 알림 여부 확인 (Domain 처리)
@@ -98,7 +102,14 @@ public class ScheduleService {
 				firebaseNotificationDomain.sendNotification(invitedMember, createMemberEntity);
 		}
 
-		return new SaveScheduleResponseDto(savedSchedule.getScheduleSeq());
+		// 채팅방 생성
+		ChatRoomEntity chatRoomEntity
+			= chatRoomMapper.toChatRoomEntity(UUID.randomUUID().toString(), savedScheduleEntity);
+		ChatRoomEntity savedChatRoomEntity = chatRoomRepository.saveChatRoomEntity(chatRoomEntity);
+
+		return scheduleEntityMapper.toSaveScheduleResponseDto(
+			savedScheduleEntity.getScheduleSeq(), savedChatRoomEntity.getChatRoomSeq()
+		);
 	}
 
 	@Transactional

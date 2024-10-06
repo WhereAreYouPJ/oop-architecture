@@ -3,26 +3,16 @@ package way.presentation.chat.vo.request;
 import static way.application.service.chat.dto.request.ChatRoomRequestDto.*;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import way.application.utils.exception.BadRequestException;
+import way.application.utils.exception.ErrorResult;
 
 public class ChatRoomRequestVo {
-	public record CreateChatRoomRequest(
-		Long scheduleSeq
-	) {
-		public CreateChatRoomRequestDto toCreateChatRoomRequestDto() {
-			return new CreateChatRoomRequestDto(
-				this.scheduleSeq
-			);
-		}
-	}
 
 	public record EnterChatRoomRequest(
-		@Schema(description = "채팅방 입장하려는 Member Seq (Schedule accept = true만 가능)")
 		Long memberSeq,
 
-		@Schema(description = "입장하려는 채팅방의 Schedule Seq")
 		Long scheduleSeq,
 
-		@Schema(description = "입장하려는 채팅방 Seq")
 		String chatRoomSeq
 	) {
 		public EnterChatRoomRequestDto toEnterChatRoomRequestDto() {
@@ -31,6 +21,18 @@ public class ChatRoomRequestVo {
 				this.scheduleSeq,
 				this.chatRoomSeq
 			);
+		}
+
+		public void validateEnterChatRoomRequest() {
+			if (this.memberSeq == null) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
+			if (this.scheduleSeq == null) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
+			if (this.chatRoomSeq == null || this.chatRoomSeq.isEmpty()) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
 		}
 	}
 

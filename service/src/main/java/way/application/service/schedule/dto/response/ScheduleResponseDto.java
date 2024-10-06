@@ -3,12 +3,11 @@ package way.application.service.schedule.dto.response;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ScheduleResponseDto {
 	public record SaveScheduleResponseDto(
-		Long scheduleSeq
+		Long scheduleSeq,
+		String chatRoomSeq
 	) {
 
 	}
