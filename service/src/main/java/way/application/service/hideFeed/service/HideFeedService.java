@@ -82,10 +82,8 @@ public class HideFeedService {
 				.map(hideFeedMapper::toHideFeedImageInfo)
 				.toList();
 
-			Boolean bookMark = bookMarkRepository.existsByFeedEntityAndMemberEntity(
-				feedEntity,
-				hideFeedEntity.getMemberEntity()
-			);
+			Boolean bookMark
+				= bookMarkRepository.existsByFeedEntityAndMemberEntity(feedEntity, hideFeedEntity.getMemberEntity());
 
 			return hideFeedMapper.toGetHideFeedResponseDto(hideFeedEntity, hideFeedImageInfos, bookMark);
 		});
