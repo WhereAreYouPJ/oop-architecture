@@ -9,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
-import way.application.infrastructure.jpa.scheduleMember.entity.ScheduleMemberEntity;
 
 public interface ScheduleRepository {
 	// Schedule Entity 저장
@@ -26,8 +25,6 @@ public interface ScheduleRepository {
 
 	// YearMonth 로 Schedule 조회
 	List<ScheduleEntity> findSchedulesByYearMonth(LocalDateTime startOfMonth, LocalDateTime endOfMonth, Long memberSeq);
-
-	Page<ScheduleEntity> getScheduleEntityFromScheduleMember(Page<ScheduleMemberEntity> scheduleMemberEntityPage);
 
 	void deleteScheduleEntity(ScheduleEntity scheduleEntity);
 
