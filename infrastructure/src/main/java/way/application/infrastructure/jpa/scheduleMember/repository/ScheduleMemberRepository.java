@@ -24,15 +24,13 @@ public interface ScheduleMemberRepository {
 
 	Page<ScheduleMemberEntity> findByMemberEntity(MemberEntity memberEntity, Pageable pageable);
 
-	void deleteScheduleMemberEntity(ScheduleMemberEntity scheduleMemberEntity);
-
 	void deleteByScheduleEntity(ScheduleEntity scheduleEntity);
 
 	void deleteByScheduleEntityAndMemberEntity(ScheduleEntity scheduleEntity, MemberEntity memberEntity);
 
-	long countBySchedule(ScheduleEntity scheduleEntity);
-
 	void validateScheduleMemberIsCreator(MemberEntity memberEntity, ScheduleEntity scheduleEntity);
 
 	void validateScheduleMemberAccept(MemberEntity memberEntity, ScheduleEntity scheduleEntity);
+
+	List<ScheduleMemberEntity> findInvitedScheduleMemberEntity(MemberEntity memberEntity);
 }
