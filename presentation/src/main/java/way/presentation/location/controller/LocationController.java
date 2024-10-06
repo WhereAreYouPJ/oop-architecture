@@ -1,8 +1,8 @@
 package way.presentation.location.controller;
 
 import static way.application.service.location.dto.response.LocationResponseDto.*;
-import static way.presentation.location.vo.req.LocationRequestVo.*;
-import static way.presentation.location.vo.res.LocationResponseVo.*;
+import static way.presentation.location.vo.request.LocationRequestVo.*;
+import static way.presentation.location.vo.response.LocationResponseVo.*;
 
 import java.util.List;
 
@@ -29,7 +29,6 @@ import way.application.service.location.service.LocationService;
 import way.application.utils.exception.GlobalExceptionHandler;
 import way.presentation.base.BaseResponse;
 import way.presentation.location.mapper.LocationResponseMapper;
-import way.presentation.schedule.vo.response.ScheduleResponseVo;
 
 @RestController
 @RequestMapping("/location")

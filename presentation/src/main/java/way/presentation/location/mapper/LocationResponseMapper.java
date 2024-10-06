@@ -1,7 +1,7 @@
 package way.presentation.location.mapper;
 
 import static way.application.service.location.dto.response.LocationResponseDto.*;
-import static way.presentation.location.vo.res.LocationResponseVo.*;
+import static way.presentation.location.vo.response.LocationResponseVo.*;
 
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;

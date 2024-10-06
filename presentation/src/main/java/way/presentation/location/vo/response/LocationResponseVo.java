@@ -1,4 +1,4 @@
-package way.presentation.location.vo.res;
+package way.presentation.location.vo.response;
 
 public class LocationResponseVo {
 	public record AddLocationResponse(
