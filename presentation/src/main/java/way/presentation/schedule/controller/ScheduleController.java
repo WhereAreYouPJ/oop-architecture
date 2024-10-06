@@ -59,11 +59,7 @@ public class ScheduleController {
 		@ApiResponse(responseCode = "MSB002", description = "400 MEMBER SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(responseCode = "FN002", description = "404 해당 친구가 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
-	public ResponseEntity<BaseResponse<SaveScheduleResponse>> saveSchedule(
-		@Valid
-		@RequestBody SaveScheduleRequest request
-	) {
-		// REQUEST Validate
+	public ResponseEntity<BaseResponse<SaveScheduleResponse>> saveSchedule(@RequestBody SaveScheduleRequest request) {
 		request.saveScheduleRequestValidate();
 
 		SaveScheduleResponseDto responseDto = scheduleService.createSchedule(request.toSaveScheduleRequestDto());
@@ -84,11 +80,7 @@ public class ScheduleController {
 		@ApiResponse(responseCode = "SDCBMB008", description = "400 회원이 생성하지 않은 일정입니다.", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(responseCode = "STB029", description = "400 START TIME 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
-	public ResponseEntity<BaseResponse<ModifyScheduleResponse>> modifySchedule(
-		@Valid
-		@RequestBody ModifyScheduleRequest request
-	) {
-		// REQUEST VALIDATE
+	public ResponseEntity<BaseResponse<ModifyScheduleResponse>> modify(@RequestBody ModifyScheduleRequest request) {
 		request.modifyScheduleRequestValidate();
 
 		ModifyScheduleResponseDto responseDto = scheduleService.modifySchedule(request.toModifyScheduleRequestDto());
@@ -108,10 +100,7 @@ public class ScheduleController {
 		@ApiResponse(responseCode = "SDCBMB008", description = "400 회원이 생성하지 않은 일정입니다.", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(responseCode = "CRN004", description = "404 CHAT ROOM이 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
-	public ResponseEntity<BaseResponse<String>> deleteSchedule(
-		@Valid
-		@RequestBody DeleteScheduleRequest request
-	) {
+	public ResponseEntity<BaseResponse<String>> deleteCreatorSchedule(@RequestBody DeleteScheduleRequest request) {
 		// REQUEST VALIDATE
 		request.deleteScheduleRequestValidate();
 
@@ -132,10 +121,7 @@ public class ScheduleController {
 		@ApiResponse(responseCode = "MSNISB004", description = "400 일정에 존재하지 않는 MEMBER SEQ입니다.", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(responseCode = "CRN004", description = "404 CHAT ROOM이 존재하지 않습니다.", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
-	public ResponseEntity<BaseResponse<String>> deleteInvitedScheduleMember(
-		@Valid
-		@RequestBody DeleteScheduleRequest request
-	) {
+	public ResponseEntity<BaseResponse<String>> deleteInvitedSchedule(@RequestBody DeleteScheduleRequest request) {
 		request.deleteScheduleRequestValidate();
 
 		scheduleService.deleteScheduleMemberByInvitor(request.toDeleteScheduleRequestDto());
@@ -157,9 +143,8 @@ public class ScheduleController {
 		@ApiResponse(responseCode = "MSNISB004", description = "400 일정에 존재하지 않는 MEMBER SEQ입니다.", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
 	public ResponseEntity<BaseResponse<GetScheduleResponse>> getSchedule(
-		@Valid
-		@RequestParam(name = "scheduleSeq") Long scheduleSeq,
-		@RequestParam(name = "memberSeq") Long memberSeq
+		@RequestParam(name = "scheduleSeq", required = true) Long scheduleSeq,
+		@RequestParam(name = "memberSeq", required = true) Long memberSeq
 	) {
 		GetScheduleResponseDto responseDto = scheduleService.getSchedule(scheduleSeq, memberSeq);
 		GetScheduleResponse response = scheduleResponseMapper.toGetScheduleResponse(responseDto);
@@ -179,9 +164,8 @@ public class ScheduleController {
 		@ApiResponse(responseCode = "MSB002", description = "400 MEMBER SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
 	public ResponseEntity<BaseResponse<List<GetScheduleByDateResponse>>> getScheduleByDate(
-		@Valid
-		@RequestParam(name = "date") LocalDate date,
-		@RequestParam(name = "memberSeq") Long memberSeq
+		@RequestParam(name = "date", required = true) LocalDate date,
+		@RequestParam(name = "memberSeq", required = true) Long memberSeq
 	) {
 		List<GetScheduleByDateResponseDto> responseDto = scheduleService.getScheduleByDate(memberSeq, date);
 
@@ -201,10 +185,7 @@ public class ScheduleController {
 		@ApiResponse(responseCode = "SSB003", description = "400 SCHEDULE SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(responseCode = "MSNISB004", description = "400 일정에 존재하지 않는 MEMBER SEQ입니다.", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
-	public ResponseEntity<BaseResponse<String>> acceptSchedule(
-		@Valid
-		@RequestBody AcceptScheduleRequest request
-	) {
+	public ResponseEntity<BaseResponse<String>> acceptSchedule(@RequestBody AcceptScheduleRequest request) {
 		request.acceptScheduleRequestValidate();
 
 		scheduleService.acceptSchedule(request.toAcceptScheduleRequestDto());
@@ -224,9 +205,8 @@ public class ScheduleController {
 		@ApiResponse(responseCode = "MSB002", description = "400 MEMBER SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
 	public ResponseEntity<BaseResponse<List<GetScheduleByMonthResponse>>> getScheduleByMonth(
-		@Valid
 		@DateTimeFormat(pattern = "yyyy-MM") YearMonth yearMonth,
-		@RequestParam("memberSeq") Long memberSeq
+		@RequestParam(value = "memberSeq", required = true) Long memberSeq
 	) {
 		List<GetScheduleByMonthResponseDto> responseDto = scheduleService.getScheduleByMonth(yearMonth, memberSeq);
 
@@ -248,8 +228,7 @@ public class ScheduleController {
 		@ApiResponse(responseCode = "MSB002", description = "400 MEMBER SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
 	public ResponseEntity<BaseResponse<List<GetDdayScheduleResponse>>> getDdaySchedule(
-		@Valid
-		@RequestParam("memberSeq") Long memberSeq
+		@RequestParam(value = "memberSeq", required = true) Long memberSeq
 	) {
 		List<GetDdayScheduleResponseDto> responseDto = scheduleService.getDdaySchedule(memberSeq);
 
@@ -273,8 +252,7 @@ public class ScheduleController {
 		@ApiResponse(responseCode = "MSB002", description = "400 MEMBER SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
 	public ResponseEntity<BaseResponse<Page<GetScheduleListResponse>>> getScheduleList(
-		@Valid
-		@RequestParam("memberSeq") Long memberSeq,
+		@RequestParam(value = "memberSeq", required = true) Long memberSeq,
 		@RequestParam(defaultValue = "0") int page,
 		@RequestParam(defaultValue = "10") int size
 	) {
@@ -299,11 +277,7 @@ public class ScheduleController {
 		@ApiResponse(responseCode = "MAASB034", description = "400 회원이 이미 일정을 수락했습니다.", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(responseCode = "MSNISB004", description = "400 일정에 존재하지 않는 MEMBER SEQ입니다.", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
-	public ResponseEntity<BaseResponse<String>> refuseSchedule(
-		@Valid
-		@RequestBody RefuseScheduleRequest request
-	) {
-		// REQUEST VALIDATE
+	public ResponseEntity<BaseResponse<String>> refuseSchedule(@RequestBody RefuseScheduleRequest request) {
 		request.refuseScheduleRequestValidate();
 
 		scheduleService.refuseSchedule(request.toRefuseScheduleRequestDto());
