@@ -67,7 +67,7 @@ public class ScheduleResponseVo {
 	public record GetDdayScheduleResponse(
 		Long scheduleSeq,
 		String title,
-		String dDay
+		Long dDay
 	) {
 
 	}
@@ -78,6 +78,16 @@ public class ScheduleResponseVo {
 		String title,
 		Boolean feedExists,
 		String location
+	) {
+
+	}
+
+	public record GetInvitedScheduleListResponse(
+		Long scheduleSeq,
+		LocalDateTime startTime,
+		String title,
+		String location,
+		Long dDay
 	) {
 
 	}
