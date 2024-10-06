@@ -3,9 +3,15 @@ package way.application.domain.schedule;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
 
+import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
+import way.application.infrastructure.jpa.scheduleMember.entity.ScheduleMemberEntity;
 import way.application.utils.exception.BadRequestException;
 import way.application.utils.exception.ErrorResult;
 
@@ -36,10 +42,24 @@ public class ScheduleDomain {
 
 		long day = ChronoUnit.DAYS.between(now.toLocalDate(), startTime.toLocalDate());
 
-		if (day == 0 ) {
+		if (day == 0) {
 			return "D-day";
 		}
 
-		return "D-"+day;
+		return "D-" + day;
+	}
+
+	public Page<ScheduleEntity> getScheduleEntityFromScheduleMember(Page<ScheduleMemberEntity> scheduleMemberEntity) {
+		List<ScheduleEntity> scheduleEntities = scheduleMemberEntity
+			.getContent()
+			.stream()
+			.map(ScheduleMemberEntity::getSchedule)
+			.collect(Collectors.toList());
+
+		return new PageImpl<>(
+			scheduleEntities,
+			scheduleMemberEntity.getPageable(),
+			scheduleMemberEntity.getTotalElements()
+		);
 	}
 }
