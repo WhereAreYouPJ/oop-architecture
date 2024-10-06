@@ -1,4 +1,4 @@
-package way.presentation.location.vo.req;
+package way.presentation.location.vo.request;
 
 import static way.application.service.location.dto.request.LocationRequestDto.*;
 
