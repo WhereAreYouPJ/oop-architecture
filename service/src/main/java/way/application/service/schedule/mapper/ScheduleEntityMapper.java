@@ -35,9 +35,11 @@ public interface ScheduleEntityMapper {
 
 	GetScheduleByMonthResponseDto toGetScheduleByMonthResponseDto(ScheduleEntity scheduleEntity);
 
-	GetDdayScheduleResponseDto toGetDdayScheduleResponseDto(ScheduleEntity scheduleEntity, String dDay);
+	GetDdayScheduleResponseDto toGetDdayScheduleResponseDto(ScheduleEntity scheduleEntity, Long dDay);
 
 	GetScheduleListResponseDto toGetScheduleListResponseDto(ScheduleEntity scheduleEntity, Boolean feedExists);
 
 	SaveScheduleResponseDto toSaveScheduleResponseDto(Long scheduleSeq, String chatRoomSeq);
+
+	GetInvitedScheduleListResponseDto toGetInvitedScheduleListResponseDto(ScheduleEntity scheduleEntity, Long dDay);
 }

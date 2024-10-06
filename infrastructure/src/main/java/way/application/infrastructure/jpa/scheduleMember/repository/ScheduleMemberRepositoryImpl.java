@@ -120,10 +120,6 @@ public class ScheduleMemberRepositoryImpl implements ScheduleMemberRepository {
 		return new PageImpl<>(content, pageable, total);
 	}
 
-	@Override
-	public void deleteScheduleMemberEntity(ScheduleMemberEntity scheduleMemberEntity) {
-		scheduleMemberJpaRepository.delete(scheduleMemberEntity);
-	}
 
 	@Override
 	public void deleteByScheduleEntity(ScheduleEntity scheduleEntity) {
@@ -148,22 +144,6 @@ public class ScheduleMemberRepositoryImpl implements ScheduleMemberRepository {
 					.and(scheduleMember.invitedMember.eq(memberEntity))
 			)
 			.execute();
-	}
-
-	@Override
-	public long countBySchedule(ScheduleEntity scheduleEntity) {
-		QScheduleMemberEntity scheduleMember = QScheduleMemberEntity.scheduleMemberEntity;
-
-		List<ScheduleMemberEntity> scheduleMemberEntities = queryFactory.select(scheduleMember)
-				.from(scheduleMember)
-				.where(
-						scheduleMember.schedule.scheduleSeq.eq(scheduleEntity.getScheduleSeq())
-								.and(scheduleMember.acceptSchedule.isTrue())
-				).fetch();
-
-		return scheduleMemberEntities.size();
-
-//		return scheduleMemberJpaRepository.countBySchedule(scheduleEntity);
 	}
 
 	@Override
@@ -198,5 +178,17 @@ public class ScheduleMemberRepositoryImpl implements ScheduleMemberRepository {
 		).ifPresent(entity -> {
 			throw new BadRequestException(ErrorResult.MEMBER_ALREADY_ACCEPT_SCHEDULE_BAD_REQUEST_EXCEPTION);
 		});
+	}
+
+	@Override
+	public List<ScheduleMemberEntity> findInvitedScheduleMemberEntity(MemberEntity memberEntity) {
+		QScheduleMemberEntity scheduleMember = QScheduleMemberEntity.scheduleMemberEntity;
+
+		return queryFactory
+			.selectFrom(scheduleMember)
+			.where(
+				scheduleMember.invitedMember.eq(memberEntity)
+					.and(scheduleMember.acceptSchedule.isFalse())
+			).fetch();
 	}
 }

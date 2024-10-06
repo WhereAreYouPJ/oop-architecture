@@ -73,25 +73,6 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 	}
 
 	@Override
-	public Page<ScheduleEntity> getScheduleEntityFromScheduleMember(
-		Page<ScheduleMemberEntity> scheduleMemberEntityPage
-	) {
-		// ScheduleMemberEntity에서 ScheduleEntity를 추출
-		List<ScheduleEntity> scheduleEntities = scheduleMemberEntityPage
-			.getContent()
-			.stream()
-			.map(ScheduleMemberEntity::getSchedule)
-			.collect(Collectors.toList());
-
-		// ScheduleEntity 리스트를 Page로 변환하여 반환
-		return new PageImpl<>(
-			scheduleEntities,
-			scheduleMemberEntityPage.getPageable(),
-			scheduleMemberEntityPage.getTotalElements()
-		);
-	}
-
-	@Override
 	public void deleteScheduleEntity(ScheduleEntity scheduleEntity) {
 		scheduleJpaRepository.delete(scheduleEntity);
 	}

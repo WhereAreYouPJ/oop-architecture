@@ -56,5 +56,9 @@ public interface FeedEntityMapper {
 		return new ScheduleFeedInfo(memberInfo, feedInfo, feedImageInfos, bookMarkInfo);
 	}
 
-	GetFeedResponseDto toGetFeedResponseDto(ScheduleInfo scheduleInfo, List<ScheduleFeedInfo> scheduleFeedInfo);
+	GetFeedResponseDto toGetFeedResponseDto(
+		ScheduleInfo scheduleInfo,
+		List<ScheduleFeedInfo> scheduleFeedInfo,
+		List<String> userName
+	);
 }

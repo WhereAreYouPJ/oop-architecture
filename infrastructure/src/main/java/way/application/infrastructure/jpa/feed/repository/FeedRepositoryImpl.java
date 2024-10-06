@@ -66,25 +66,31 @@ public class FeedRepositoryImpl implements FeedRepository {
 		QFeedEntity feed = QFeedEntity.feedEntity;
 		QHideFeedEntity hideFeed = QHideFeedEntity.hideFeedEntity;
 
-		return queryFactory
+		// Member가 작성한 Feed가 있는지 먼저 조회
+		FeedEntity memberFeed = queryFactory
 			.selectFrom(feed)
 			.leftJoin(hideFeed)
 			.on(feed.eq(hideFeed.feedEntity)
 				.and(hideFeed.memberEntity.eq(memberEntity)))
 			.where(feed.schedule.eq(scheduleEntity)
 				.and(hideFeed.feedEntity.isNull())
-				.and(feed.creatorMember.eq(memberEntity)
-					.or(feed.creatorMember.ne(memberEntity)
-						.and(feed.eq(
-							JPAExpressions.selectFrom(feed)
-								.where(feed.schedule.eq(scheduleEntity))
-								.orderBy(Expressions.numberTemplate(Double.class, "function('RAND')").asc())
-								.limit(1)
-						))
-					)
-				)
-			)
-			.fetchOne();
+				.and(feed.creatorMember.eq(memberEntity)))
+			.fetchFirst();
+
+		// 만약 memberFeed가 존재하면 그 Feed를 반환하고, 없다면 무작위로 하나를 반환
+		if (memberFeed != null) {
+			return memberFeed;
+		} else {
+			return queryFactory
+				.selectFrom(feed)
+				.leftJoin(hideFeed)
+				.on(feed.eq(hideFeed.feedEntity)
+					.and(hideFeed.memberEntity.eq(memberEntity)))
+				.where(feed.schedule.eq(scheduleEntity)
+					.and(hideFeed.feedEntity.isNull()))
+				.orderBy(Expressions.numberTemplate(Double.class, "function('RAND')").asc())
+				.fetchFirst();
+		}
 	}
 
 	@Override

@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
+import way.application.domain.schedule.ScheduleDomain;
+import way.application.domain.scheduleMember.ScheduleMemberDomain;
 import way.application.infrastructure.jpa.bookMark.repository.BookMarkRepository;
 import way.application.infrastructure.jpa.feed.entity.FeedEntity;
 import way.application.infrastructure.jpa.feed.repository.FeedRepository;
@@ -27,6 +29,7 @@ import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.member.repository.MemberRepository;
 import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
 import way.application.infrastructure.jpa.schedule.repository.ScheduleRepository;
+import way.application.infrastructure.jpa.scheduleMember.entity.ScheduleMemberEntity;
 import way.application.infrastructure.jpa.scheduleMember.repository.ScheduleMemberRepository;
 import way.application.service.feed.mapper.FeedEntityMapper;
 import way.application.service.feedImage.mapper.FeedImageMapper;
@@ -46,6 +49,9 @@ public class FeedService {
 
 	private final FeedEntityMapper feedEntityMapper;
 	private final FeedImageMapper feedImageMapper;
+
+	private final ScheduleDomain scheduleDomain;
+	private final ScheduleMemberDomain scheduleMemberDomain;
 
 	@Transactional
 	public SaveFeedResponseDto saveFeed(SaveFeedRequestDto requestDto, List<MultipartFile> images) throws IOException {
@@ -109,11 +115,18 @@ public class FeedService {
 	@Transactional(readOnly = true)
 	public Page<GetFeedResponseDto> getAllFeed(Long memberSeq, Pageable pageable) {
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
+		Page<ScheduleMemberEntity> scheduleMemberEntityPage
+			= scheduleMemberRepository.findByMemberEntity(memberEntity, pageable);
 
-		return scheduleRepository.getScheduleEntityFromScheduleMember(
-				scheduleMemberRepository.findByMemberEntity(memberEntity, pageable)
-			).map(scheduleEntity -> {
+		return scheduleDomain.getScheduleEntityFromScheduleMember(scheduleMemberEntityPage)
+			.map(scheduleEntity -> {
+				// userName 생성
+				List<ScheduleMemberEntity> scheduleMemberEntityList
+					= scheduleMemberRepository.findAllAcceptedScheduleMembersInSchedule(scheduleEntity);
+				List<String> userName = scheduleMemberDomain.extractUserNameFromList(scheduleMemberEntityList);
+
 				FeedEntity feedEntity = feedRepository.findByScheduleExcludingHiddenRand(scheduleEntity, memberEntity);
+
 				return Optional.ofNullable(feedEntity)
 					.map(fe -> {
 						ScheduleInfo scheduleInfo = feedEntityMapper.toScheduleInfo(scheduleEntity);
@@ -127,7 +140,7 @@ public class FeedService {
 							bookMarkInfo
 						);
 
-						return feedEntityMapper.toGetFeedResponseDto(scheduleInfo, List.of(scheduleFeedInfo));
+						return feedEntityMapper.toGetFeedResponseDto(scheduleInfo, List.of(scheduleFeedInfo), userName);
 					})
 					.orElse(null);
 			})
@@ -137,16 +150,20 @@ public class FeedService {
 	}
 
 	@Transactional(readOnly = true)
-	public GetFeedResponseDto getFeed(Long memberSeq, Long feedSeq) {
+	public GetFeedResponseDto getFeed(Long memberSeq, Long scheduleSeq) {
 		/*
 		 1. Member 유효성 검사
-		 2. Feed 유효성 검사
+		 2. Schedule 유효성 검사
 		 3. Member Schedule 유효성 검사
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
-		FeedEntity feedEntity = feedRepository.findByFeedSeq(feedSeq);
-		ScheduleEntity scheduleEntity = feedEntity.getSchedule();
+		ScheduleEntity scheduleEntity = scheduleRepository.findByScheduleSeq(scheduleSeq);
 		scheduleMemberRepository.findAcceptedScheduleMemberInSchedule(scheduleEntity.getScheduleSeq(), memberSeq);
+
+		// USER NAME 추출
+		List<ScheduleMemberEntity> scheduleMemberEntityList
+			= scheduleMemberRepository.findAllAcceptedScheduleMembersInSchedule(scheduleEntity);
+		List<String> userName = scheduleMemberDomain.extractUserNameFromList(scheduleMemberEntityList);
 
 		// Feed 조회 및 변환
 		List<ScheduleFeedInfo> scheduleFeedInfos = feedRepository.findByScheduleEntity(scheduleEntity).stream()
@@ -165,6 +182,6 @@ public class FeedService {
 		// Schedule Info 생성
 		ScheduleInfo scheduleInfo = feedEntityMapper.toScheduleInfo(scheduleEntity);
 
-		return feedEntityMapper.toGetFeedResponseDto(scheduleInfo, scheduleFeedInfos);
+		return feedEntityMapper.toGetFeedResponseDto(scheduleInfo, scheduleFeedInfos, userName);
 	}
 }

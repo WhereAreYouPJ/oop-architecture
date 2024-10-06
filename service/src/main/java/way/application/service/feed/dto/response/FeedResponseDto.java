@@ -22,7 +22,8 @@ public class FeedResponseDto {
 
 	public record GetFeedResponseDto(
 		ScheduleInfo scheduleInfo,
-		List<ScheduleFeedInfo> scheduleFeedInfo
+		List<ScheduleFeedInfo> scheduleFeedInfo,
+		List<String> userName
 	) {
 		public record ScheduleFeedInfo(
 			MemberInfo memberInfo,

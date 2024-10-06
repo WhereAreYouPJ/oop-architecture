@@ -73,7 +73,7 @@ public class ScheduleResponseDto {
 	public record GetDdayScheduleResponseDto(
 		Long scheduleSeq,
 		String title,
-		String dDay
+		Long dDay
 	) {
 
 	}
@@ -84,6 +84,16 @@ public class ScheduleResponseDto {
 		String title,
 		Boolean feedExists,
 		String location
+	) {
+
+	}
+
+	public record GetInvitedScheduleListResponseDto(
+		Long scheduleSeq,
+		LocalDateTime startTime,
+		String title,
+		String location,
+		Long dDay
 	) {
 
 	}

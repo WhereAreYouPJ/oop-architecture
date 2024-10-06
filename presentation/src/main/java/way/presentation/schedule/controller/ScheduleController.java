@@ -33,7 +33,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import way.application.service.schedule.service.ScheduleService;
 import way.application.utils.exception.GlobalExceptionHandler;
@@ -281,5 +280,27 @@ public class ScheduleController {
 		scheduleService.refuseSchedule(request.toRefuseScheduleRequestDto());
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
+	}
+
+	@GetMapping(value = "invited-list", name = "일정 초대 조회")
+	@Operation(summary = "일정 초대 조회 API")
+	@Parameters({
+		@Parameter(name = "memberSeq", description = "Member Seq", example = "1", required = true)
+	})
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "200 요청에 성공하였습니다.", useReturnTypeSchema = true),
+		@ApiResponse(responseCode = "S500", description = "500 서버 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(responseCode = "MSB002", description = "400 MEMBER SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
+	})
+	public ResponseEntity<BaseResponse<List<GetInvitedScheduleListResponse>>> getInvitedScheduleList(
+		@RequestParam(value = "memberSeq") Long memberSeq
+	) {
+		List<GetInvitedScheduleListResponseDto> responseDto = scheduleService.getInvitedScheduleList(memberSeq);
+
+		List<GetInvitedScheduleListResponse> response = responseDto.stream()
+			.map(scheduleResponseMapper::toGetInvitedScheduleListResponse)
+			.collect(Collectors.toList());
+
+		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
 }
