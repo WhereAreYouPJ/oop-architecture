@@ -8,7 +8,9 @@ public class FriendRequestResponseVo {
     public record GetFriendRequestListResponse(
             Long friendRequestSeq,
             Long senderSeq,
-            LocalDateTime createTime
+            LocalDateTime createTime,
+            String profileImage,
+            String userName
     ) {
 
     }

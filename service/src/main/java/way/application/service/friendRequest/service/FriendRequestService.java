@@ -70,7 +70,10 @@ public class FriendRequestService {
         return friendRequestList.stream().map(friendRequestEntity -> new FriendRequestResponseDto.FriendRequestList(
                 friendRequestEntity.getFriendRequestSeq(),
                 friendRequestEntity.getSenderSeq().getMemberSeq(),
-                friendRequestEntity.getCreateTime())).collect(Collectors.toList());
+                friendRequestEntity.getCreateTime(),
+                friendRequestEntity.getSenderSeq().getProfileImage(),
+                friendRequestEntity.getSenderSeq().getUserName()))
+                .collect(Collectors.toList());
 
     }
 
