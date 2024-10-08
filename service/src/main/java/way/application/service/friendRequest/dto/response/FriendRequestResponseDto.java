@@ -7,7 +7,9 @@ public class FriendRequestResponseDto {
     public record FriendRequestList(
             Long friendRequestSeq,
             Long senderSeq,
-            LocalDateTime createTime
+            LocalDateTime createTime,
+            String profileImage,
+            String userName
     ) {
 
     }

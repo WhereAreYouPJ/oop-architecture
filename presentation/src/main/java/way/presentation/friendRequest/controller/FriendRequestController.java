@@ -149,7 +149,9 @@ public class FriendRequestController {
                 .map(dto -> new GetFriendRequestListResponse(
                         dto.friendRequestSeq(),
                         dto.senderSeq(),
-                        dto.createTime()))
+                        dto.createTime(),
+                        dto.profileImage(),
+                        dto.userName()))
                 .toList();
 
 
