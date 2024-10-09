@@ -191,4 +191,17 @@ public class ScheduleMemberRepositoryImpl implements ScheduleMemberRepository {
 					.and(scheduleMember.acceptSchedule.isFalse())
 			).fetch();
 	}
+
+	@Override
+	public Long findCreatorBySchedule(ScheduleEntity scheduleEntity) {
+		QScheduleMemberEntity scheduleMember = QScheduleMemberEntity.scheduleMemberEntity;
+
+		return queryFactory
+				.select(scheduleMember.invitedMember.memberSeq)
+				.from(scheduleMember)
+				.where(
+						scheduleMember.isCreator.isTrue()
+								.and(scheduleMember.schedule.scheduleSeq.eq(scheduleEntity.getScheduleSeq()))
+				).fetchOne();
+	}
 }

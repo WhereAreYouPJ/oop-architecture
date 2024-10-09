@@ -14,6 +14,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
+import way.application.infrastructure.jpa.scheduleMember.entity.ScheduleMemberEntity;
 
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ScheduleEntityMapper {
@@ -25,13 +26,13 @@ public interface ScheduleEntityMapper {
 		List<GetScheduleMemberInfoDto> memberInfos
 	);
 
-	default List<GetScheduleMemberInfoDto> mapToGetScheduleMemberInfo(Map<Long, String> memberInfoMap) {
-		return memberInfoMap.entrySet().stream()
-			.map(entry -> new GetScheduleMemberInfoDto(entry.getKey(), entry.getValue()))
+	default List<GetScheduleMemberInfoDto> mapToGetScheduleMemberInfo(List<ScheduleMemberEntity> scheduleEntities) {
+		return scheduleEntities.stream()
+			.map(entry -> new GetScheduleMemberInfoDto(entry.getInvitedMember().getMemberSeq(), entry.getInvitedMember().getUserName(),entry.getIsCreator()))
 			.collect(Collectors.toList());
 	}
 
-	GetScheduleByDateResponseDto toGetScheduleByDateResponseDto(ScheduleEntity scheduleEntity, Boolean group);
+	GetScheduleByDateResponseDto toGetScheduleByDateResponseDto(ScheduleEntity scheduleEntity, Boolean group, Long creator);
 
 	GetScheduleByMonthResponseDto toGetScheduleByMonthResponseDto(ScheduleEntity scheduleEntity);
 

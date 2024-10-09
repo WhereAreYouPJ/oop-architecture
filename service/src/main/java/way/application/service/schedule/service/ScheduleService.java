@@ -257,8 +257,7 @@ public class ScheduleService {
 			= scheduleMemberRepository.findAllAcceptedScheduleMembersInSchedule(scheduleEntity);
 
 		// Get Schedule Member Info 추출
-		Map<Long, String> memberInfo = scheduleMemberDomain.extractGetScheduleMemberInfo(scheduleEntities);
-		List<GetScheduleMemberInfoDto> memberInfos = scheduleEntityMapper.mapToGetScheduleMemberInfo(memberInfo);
+		List<GetScheduleMemberInfoDto> memberInfos = scheduleEntityMapper.mapToGetScheduleMemberInfo(scheduleEntities);
 
 		return scheduleEntityMapper.toGetScheduleResponseDto(scheduleEntity, memberInfos);
 	}
@@ -280,7 +279,8 @@ public class ScheduleService {
 		return scheduleEntities.stream()
 			.map(scheduleEntity -> scheduleEntityMapper.toGetScheduleByDateResponseDto(
 				scheduleEntity,
-				scheduleMemberRepository.findAllAcceptedScheduleMembersInSchedule(scheduleEntity).size() > 1
+				scheduleMemberRepository.findAllAcceptedScheduleMembersInSchedule(scheduleEntity).size() > 1,
+					scheduleMemberRepository.findCreatorBySchedule(scheduleEntity)
 			)).collect(Collectors.toList());
 	}
 
