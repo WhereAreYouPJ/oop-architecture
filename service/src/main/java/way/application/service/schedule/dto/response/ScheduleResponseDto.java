@@ -35,7 +35,8 @@ public class ScheduleResponseDto {
 
 		public record GetScheduleMemberInfoDto(
 			Long memberSeq,
-			String userName
+			String userName,
+			boolean isCreate
 		) {
 
 		}
@@ -49,7 +50,8 @@ public class ScheduleResponseDto {
 		LocalDateTime startTime,
 		LocalDateTime endTime,
 		Boolean group,
-		Boolean allDay
+		Boolean allDay,
+		Long creator
 	) {
 
 	}

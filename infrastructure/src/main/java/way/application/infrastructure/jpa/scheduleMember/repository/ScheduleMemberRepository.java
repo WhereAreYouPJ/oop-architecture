@@ -33,4 +33,6 @@ public interface ScheduleMemberRepository {
 	void validateScheduleMemberAccept(MemberEntity memberEntity, ScheduleEntity scheduleEntity);
 
 	List<ScheduleMemberEntity> findInvitedScheduleMemberEntity(MemberEntity memberEntity);
+
+    Long findCreatorBySchedule(ScheduleEntity scheduleEntity);
 }

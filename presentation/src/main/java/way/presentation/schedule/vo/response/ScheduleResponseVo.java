@@ -43,7 +43,8 @@ public class ScheduleResponseVo {
 		LocalDateTime startTime,
 		LocalDateTime endTime,
 		boolean group,
-		Boolean allDay
+		Boolean allDay,
+		Long creator
 	) {
 
 	}
