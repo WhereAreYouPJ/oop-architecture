@@ -8,7 +8,8 @@ import java.util.List;
 
 public class ScheduleResponseVo {
 	public record SaveScheduleResponse(
-		Long scheduleSeq
+		Long scheduleSeq,
+		String chatRoomSeq
 	) {
 
 	}
