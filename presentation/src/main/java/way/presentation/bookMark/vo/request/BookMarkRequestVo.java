@@ -29,18 +29,18 @@ public class BookMarkRequestVo {
 	}
 
 	public record DeleteBookMarkRequest(
-		Long bookMarkFeedSeq,
+		Long feedSeq,
 		Long memberSeq
 	) {
 		public DeleteBookMarkRequestDto toDeleteBookMarkRequestDto() {
 			return new DeleteBookMarkRequestDto(
-				this.bookMarkFeedSeq,
+				this.feedSeq,
 				this.memberSeq
 			);
 		}
 
 		public void deleteBookMarkRequestValidate() {
-			if (this.bookMarkFeedSeq == null) {
+			if (this.feedSeq == null) {
 				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 			}
 			if (this.memberSeq == null) {
