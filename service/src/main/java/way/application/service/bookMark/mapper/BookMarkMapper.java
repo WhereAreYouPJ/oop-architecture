@@ -22,8 +22,6 @@ public interface BookMarkMapper {
 	@Mapping(target = "memberEntity", source = "memberEntity")
 	BookMarkEntity toBookMarkEntity(FeedEntity feedEntity, MemberEntity memberEntity);
 
-	AddBookMarkResponseDto toAddBookMarkResponseDto(BookMarkEntity bookMarkEntity);
-
 	default GetBookMarkResponseDto toGetBookMarkResponseDto(
 		BookMarkEntity bookMarkEntity,
 		List<FeedImageEntity> feedImageEntities,

@@ -9,7 +9,7 @@ public class BookMarkRequestDto {
 	}
 
 	public record DeleteBookMarkRequestDto(
-		Long bookMarkFeedSeq,
+		Long feedSeq,
 		Long memberSeq
 	) {
 

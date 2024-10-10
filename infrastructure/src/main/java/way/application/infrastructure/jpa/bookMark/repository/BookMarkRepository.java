@@ -26,5 +26,5 @@ public interface BookMarkRepository {
 
 	void deleteByFeedEntity(FeedEntity feedEntity);
 
-	BookMarkEntity findByBookMarkSeq(Long bookMarkSeq);
+	BookMarkEntity findByFeedSeqAndMemberSeq(Long feedSeq, Long memberSeq);
 }

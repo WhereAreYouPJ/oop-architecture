@@ -33,7 +33,7 @@ public class BookMarkService {
 	private final BookMarkMapper bookMarkMapper;
 
 	@Transactional
-	public AddBookMarkResponseDto addBookMarkFeed(AddBookMarkRequestDto requestDto) {
+	public void addBookMarkFeed(AddBookMarkRequestDto requestDto) {
 		/*
 		 1. Member 확인
 		 2. Feed 확인
@@ -44,10 +44,7 @@ public class BookMarkService {
 		bookMarkRepository.checkBookMarkFeedEntityByFeedEntityAndMemberEntity(feedEntity, memberEntity);
 
 		// Hide Feed 저장
-		BookMarkEntity bookMarkEntity
-			= bookMarkRepository.saveBookMarkEntity(bookMarkMapper.toBookMarkEntity(feedEntity, memberEntity));
-
-		return bookMarkMapper.toAddBookMarkResponseDto(bookMarkEntity);
+		bookMarkRepository.saveBookMarkEntity(bookMarkMapper.toBookMarkEntity(feedEntity, memberEntity));
 	}
 
 	@Transactional
@@ -57,7 +54,8 @@ public class BookMarkService {
 		 2. Book Mark 확인
 		*/
 		memberRepository.findByMemberSeq(requestDto.memberSeq());
-		BookMarkEntity bookMarkEntity = bookMarkRepository.findByBookMarkSeq(requestDto.bookMarkFeedSeq());
+		BookMarkEntity bookMarkEntity
+			= bookMarkRepository.findByFeedSeqAndMemberSeq(requestDto.feedSeq(), requestDto.memberSeq());
 
 		// Book Mark Feed 삭제
 		bookMarkRepository.deleteBookMarkEntity(bookMarkEntity);
@@ -78,7 +76,7 @@ public class BookMarkService {
 				= feedImageRepository.findAllByFeedEntity(bookMarkEntity.getFeedEntity());
 
 			List<MemberEntity> memberEntities
-					= memberRepository.findByFeedEntity(bookMarkEntity.getFeedEntity());
+				= memberRepository.findByFeedEntity(bookMarkEntity.getFeedEntity());
 
 			return bookMarkMapper.toGetBookMarkResponseDto(bookMarkEntity, feedImageEntities, memberEntities);
 		});

@@ -120,7 +120,7 @@ public class FeedController {
 	@Operation(summary = "피드 상세 조회 API")
 	@Parameters({
 		@Parameter(name = "memberSeq", description = "Member Seq", example = "1", required = true),
-		@Parameter(name = "feedSeq", description = "Feed Seq", example = "1", required = true)
+		@Parameter(name = "scheduleSeq", description = "Schedule Seq", example = "1", required = true)
 	})
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "200 요청에 성공하였습니다.", useReturnTypeSchema = true),

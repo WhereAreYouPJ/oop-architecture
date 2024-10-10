@@ -1,5 +1,7 @@
 package way.application.infrastructure.jpa.bookMark.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -96,8 +98,16 @@ public class BookMarkRepositoryImpl implements BookMarkRepository {
 	}
 
 	@Override
-	public BookMarkEntity findByBookMarkSeq(Long bookMarkSeq) {
-		return bookMarkJpaRepository.findById(bookMarkSeq)
-			.orElseThrow(() -> new BadRequestException(ErrorResult.BOOK_MARK_SEQ_BAD_REQUEST_EXCEPTION));
+	public BookMarkEntity findByFeedSeqAndMemberSeq(Long feedSeq, Long memberSeq) {
+		QBookMarkEntity bookMark = QBookMarkEntity.bookMarkEntity;
+
+		return Optional.ofNullable(
+			queryFactory
+				.selectFrom(bookMark)
+				.where(
+					bookMark.feedEntity.feedSeq.eq(feedSeq)
+						.and(bookMark.memberEntity.memberSeq.eq(memberSeq))
+				).fetchOne()
+		).orElseThrow(() -> new BadRequestException(ErrorResult.BOOK_MARK_FEED_NOT_FOUND_EXCEPTION));
 	}
 }

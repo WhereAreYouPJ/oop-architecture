@@ -182,7 +182,7 @@ public enum ErrorResult {
 	HIDE_FEED_NOT_FOUND_EXCEPTION(
 		HttpStatus.NOT_FOUND.value(),
 		"HIDE FEED가 존재하지 않습니다.",
-		"HFEN001"
+		"HFN001"
 	),
 
 	FRIEND_NOT_FOUND_EXCEPTION(
@@ -201,6 +201,12 @@ public enum ErrorResult {
 		HttpStatus.BAD_REQUEST.value(),
 		"CHAT ROOM이 존재하지 않습니다.",
 		"CRN004"
+	),
+
+	BOOK_MARK_FEED_NOT_FOUND_EXCEPTION(
+		HttpStatus.BAD_REQUEST.value(),
+		"BOOK MARK한 피드가 존재하지 않습니다.",
+		"BMFN004"
 	),
 
 	// CONFLICT

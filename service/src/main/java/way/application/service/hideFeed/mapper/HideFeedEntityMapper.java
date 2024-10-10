@@ -21,8 +21,6 @@ public interface HideFeedEntityMapper {
 	@Mapping(target = "memberEntity", source = "memberEntity")
 	HideFeedEntity toHideFeedEntity(FeedEntity feedEntity, MemberEntity memberEntity);
 
-	AddHideFeedResponseDto toAddHideFeedResponseDto(HideFeedEntity hideFeedEntity);
-
 	@Mapping(target = "profileImage", source = "hideFeedEntity.memberEntity.profileImage")
 	@Mapping(target = "startTime", source = "hideFeedEntity.feedEntity.schedule.startTime")
 	@Mapping(target = "location", source = "hideFeedEntity.feedEntity.schedule.location")
