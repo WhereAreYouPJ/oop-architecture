@@ -4,11 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class HideFeedResponseDto {
-	public record AddHideFeedResponseDto(
-		Long hideFeedSeq
-	) {
-
-	}
 
 	public record GetHideFeedResponseDto(
 		String profileImage,

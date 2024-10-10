@@ -28,18 +28,18 @@ public class HideFeedRequestVo {
 	}
 
 	public record DeleteHideFeedRequest(
-		Long hideFeedSeq,
+		Long feedSeq,
 		Long memberSeq
 	) {
 		public DeleteHideFeedRequestDto toDeleteHideFeedRequestDto() {
 			return new DeleteHideFeedRequestDto(
-				this.hideFeedSeq,
+				this.feedSeq,
 				this.memberSeq
 			);
 		}
 
 		public void validateDeleteHideFeedRequest() {
-			if (this.hideFeedSeq == null) {
+			if (this.feedSeq == null) {
 				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 			}
 			if (this.memberSeq == null) {
