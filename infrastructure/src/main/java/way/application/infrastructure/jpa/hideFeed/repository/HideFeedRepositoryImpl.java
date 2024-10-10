@@ -1,5 +1,7 @@
 package way.application.infrastructure.jpa.hideFeed.repository;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -88,8 +90,16 @@ public class HideFeedRepositoryImpl implements HideFeedRepository {
 	}
 
 	@Override
-	public HideFeedEntity findByHideFeedSeq(Long hideFeedSeq) {
-		return hideFeedJpaRepository.findById(hideFeedSeq)
-			.orElseThrow(() -> new BadRequestException(ErrorResult.HIDE_FEED_BAD_REQUEST_EXCEPTION));
+	public HideFeedEntity findByFeedSeqAndMemberSeq(Long feedSeq, Long memberSeq) {
+		QHideFeedEntity hideFeed = QHideFeedEntity.hideFeedEntity;
+
+		return Optional.ofNullable(
+			queryFactory
+				.selectFrom(hideFeed)
+				.where(
+					hideFeed.feedEntity.feedSeq.eq(feedSeq)
+						.and(hideFeed.memberEntity.memberSeq.eq(memberSeq))
+				).fetchOne()
+		).orElseThrow(() -> new BadRequestException(ErrorResult.HIDE_FEED_NOT_FOUND_EXCEPTION));
 	}
 }
