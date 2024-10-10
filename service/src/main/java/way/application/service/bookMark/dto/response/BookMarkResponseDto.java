@@ -4,11 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class BookMarkResponseDto {
-	public record AddBookMarkResponseDto(
-		Long bookMarkSeq
-	) {
-
-	}
 
 	public record GetBookMarkResponseDto(
 		Long memberSeq,
