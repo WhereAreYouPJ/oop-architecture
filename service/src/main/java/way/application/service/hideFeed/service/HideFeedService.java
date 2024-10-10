@@ -33,7 +33,7 @@ public class HideFeedService {
 	private final HideFeedEntityMapper hideFeedMapper;
 
 	@Transactional
-	public AddHideFeedResponseDto addHideFeed(AddHideFeedRequestDto requestDto) {
+	public void addHideFeed(AddHideFeedRequestDto requestDto) {
 		/*
 		 1. Member 확인
 		 2. Feed 확인
@@ -45,9 +45,7 @@ public class HideFeedService {
 
 		// Hide Feed 저장
 		HideFeedEntity hideFeedEntity = hideFeedMapper.toHideFeedEntity(feedEntity, memberEntity);
-		HideFeedEntity savedHideFeedEntity = hideFeedRepository.saveHideFeedEntity(hideFeedEntity);
-
-		return hideFeedMapper.toAddHideFeedResponseDto(savedHideFeedEntity);
+		hideFeedRepository.saveHideFeedEntity(hideFeedEntity);
 	}
 
 	@Transactional
@@ -57,7 +55,8 @@ public class HideFeedService {
 		 2. Hide Feed 확인
 		*/
 		memberRepository.findByMemberSeq(requestDto.memberSeq());
-		HideFeedEntity hideFeedEntity = hideFeedRepository.findByHideFeedSeq(requestDto.hideFeedSeq());
+		HideFeedEntity hideFeedEntity
+			= hideFeedRepository.findByFeedSeqAndMemberSeq(requestDto.hideFeedSeq(), requestDto.memberSeq());
 
 		// Hide Feed 삭제
 		hideFeedRepository.deleteHideFeedEntity(hideFeedEntity);
