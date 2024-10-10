@@ -30,4 +30,11 @@ public class FeedRequestDto {
 			);
 		}
 	}
+
+	public record DeleteFeedRequestDto(
+		Long memberSeq,
+		Long feedSeq
+	) {
+
+	}
 }
