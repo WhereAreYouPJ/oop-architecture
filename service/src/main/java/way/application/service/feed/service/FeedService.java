@@ -25,6 +25,7 @@ import way.application.infrastructure.jpa.feed.entity.FeedEntity;
 import way.application.infrastructure.jpa.feed.repository.FeedRepository;
 import way.application.infrastructure.jpa.feedImage.entity.FeedImageEntity;
 import way.application.infrastructure.jpa.feedImage.repository.FeedImageRepository;
+import way.application.infrastructure.jpa.hideFeed.repository.HideFeedRepository;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.member.repository.MemberRepository;
 import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
@@ -44,6 +45,7 @@ public class FeedService {
 	private final FeedRepository feedRepository;
 	private final FeedImageRepository feedImageRepository;
 	private final BookMarkRepository bookMarkRepository;
+	private final HideFeedRepository hideFeedRepository;
 
 	private final S3Utils s3Utils;
 
@@ -183,5 +185,29 @@ public class FeedService {
 		ScheduleInfo scheduleInfo = feedEntityMapper.toScheduleInfo(scheduleEntity);
 
 		return feedEntityMapper.toGetFeedResponseDto(scheduleInfo, scheduleFeedInfos, userName);
+	}
+
+	@Transactional
+	public void deleteFeed(DeleteFeedRequestDto requestDto) {
+		/*
+		 1. Member 유효성 검사
+		 2. Feed 유효성 검사
+		 3. 작성자 검사
+		*/
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(requestDto.memberSeq());
+		feedRepository.findByFeedSeq(requestDto.feedSeq());
+		FeedEntity feedEntity = feedRepository.findByCreatorMemberAndFeedSeq(memberEntity, requestDto.feedSeq());
+
+		/*
+		 1. Feed Image 삭제
+		 2. HIDE FEED 삭제
+		 3. BOOK MARK FEED 삭제
+		*/
+		feedImageRepository.deleteByFeedEntity(feedEntity);
+		hideFeedRepository.deleteByFeedEntity(feedEntity);
+		bookMarkRepository.deleteByFeedEntity(feedEntity);
+
+		// Feed 삭제
+		feedRepository.deleteFeedEntity(feedEntity);
 	}
 }

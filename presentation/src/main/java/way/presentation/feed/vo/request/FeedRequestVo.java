@@ -67,4 +67,25 @@ public class FeedRequestVo {
 			);
 		}
 	}
+
+	public record DeleteFeedRequest(
+		Long memberSeq,
+		Long feedSeq
+	) {
+		public DeleteFeedRequestDto toDeleteFeedRequestDto() {
+			return new DeleteFeedRequestDto(
+				this.memberSeq,
+				this.feedSeq
+			);
+		}
+
+		public void validateDeleteFeedRequest() {
+			if (this.feedSeq == null) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
+			if (this.memberSeq == null) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
+		}
+	}
 }
