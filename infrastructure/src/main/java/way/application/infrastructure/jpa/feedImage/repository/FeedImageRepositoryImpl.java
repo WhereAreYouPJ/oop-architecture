@@ -43,17 +43,6 @@ public class FeedImageRepositoryImpl implements FeedImageRepository {
 	}
 
 	@Override
-	public List<String> findFeedImageURLsByFeedEntity(FeedEntity feedEntity) {
-		QFeedImageEntity feedImageEntity = QFeedImageEntity.feedImageEntity;
-
-		return queryFactory
-			.select(feedImageEntity.feedImageURL)
-			.from(feedImageEntity)
-			.where(feedImageEntity.feedEntity.eq(feedEntity))
-			.fetch();
-	}
-
-	@Override
 	public void deleteByScheduleEntity(ScheduleEntity scheduleEntity) {
 		QFeedImageEntity feedImage = QFeedImageEntity.feedImageEntity;
 
