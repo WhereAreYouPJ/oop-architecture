@@ -13,4 +13,6 @@ public interface LocationRepository {
 	void deleteAll(List<LocationEntity> locationEntities);
 
 	List<LocationEntity> findByMemberEntity(MemberEntity memberEntity);
+
+    void deleteAllByMemberSeq(MemberEntity memberEntity);
 }

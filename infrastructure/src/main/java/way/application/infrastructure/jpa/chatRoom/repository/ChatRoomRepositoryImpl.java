@@ -1,5 +1,6 @@
 package way.application.infrastructure.jpa.chatRoom.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
@@ -73,5 +74,18 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepository {
 			)
 			.fetchOne()
 		).orElseThrow(() -> new NotFoundRequestException(ErrorResult.UNKNOWN_EXCEPTION));
+	}
+
+	@Override
+	public void deleteAllByMemberSeq(List<ScheduleEntity> scheduleEntities) {
+		if (scheduleEntities == null || scheduleEntities.isEmpty()) {
+			return; // 리스트가 비어있을 경우 삭제 작업을 생략
+		}
+
+		QChatRoomEntity chatRoomEntity = QChatRoomEntity.chatRoomEntity;
+
+		queryFactory.delete(chatRoomEntity)
+				.where(chatRoomEntity.scheduleEntity.in(scheduleEntities))
+				.execute();
 	}
 }

@@ -35,4 +35,8 @@ public interface ScheduleMemberRepository {
 	List<ScheduleMemberEntity> findInvitedScheduleMemberEntity(MemberEntity memberEntity);
 
     Long findCreatorBySchedule(ScheduleEntity scheduleEntity);
+
+	List<ScheduleEntity> findSchedulesIfCreatedByMember(MemberEntity memberEntity);
+
+	void deleteAllByMemberSeq(MemberEntity memberEntity, List<ScheduleEntity> scheduleEntities);
 }

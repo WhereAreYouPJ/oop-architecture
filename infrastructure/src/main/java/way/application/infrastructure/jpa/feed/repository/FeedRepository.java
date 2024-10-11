@@ -30,4 +30,6 @@ public interface FeedRepository {
 	Optional<FeedEntity> findByScheduleEntityAndMemberEntity(ScheduleEntity scheduleEntity, MemberEntity memberEntity);
 
 	List<FeedEntity> findByScheduleEntity(ScheduleEntity scheduleEntity);
+
+    void deleteAllByMemberSeq(MemberEntity memberEntity);
 }

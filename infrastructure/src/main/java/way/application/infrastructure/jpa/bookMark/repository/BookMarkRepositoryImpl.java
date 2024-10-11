@@ -110,4 +110,14 @@ public class BookMarkRepositoryImpl implements BookMarkRepository {
 				).fetchOne()
 		).orElseThrow(() -> new BadRequestException(ErrorResult.BOOK_MARK_FEED_NOT_FOUND_EXCEPTION));
 	}
+
+	@Override
+	public void deleteAllByMemberSeq(MemberEntity memberEntity) {
+		QBookMarkEntity bookMark = QBookMarkEntity.bookMarkEntity;
+
+		queryFactory.delete(bookMark)
+				.where(bookMark.memberEntity.eq(memberEntity))
+				.execute();
+
+	}
 }

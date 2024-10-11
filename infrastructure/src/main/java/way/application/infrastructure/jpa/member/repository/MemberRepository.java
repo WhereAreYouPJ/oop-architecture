@@ -31,4 +31,6 @@ public interface MemberRepository {
     List<MemberEntity> findByFeedEntity(FeedEntity feedEntity);
 
 	MemberEntity findByEmail(String email);
+
+	void deleteByMemberSeq(MemberEntity memberEntity);
 }

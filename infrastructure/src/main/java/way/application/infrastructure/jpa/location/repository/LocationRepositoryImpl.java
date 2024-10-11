@@ -62,4 +62,16 @@ public class LocationRepositoryImpl implements LocationRepository {
 			)
 			.fetch();
 	}
+
+	@Override
+	public void deleteAllByMemberSeq(MemberEntity memberEntity) {
+		QLocationEntity location = QLocationEntity.locationEntity;
+
+		queryFactory.delete(location)
+				.where(
+						location.memberEntity.eq(memberEntity)
+				)
+				.execute();
+
+	}
 }

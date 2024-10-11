@@ -25,4 +25,6 @@ public interface FriendRequestRepository {
     FriendRequestEntity findFriendRequestById(Long friendRequestSeq);
 
     void delete(FriendRequestEntity friendRequest);
+
+    void deleteAllByMemberSeq(MemberEntity memberSeq);
 }

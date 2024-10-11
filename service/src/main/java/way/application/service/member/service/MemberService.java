@@ -4,9 +4,22 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import way.application.domain.member.MemberDomain;
+import way.application.infrastructure.jpa.bookMark.repository.BookMarkRepository;
+import way.application.infrastructure.jpa.chatRoom.repository.ChatRoomMemberRepositoryImpl;
+import way.application.infrastructure.jpa.chatRoom.repository.ChatRoomRepositoryImpl;
+import way.application.infrastructure.jpa.comment.repository.CommentRepository;
+import way.application.infrastructure.jpa.feed.repository.FeedRepository;
+import way.application.infrastructure.jpa.feedImage.repository.FeedImageRepository;
+import way.application.infrastructure.jpa.friend.respository.FriendRepository;
+import way.application.infrastructure.jpa.friendRequest.respository.FriendRequestRepository;
+import way.application.infrastructure.jpa.hideFeed.repository.HideFeedRepository;
+import way.application.infrastructure.jpa.location.repository.LocationRepository;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.member.repository.MemberRepository;
-import way.application.service.member.dto.request.MemberRequestDto;
+import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
+import way.application.infrastructure.jpa.schedule.repository.ScheduleRepository;
+import way.application.infrastructure.jpa.scheduleMember.repository.ScheduleMemberRepository;
+import way.application.service.comment.mapper.CommentMapper;
 import way.application.service.member.dto.request.MemberRequestDto.SaveMemberRequestDto;
 import way.application.service.member.mapper.MemberMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -37,6 +50,19 @@ public class MemberService {
 	private final BCryptPasswordEncoder encoder;
 	private final MemberDomain memberDomain;
 	private final S3Utils s3Util;
+	private final ScheduleMemberRepository scheduleMemberRepository;
+	private final ScheduleRepository scheduleRepository;
+	private final FriendRequestRepository friendRequestRepository;
+	private final FriendRepository friendRepository;
+	private final LocationRepository locationRepository;
+	private final FeedRepository feedRepository;
+	private final FeedImageRepository feedImageRepository;
+	private final HideFeedRepository hideFeedRepository;
+	private final BookMarkRepository bookMarkRepository;
+	private final ChatRoomMemberRepositoryImpl chatRoomMemberRepository;
+	private final ChatRoomRepositoryImpl chatRoomRepository;
+	private final CommentRepository commentRepository;
+	private final CommentMapper commentMapper;
 
 	@Transactional
 	public void saveMember(SaveMemberRequestDto saveMemberRequestDto) {
@@ -270,5 +296,50 @@ public class MemberService {
 		}
 
 		memberRepository.saveMember(memberEntity);
+	}
+
+	@Transactional
+	public void deleteMember(DeleteMemberDto deleteMemberDtoRequest) {
+
+		// memberSeq 검사
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(deleteMemberDtoRequest.memberSeq());
+
+		// 일반 로그인 시 비번 검사
+		if(deleteMemberDtoRequest.loginType().equals("normal")){
+			// 비번 검사
+			memberDomain.checkPassword(deleteMemberDtoRequest.password(), memberEntity.getEncodedPassword());
+		}
+
+		List<ScheduleEntity> schedulesIfCreatedByMember = scheduleMemberRepository.findSchedulesIfCreatedByMember(memberEntity);
+
+		// 친구요청 삭제
+		friendRequestRepository.deleteAllByMemberSeq(memberEntity);
+		// 친구 삭제
+		friendRepository.deleteAllByMemberSeq(memberEntity);
+		// 즐겨찾기 위치 삭제
+		locationRepository.deleteAllByMemberSeq(memberEntity);
+		// 채팅 멤버 삭제
+		chatRoomMemberRepository.deleteAllByMemberSeq(memberEntity);
+		// 채팅방 삭제
+		chatRoomRepository.deleteAllByMemberSeq(schedulesIfCreatedByMember);
+		// 북마크 삭제
+		bookMarkRepository.deleteAllByMemberSeq(memberEntity);
+		// 피드 이미지 삭제
+		feedImageRepository.deleteAllByMemberSeq(memberEntity);
+		// 피드 삭제
+		feedRepository.deleteAllByMemberSeq(memberEntity);
+		// 숨긴 피드 삭제
+		hideFeedRepository.deleteAllByMemberSeq(memberEntity);
+		// 일정 멤버 삭제
+		scheduleMemberRepository.deleteAllByMemberSeq(memberEntity, schedulesIfCreatedByMember);
+		// 일정 삭제
+		scheduleRepository.deleteAllByMemberSeq(memberEntity, schedulesIfCreatedByMember);
+		//회원삭제
+		memberRepository.deleteByMemberSeq(memberEntity);
+
+		// comment 저장
+		commentRepository.saveComment(
+				commentMapper.toCommentEntity(deleteMemberDtoRequest)
+		);
 	}
 }
