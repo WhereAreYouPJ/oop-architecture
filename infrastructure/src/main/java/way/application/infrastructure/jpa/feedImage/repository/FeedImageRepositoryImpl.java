@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import way.application.infrastructure.jpa.feed.entity.FeedEntity;
 import way.application.infrastructure.jpa.feedImage.entity.FeedImageEntity;
 import way.application.infrastructure.jpa.feedImage.entity.QFeedImageEntity;
+import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
 
 @Component
@@ -64,5 +65,17 @@ public class FeedImageRepositoryImpl implements FeedImageRepository {
 				feedImage.feedEntity.eq(feedEntity)
 			)
 			.execute();
+	}
+
+	@Override
+	public void deleteAllByMemberSeq(MemberEntity memberEntity) {
+		QFeedImageEntity feedImage = QFeedImageEntity.feedImageEntity;
+
+		queryFactory
+				.delete(feedImage)
+				.where(
+						feedImage.feedEntity.creatorMember.eq(memberEntity)
+				)
+				.execute();
 	}
 }

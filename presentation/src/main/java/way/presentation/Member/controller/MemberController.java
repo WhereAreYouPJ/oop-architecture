@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import way.application.service.member.dto.request.MemberRequestDto;
 import way.application.service.member.service.MemberService;
 import way.application.utils.exception.GlobalExceptionHandler;
 import way.presentation.Member.validates.*;
@@ -42,6 +41,7 @@ public class MemberController {
     private final LogoutValidator logoutValidator;
     private final ModifyUserNameValidator modifyUserNameValidator;
     private final SaveSnsMemberValidator saveSnsMemberValidator;
+    private final DeleteMemberValidator deleteMemberValidator;
 
     @PostMapping(name = "회원가입")
     @Operation(summary = "join Member API", description = "회원가입 API")
@@ -631,4 +631,41 @@ public class MemberController {
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
     }
 
+    @DeleteMapping(value = "/member", name = "회원 탈퇴")
+    @Operation(summary = "Delete Member API", description = "회원 탈퇴 API")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청에 성공하였습니다.",
+                    useReturnTypeSchema = true),
+            @ApiResponse(
+                    responseCode = "B001",
+                    description = "400 Invalid DTO Parameter errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "S500",
+                    description = "500 SERVER_ERROR",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "MSB002",
+                    description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class)))
+    })
+    public ResponseEntity<BaseResponse<String>> DeleteMember(@RequestBody DeleteMemberRequest request) {
+
+        // DTO 유효성 검사
+        deleteMemberValidator.validate(request);
+
+        // VO -> DTO 변환
+        DeleteMemberDto deleteMemberDtoRequest = request.toDeleteMemberDtoRequest();
+        memberService.deleteMember(deleteMemberDtoRequest);
+
+        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
+    }
 }

@@ -35,4 +35,7 @@ public interface ScheduleRepository {
 		LocalDateTime startTime,
 		Pageable pageable
 	);
+
+	void deleteAllByMemberSeq(MemberEntity memberEntity,List<ScheduleEntity> scheduleEntities);
+
 }

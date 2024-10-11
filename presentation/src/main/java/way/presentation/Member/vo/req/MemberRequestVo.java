@@ -178,4 +178,21 @@ public class MemberRequestVo {
             );
         }
     }
+
+    public record DeleteMemberRequest(
+            Long memberSeq,
+            String password,
+            String comment,
+            String loginType
+    ) {
+        public MemberRequestDto.DeleteMemberDto toDeleteMemberDtoRequest() {
+            return new MemberRequestDto.DeleteMemberDto(
+                    this.memberSeq,
+                    this.password,
+                    this.comment,
+                    this.loginType
+            );
+        }
+    }
+
 }

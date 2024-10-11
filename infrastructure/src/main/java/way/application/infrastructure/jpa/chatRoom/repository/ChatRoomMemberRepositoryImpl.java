@@ -1,5 +1,6 @@
 package way.application.infrastructure.jpa.chatRoom.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Component;
@@ -9,8 +10,10 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import way.application.infrastructure.jpa.chatRoom.entity.ChatRoomEntity;
 import way.application.infrastructure.jpa.chatRoom.entity.ChatRoomMemberEntity;
+import way.application.infrastructure.jpa.chatRoom.entity.QChatRoomEntity;
 import way.application.infrastructure.jpa.chatRoom.entity.QChatRoomMemberEntity;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
+import way.application.infrastructure.jpa.scheduleMember.entity.QScheduleMemberEntity;
 import way.application.utils.exception.BadRequestException;
 import way.application.utils.exception.ConflictException;
 import way.application.utils.exception.ErrorResult;
@@ -42,6 +45,29 @@ public class ChatRoomMemberRepositoryImpl implements ChatRoomMemberRepository {
 	@Override
 	public void deleteByChatRoomEntityAndMemberEntity(ChatRoomEntity chatRoomEntity, MemberEntity memberEntity) {
 		chatRoomMemberJpaRepository.deleteByChatRoomEntityAndMemberEntity(chatRoomEntity, memberEntity);
+	}
+
+	@Override
+	public void deleteAllByMemberSeq(MemberEntity memberEntity) {
+		QChatRoomMemberEntity chatRoomMemberEntity = QChatRoomMemberEntity.chatRoomMemberEntity;
+		QChatRoomEntity chatRoomEntity = QChatRoomEntity.chatRoomEntity;
+		QScheduleMemberEntity scheduleMemberEntity = QScheduleMemberEntity.scheduleMemberEntity;
+
+		List<ChatRoomMemberEntity> chatRoomMemberEntities = queryFactory.select(chatRoomMemberEntity)
+				.from(chatRoomMemberEntity)
+				.join(chatRoomEntity).on(chatRoomEntity.chatRoomSeq.eq(chatRoomMemberEntity.chatRoomEntity.chatRoomSeq))
+				.join(scheduleMemberEntity).on(chatRoomEntity.scheduleEntity.eq(scheduleMemberEntity.schedule))
+				.where(scheduleMemberEntity.isCreator.eq(true)
+						.and(scheduleMemberEntity.invitedMember.eq(memberEntity))
+				).fetch();
+
+		queryFactory.delete(chatRoomMemberEntity)
+				.where(chatRoomMemberEntity.in(chatRoomMemberEntities))
+				.execute();
+
+		queryFactory.delete(chatRoomMemberEntity)
+				.where(chatRoomMemberEntity.memberEntity.eq(memberEntity))
+				.execute();
 	}
 
 	@Override

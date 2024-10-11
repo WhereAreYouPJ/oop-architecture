@@ -3,7 +3,6 @@ package way.application.infrastructure.jpa.schedule.repository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -19,7 +18,6 @@ import way.application.infrastructure.jpa.member.entity.QMemberEntity;
 import way.application.infrastructure.jpa.schedule.entity.QScheduleEntity;
 import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
 import way.application.infrastructure.jpa.scheduleMember.entity.QScheduleMemberEntity;
-import way.application.infrastructure.jpa.scheduleMember.entity.ScheduleMemberEntity;
 import way.application.utils.exception.BadRequestException;
 import way.application.utils.exception.ErrorResult;
 
@@ -121,5 +119,15 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 			.fetchResults();
 
 		return new PageImpl<>(results.getResults(), pageable, results.getTotal());
+	}
+
+	@Override
+	public void deleteAllByMemberSeq(MemberEntity memberEntity,List<ScheduleEntity> scheduleEntities) {
+		QScheduleEntity schedule = QScheduleEntity.scheduleEntity;
+
+		queryFactory.delete(schedule)
+				.where(schedule.in(scheduleEntities))
+				.execute();
+
 	}
 }

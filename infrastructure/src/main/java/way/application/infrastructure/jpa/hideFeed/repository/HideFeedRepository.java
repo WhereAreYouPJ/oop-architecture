@@ -24,5 +24,6 @@ public interface HideFeedRepository {
 
 	void deleteByFeedEntity(FeedEntity feedEntity);
 
+    void deleteAllByMemberSeq(MemberEntity memberEntity);
 	HideFeedEntity findByFeedSeqAndMemberSeq(Long feedSeq, Long memberSeq);
 }

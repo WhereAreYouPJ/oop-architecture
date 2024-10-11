@@ -102,4 +102,17 @@ public class HideFeedRepositoryImpl implements HideFeedRepository {
 				).fetchOne()
 		).orElseThrow(() -> new BadRequestException(ErrorResult.HIDE_FEED_NOT_FOUND_EXCEPTION));
 	}
+
+	@Override
+	public void deleteAllByMemberSeq(MemberEntity memberEntity) {
+		QHideFeedEntity hideFeed = QHideFeedEntity.hideFeedEntity;
+
+		queryFactory
+				.delete(hideFeed)
+				.where(
+						hideFeed.memberEntity.eq(memberEntity)
+				)
+				.execute();
+
+	}
 }

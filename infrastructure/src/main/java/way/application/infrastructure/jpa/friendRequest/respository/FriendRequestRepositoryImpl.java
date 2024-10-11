@@ -1,8 +1,11 @@
 package way.application.infrastructure.jpa.friendRequest.respository;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import way.application.infrastructure.jpa.friendRequest.entity.FriendRequestEntity;
+import way.application.infrastructure.jpa.friendRequest.entity.QFriendRequestEntity;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.member.repository.MemberJpaRepository;
 import way.application.utils.exception.BadRequestException;
@@ -16,6 +19,8 @@ public class FriendRequestRepositoryImpl implements FriendRequestRepository{
 
     private final MemberJpaRepository memberJpaRepository;
     private final FriendRequestJpaRepository friendRequestJpaRepository;
+    private final JPAQueryFactory queryFactory;
+    private final EntityManager em;
 
     @Override
     public MemberEntity validateSenderSeq(Long memberSeq) {
@@ -85,5 +90,22 @@ public class FriendRequestRepositoryImpl implements FriendRequestRepository{
     @Override
     public void delete(FriendRequestEntity friendRequest) {
         friendRequestJpaRepository.delete(friendRequest);
+    }
+
+    @Override
+    public void deleteAllByMemberSeq(MemberEntity memberSeq) {
+
+        QFriendRequestEntity friendRequestEntity = QFriendRequestEntity.friendRequestEntity;
+
+        queryFactory
+                .delete(friendRequestEntity)
+                .where(
+                        friendRequestEntity.senderSeq.eq(memberSeq)
+                                .or(friendRequestEntity.receiverSeq.eq(memberSeq))
+                ).execute();
+
+        em.flush();
+        em.clear();
+
     }
 }

@@ -93,4 +93,13 @@ public class MemberRequestDto {
     ) {
 
     }
+
+    public record DeleteMemberDto(
+            Long memberSeq,
+            String password,
+            String comment,
+            String loginType
+    ) {
+
+    }
 }

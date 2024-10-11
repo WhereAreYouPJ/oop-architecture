@@ -3,13 +3,9 @@ package way.application.infrastructure.jpa.feed.repository;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -138,5 +134,15 @@ public class FeedRepositoryImpl implements FeedRepository {
 				feed.schedule.eq(scheduleEntity)
 			)
 			.fetch();
+	}
+
+	@Override
+	public void deleteAllByMemberSeq(MemberEntity memberEntity) {
+		QFeedEntity feed = QFeedEntity.feedEntity;
+
+		queryFactory
+				.delete(feed)
+				.where(feed.creatorMember.eq(memberEntity))
+				.execute();
 	}
 }

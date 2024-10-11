@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
-import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -141,5 +140,10 @@ public class MemberRepositoryImpl implements MemberRepository {
 
         return byEmail.orElseThrow(() -> new BadRequestException(ErrorResult.EMAIL_BAD_REQUEST_EXCEPTION));
 
+	}
+
+	@Override
+	public void deleteByMemberSeq(MemberEntity memberEntity) {
+		memberJpaRepository.delete(memberEntity);
 	}
 }

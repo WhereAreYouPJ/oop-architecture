@@ -14,4 +14,6 @@ public interface ChatRoomMemberRepository {
 	void deleteAllByChatRoomEntity(ChatRoomEntity chatRoomEntity);
 
 	void deleteByChatRoomEntityAndMemberEntity(ChatRoomEntity chatRoomEntity, MemberEntity memberEntity);
+
+	void deleteAllByMemberSeq(MemberEntity memberEntity);
 }
