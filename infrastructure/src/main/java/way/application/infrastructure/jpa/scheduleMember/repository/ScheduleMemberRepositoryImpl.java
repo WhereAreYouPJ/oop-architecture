@@ -117,6 +117,20 @@ public class ScheduleMemberRepositoryImpl implements ScheduleMemberRepository {
 	}
 
 	@Override
+	public List<ScheduleMemberEntity> findAllAcceptedScheduleMembersFriendsInSchedule(ScheduleEntity scheduleEntity, MemberEntity memberEntity) {
+		QScheduleMemberEntity scheduleMember = QScheduleMemberEntity.scheduleMemberEntity;
+
+		return queryFactory
+				.selectFrom(scheduleMember)
+				.where(
+						scheduleMember.schedule.eq(scheduleEntity)
+								.and(scheduleMember.acceptSchedule.isTrue())
+								.and(scheduleMember.invitedMember.ne(memberEntity))
+				)
+				.fetch();
+	}
+
+	@Override
 	public ScheduleMemberEntity findScheduleMemberInSchedule(Long memberSeq, Long scheduleSeq) {
 		QScheduleMemberEntity scheduleMember = QScheduleMemberEntity.scheduleMemberEntity;
 

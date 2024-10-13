@@ -59,6 +59,6 @@ public interface FeedEntityMapper {
 	GetFeedResponseDto toGetFeedResponseDto(
 		ScheduleInfo scheduleInfo,
 		List<ScheduleFeedInfo> scheduleFeedInfo,
-		List<String> userName
+		List<ScheduleFriendInfo> scheduleFriendInfo
 	);
 }

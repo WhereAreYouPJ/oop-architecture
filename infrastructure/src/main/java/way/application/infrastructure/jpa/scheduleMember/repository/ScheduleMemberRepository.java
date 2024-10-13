@@ -19,6 +19,7 @@ public interface ScheduleMemberRepository {
 	ScheduleMemberEntity findAcceptedScheduleMemberInSchedule(Long scheduleSeq, Long memberSeq);
 
 	List<ScheduleMemberEntity> findAllAcceptedScheduleMembersInSchedule(ScheduleEntity scheduleEntity);
+	List<ScheduleMemberEntity> findAllAcceptedScheduleMembersFriendsInSchedule(ScheduleEntity scheduleEntity, MemberEntity memberEntity);
 
 	ScheduleMemberEntity findScheduleMemberInSchedule(Long memberSeq, Long scheduleSeq);
 

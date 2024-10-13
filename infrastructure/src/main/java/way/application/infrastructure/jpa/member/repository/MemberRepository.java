@@ -28,7 +28,7 @@ public interface MemberRepository {
 
     MemberEntity findByMemberCode(String memberCode);
 
-    List<MemberEntity> findByFeedEntity(FeedEntity feedEntity);
+    List<MemberEntity> findByFeedEntity(FeedEntity feedEntity,MemberEntity memberEntity);
 
 	MemberEntity findByEmail(String email);
 

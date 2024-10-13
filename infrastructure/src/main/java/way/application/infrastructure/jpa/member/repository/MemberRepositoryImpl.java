@@ -117,19 +117,20 @@ public class MemberRepositoryImpl implements MemberRepository {
 	}
 
 	@Override
-	public List<MemberEntity> findByFeedEntity(FeedEntity feedEntity) {
+	public List<MemberEntity> findByFeedEntity(FeedEntity feedEntity,MemberEntity memberEntity) {
 		QBookMarkEntity bookMark = QBookMarkEntity.bookMarkEntity;
 		QScheduleEntity scheduleEntity = QScheduleEntity.scheduleEntity;
 		QScheduleMemberEntity scheduleMemberEntity = QScheduleMemberEntity.scheduleMemberEntity;
-		QMemberEntity memberEntity = QMemberEntity.memberEntity;
+		QMemberEntity member = QMemberEntity.memberEntity;
 		QFeedEntity feed = QFeedEntity.feedEntity;
 
-        return queryFactory.select(memberEntity)
-				.from(memberEntity)
-				.join(scheduleMemberEntity).on(scheduleMemberEntity.invitedMember.memberSeq.eq(memberEntity.memberSeq))
+        return queryFactory.select(member)
+				.from(member)
+				.join(scheduleMemberEntity).on(scheduleMemberEntity.invitedMember.memberSeq.eq(member.memberSeq))
 				.join(scheduleEntity).on(scheduleEntity.scheduleSeq.eq(scheduleMemberEntity.schedule.scheduleSeq))
 				.join(feed).on(scheduleEntity.scheduleSeq.eq(feedEntity.getSchedule().getScheduleSeq()))
 				.join(bookMark).on(bookMark.feedEntity.feedSeq.eq(feedEntity.getFeedSeq()))
+				.where(scheduleMemberEntity.invitedMember.ne(memberEntity))
 				.fetch();
 
 	}

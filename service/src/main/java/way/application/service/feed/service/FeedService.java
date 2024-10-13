@@ -124,8 +124,16 @@ public class FeedService {
 			.map(scheduleEntity -> {
 				// userName 생성
 				List<ScheduleMemberEntity> scheduleMemberEntityList
-					= scheduleMemberRepository.findAllAcceptedScheduleMembersInSchedule(scheduleEntity);
-				List<String> userName = scheduleMemberDomain.extractUserNameFromList(scheduleMemberEntityList);
+					= scheduleMemberRepository.findAllAcceptedScheduleMembersFriendsInSchedule(scheduleEntity, memberEntity);
+
+				List<ScheduleFriendInfo> scheduleFriendInfo =
+						scheduleMemberEntityList.stream()
+								.map(scheduleMemberEntity -> new ScheduleFriendInfo(
+										scheduleMemberEntity.getInvitedMember().getMemberSeq(),
+										scheduleMemberEntity.getInvitedMember().getUserName(),
+										scheduleMemberEntity.getInvitedMember().getProfileImage()
+								))
+								.toList();
 
 				FeedEntity feedEntity = feedRepository.findByScheduleExcludingHiddenRand(scheduleEntity, memberEntity);
 
@@ -142,7 +150,7 @@ public class FeedService {
 							bookMarkInfo
 						);
 
-						return feedEntityMapper.toGetFeedResponseDto(scheduleInfo, List.of(scheduleFeedInfo), userName);
+						return feedEntityMapper.toGetFeedResponseDto(scheduleInfo, List.of(scheduleFeedInfo), scheduleFriendInfo);
 					})
 					.orElse(null);
 			})
@@ -164,8 +172,16 @@ public class FeedService {
 
 		// USER NAME 추출
 		List<ScheduleMemberEntity> scheduleMemberEntityList
-			= scheduleMemberRepository.findAllAcceptedScheduleMembersInSchedule(scheduleEntity);
-		List<String> userName = scheduleMemberDomain.extractUserNameFromList(scheduleMemberEntityList);
+			= scheduleMemberRepository.findAllAcceptedScheduleMembersFriendsInSchedule(scheduleEntity,memberEntity);
+
+		List<ScheduleFriendInfo> scheduleFriendInfo =
+				scheduleMemberEntityList.stream()
+						.map(scheduleMemberEntity -> new ScheduleFriendInfo(
+								scheduleMemberEntity.getInvitedMember().getMemberSeq(),
+								scheduleMemberEntity.getInvitedMember().getUserName(),
+								scheduleMemberEntity.getInvitedMember().getProfileImage()
+						))
+						.toList();
 
 		// Feed 조회 및 변환
 		List<ScheduleFeedInfo> scheduleFeedInfos = feedRepository.findByScheduleEntity(scheduleEntity).stream()
@@ -184,7 +200,7 @@ public class FeedService {
 		// Schedule Info 생성
 		ScheduleInfo scheduleInfo = feedEntityMapper.toScheduleInfo(scheduleEntity);
 
-		return feedEntityMapper.toGetFeedResponseDto(scheduleInfo, scheduleFeedInfos, userName);
+		return feedEntityMapper.toGetFeedResponseDto(scheduleInfo, scheduleFeedInfos, scheduleFriendInfo);
 	}
 
 	@Transactional

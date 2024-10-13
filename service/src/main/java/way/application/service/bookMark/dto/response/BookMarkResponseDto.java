@@ -29,6 +29,7 @@ public class BookMarkResponseDto {
 
 	public record BookMarkFriendInfo(
 			Long memberSeq,
+			String userName,
 			String profileImageURL
 	) {
 
