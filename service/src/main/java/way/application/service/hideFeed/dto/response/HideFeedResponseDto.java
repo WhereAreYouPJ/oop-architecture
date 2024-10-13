@@ -12,8 +12,8 @@ public class HideFeedResponseDto {
 		String title,
 		List<hideFeedImageInfo> hideFeedImageInfos,
 		String content,
-
-		Boolean bookMark
+		Boolean bookMark,
+		List<hideFeedFriendInfo> feedFriendInfos
 	) {
 
 	}
@@ -25,4 +25,13 @@ public class HideFeedResponseDto {
 	) {
 
 	}
+
+	public record hideFeedFriendInfo(
+		Long memberSeq,
+		String userName,
+		String profileImage
+	) {
+
+	}
+
 }

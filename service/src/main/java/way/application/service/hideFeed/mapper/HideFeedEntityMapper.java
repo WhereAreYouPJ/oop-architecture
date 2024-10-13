@@ -27,11 +27,18 @@ public interface HideFeedEntityMapper {
 	@Mapping(target = "title", source = "hideFeedEntity.feedEntity.title")
 	@Mapping(target = "content", source = "hideFeedEntity.feedEntity.content")
 	@Mapping(target = "bookMark", source = "bookMark")
+	@Mapping(target = "feedFriendInfos", source = "feedFriendInfos")
 	GetHideFeedResponseDto toGetHideFeedResponseDto(
 		HideFeedEntity hideFeedEntity,
 		List<hideFeedImageInfo> hideFeedImageInfos,
-		Boolean bookMark
+		Boolean bookMark,
+		List<hideFeedFriendInfo> feedFriendInfos
 	);
 
 	hideFeedImageInfo toHideFeedImageInfo(FeedImageEntity feedImageEntity);
+
+	@Mapping(target = "memberSeq", source = "memberSeq")
+	@Mapping(target = "userName", source = "userName")
+	@Mapping(target = "profileImage", source = "profileImage")
+	hideFeedFriendInfo toHideFeedFriendInfo(MemberEntity memberEntity);
 }

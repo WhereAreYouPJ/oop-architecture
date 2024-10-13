@@ -19,6 +19,7 @@ import way.application.infrastructure.jpa.hideFeed.entity.HideFeedEntity;
 import way.application.infrastructure.jpa.hideFeed.repository.HideFeedRepository;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.member.repository.MemberRepository;
+import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
 import way.application.service.hideFeed.mapper.HideFeedEntityMapper;
 
 @Service
@@ -75,6 +76,7 @@ public class HideFeedService {
 
 		return hideFeedEntityPage.map(hideFeedEntity -> {
 			FeedEntity feedEntity = hideFeedEntity.getFeedEntity();
+			ScheduleEntity scheduleEntity = feedEntity.getSchedule();
 
 			// Feed 이미지 가져오기 및 ImageInfo로 변환
 			List<hideFeedImageInfo> hideFeedImageInfos = feedImageRepository.findAllByFeedEntity(feedEntity).stream()
@@ -84,7 +86,18 @@ public class HideFeedService {
 			Boolean bookMark
 				= bookMarkRepository.existsByFeedEntityAndMemberEntity(feedEntity, hideFeedEntity.getMemberEntity());
 
-			return hideFeedMapper.toGetHideFeedResponseDto(hideFeedEntity, hideFeedImageInfos, bookMark);
+			// memberEntities를 hideFeedFriendInfo로 변환
+			List<MemberEntity> memberEntities = memberRepository.findByScheduleEntityAcceptTrue(scheduleEntity);
+			List<hideFeedFriendInfo> hideFeedFriendInfos = memberEntities.stream()
+				.map(hideFeedMapper::toHideFeedFriendInfo)
+				.toList();
+
+			return hideFeedMapper.toGetHideFeedResponseDto(
+				hideFeedEntity,
+				hideFeedImageInfos,
+				bookMark,
+				hideFeedFriendInfos
+			);
 		});
 	}
 }

@@ -55,13 +55,13 @@ public class ScheduleMemberRepositoryImpl implements ScheduleMemberRepository {
 		QScheduleMemberEntity scheduleMember = QScheduleMemberEntity.scheduleMemberEntity;
 
 		return queryFactory
-				.select(scheduleMember.schedule)
-				.from(scheduleMember)
-				.where(
-						scheduleMember.isCreator.isTrue()
-								.and(scheduleMember.invitedMember.eq(memberEntity))
-				)
-				.fetch();
+			.select(scheduleMember.schedule)
+			.from(scheduleMember)
+			.where(
+				scheduleMember.isCreator.isTrue()
+					.and(scheduleMember.invitedMember.eq(memberEntity))
+			)
+			.fetch();
 	}
 
 	@Override
@@ -69,18 +69,17 @@ public class ScheduleMemberRepositoryImpl implements ScheduleMemberRepository {
 		QScheduleMemberEntity scheduleMember = QScheduleMemberEntity.scheduleMemberEntity;
 
 		queryFactory
-				.delete(scheduleMember)
-				.where(
-						scheduleMember.schedule.in(scheduleEntities)
-						).execute();
-
+			.delete(scheduleMember)
+			.where(
+				scheduleMember.schedule.in(scheduleEntities)
+			).execute();
 
 		queryFactory
-				.delete(scheduleMember)
-				.where(
-						scheduleMember.invitedMember.eq(memberEntity)
-				)
-				.execute();
+			.delete(scheduleMember)
+			.where(
+				scheduleMember.invitedMember.eq(memberEntity)
+			)
+			.execute();
 	}
 
 	@Override
@@ -117,17 +116,17 @@ public class ScheduleMemberRepositoryImpl implements ScheduleMemberRepository {
 	}
 
 	@Override
-	public List<ScheduleMemberEntity> findAllAcceptedScheduleMembersFriendsInSchedule(ScheduleEntity scheduleEntity, MemberEntity memberEntity) {
+	public List<ScheduleMemberEntity> findAllAcceptedScheduleMembersFriendsInSchedule(ScheduleEntity scheduleEntity,
+		MemberEntity memberEntity) {
 		QScheduleMemberEntity scheduleMember = QScheduleMemberEntity.scheduleMemberEntity;
 
 		return queryFactory
-				.selectFrom(scheduleMember)
-				.where(
-						scheduleMember.schedule.eq(scheduleEntity)
-								.and(scheduleMember.acceptSchedule.isTrue())
-								.and(scheduleMember.invitedMember.ne(memberEntity))
-				)
-				.fetch();
+			.selectFrom(scheduleMember)
+			.where(
+				scheduleMember.schedule.eq(scheduleEntity)
+					.and(scheduleMember.acceptSchedule.isTrue())
+			)
+			.fetch();
 	}
 
 	@Override
@@ -166,7 +165,6 @@ public class ScheduleMemberRepositoryImpl implements ScheduleMemberRepository {
 
 		return new PageImpl<>(content, pageable, total);
 	}
-
 
 	@Override
 	public void deleteByScheduleEntity(ScheduleEntity scheduleEntity) {
@@ -244,11 +242,11 @@ public class ScheduleMemberRepositoryImpl implements ScheduleMemberRepository {
 		QScheduleMemberEntity scheduleMember = QScheduleMemberEntity.scheduleMemberEntity;
 
 		return queryFactory
-				.select(scheduleMember.invitedMember.memberSeq)
-				.from(scheduleMember)
-				.where(
-						scheduleMember.isCreator.isTrue()
-								.and(scheduleMember.schedule.scheduleSeq.eq(scheduleEntity.getScheduleSeq()))
-				).fetchOne();
+			.select(scheduleMember.invitedMember.memberSeq)
+			.from(scheduleMember)
+			.where(
+				scheduleMember.isCreator.isTrue()
+					.and(scheduleMember.schedule.scheduleSeq.eq(scheduleEntity.getScheduleSeq()))
+			).fetchOne();
 	}
 }

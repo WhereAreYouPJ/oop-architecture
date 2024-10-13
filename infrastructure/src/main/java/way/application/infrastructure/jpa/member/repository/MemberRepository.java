@@ -4,6 +4,7 @@ import java.util.List;
 
 import way.application.infrastructure.jpa.feed.entity.FeedEntity;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
+import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
 
 public interface MemberRepository {
 	MemberEntity findByMemberSeq(Long memberSeq);
@@ -33,4 +34,6 @@ public interface MemberRepository {
 	MemberEntity findByEmail(String email);
 
 	void deleteByMemberSeq(MemberEntity memberEntity);
+
+	List<MemberEntity> findByScheduleEntityAcceptTrue(ScheduleEntity scheduleEntity);
 }

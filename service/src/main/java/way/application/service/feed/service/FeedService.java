@@ -34,6 +34,7 @@ import way.application.infrastructure.jpa.scheduleMember.entity.ScheduleMemberEn
 import way.application.infrastructure.jpa.scheduleMember.repository.ScheduleMemberRepository;
 import way.application.service.feed.mapper.FeedEntityMapper;
 import way.application.service.feedImage.mapper.FeedImageMapper;
+import way.application.service.hideFeed.dto.response.HideFeedResponseDto;
 import way.application.utils.s3.S3Utils;
 
 @Service
@@ -53,7 +54,6 @@ public class FeedService {
 	private final FeedImageMapper feedImageMapper;
 
 	private final ScheduleDomain scheduleDomain;
-	private final ScheduleMemberDomain scheduleMemberDomain;
 
 	@Transactional
 	public SaveFeedResponseDto saveFeed(SaveFeedRequestDto requestDto, List<MultipartFile> images) throws IOException {

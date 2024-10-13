@@ -20,6 +20,10 @@ import way.application.infrastructure.jpa.feedImage.entity.FeedImageEntity;
 import way.application.infrastructure.jpa.feedImage.repository.FeedImageRepository;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.member.repository.MemberRepository;
+import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
+import way.application.infrastructure.jpa.schedule.repository.ScheduleRepository;
+import way.application.infrastructure.jpa.scheduleMember.entity.ScheduleMemberEntity;
+import way.application.infrastructure.jpa.scheduleMember.repository.ScheduleMemberRepository;
 import way.application.service.bookMark.mapper.BookMarkMapper;
 
 @Service
@@ -29,6 +33,7 @@ public class BookMarkService {
 	private final FeedRepository feedRepository;
 	private final BookMarkRepository bookMarkRepository;
 	private final FeedImageRepository feedImageRepository;
+	private final ScheduleMemberRepository scheduleMemberRepository;
 
 	private final BookMarkMapper bookMarkMapper;
 
@@ -72,11 +77,12 @@ public class BookMarkService {
 			= bookMarkRepository.findAllByMemberEntityOrderByScheduleStartTimeDesc(memberEntity, pageable);
 
 		return bookMarkEntityPage.map(bookMarkEntity -> {
+			ScheduleEntity scheduleEntity = bookMarkEntity.getFeedEntity().getSchedule();
+
 			List<FeedImageEntity> feedImageEntities
 				= feedImageRepository.findAllByFeedEntity(bookMarkEntity.getFeedEntity());
 
-			List<MemberEntity> memberEntities
-				= memberRepository.findByFeedEntity(bookMarkEntity.getFeedEntity(),memberEntity);
+			List<MemberEntity> memberEntities = memberRepository.findByScheduleEntityAcceptTrue(scheduleEntity);
 
 			return bookMarkMapper.toGetBookMarkResponseDto(bookMarkEntity, feedImageEntities, memberEntities);
 		});
