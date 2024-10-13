@@ -23,13 +23,22 @@ public class FeedResponseDto {
 	public record GetFeedResponseDto(
 		ScheduleInfo scheduleInfo,
 		List<ScheduleFeedInfo> scheduleFeedInfo,
-		List<String> userName
+		List<ScheduleFriendInfo> scheduleFriendInfo
 	) {
 		public record ScheduleFeedInfo(
 			MemberInfo memberInfo,
 			FeedInfo feedInfo,
 			List<FeedImageInfo> feedImageInfos,
 			boolean bookMarkInfo
+		) {
+
+		}
+
+		public record ScheduleFriendInfo(
+			Long memberSeq,
+			String userName,
+			String profileImage
+
 		) {
 
 		}

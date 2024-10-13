@@ -67,6 +67,7 @@ public interface BookMarkMapper {
 	default BookMarkFriendInfo toBookMarkFriendInfoList(MemberEntity memberEntity) {
 		return new BookMarkFriendInfo(
 				memberEntity.getMemberSeq(),
+				memberEntity.getUserName(),
 				memberEntity.getProfileImage()
 		);
 	}
