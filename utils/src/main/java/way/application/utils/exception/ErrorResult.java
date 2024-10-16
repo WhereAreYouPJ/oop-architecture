@@ -209,6 +209,12 @@ public enum ErrorResult {
 		"BMFN004"
 	),
 
+	COORDINATE_NOT_FOUND_EXCEPTION(
+		HttpStatus.BAD_REQUEST.value(),
+		"좌표가 존재하지 않습니다.",
+		"CN005"
+	),
+
 	// CONFLICT
 	USER_ID_DUPLICATION_CONFLICT_EXCEPTION(
 		HttpStatus.CONFLICT.value(),
