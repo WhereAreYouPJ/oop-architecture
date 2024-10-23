@@ -85,21 +85,21 @@ jobs:
     name: Deploy
     runs-on: [ self-hosted ]
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+#      - name: Checkout repository
+#        uses: actions/checkout@v2
 
-      - name: Check if swap is already active
-        run: |
-          if free | awk '/^Swap:/ {exit !$2}'; then
-            echo "Swap is already active, skipping swap creation."
-          else
-            echo "Swap is not active, creating swap."
-            sudo fallocate -l 2G /swapfile
-            sudo chmod 600 /swapfile
-            sudo mkswap /swapfile
-            sudo swapon /swapfile
-            free -h
-          fi
+#      - name: Check if swap is already active
+#        run: |
+#          if free | awk '/^Swap:/ {exit !$2}'; then
+#            echo "Swap is already active, skipping swap creation."
+#          else
+#            echo "Swap is not active, creating swap."
+#            sudo fallocate -l 2G /swapfile
+#            sudo chmod 600 /swapfile
+#            sudo mkswap /swapfile
+#            sudo swapon /swapfile
+#            free -h
+#          fi
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
@@ -113,16 +113,16 @@ jobs:
           sudo chown $USER /var/run/docker.sock
           newgrp docker
 
-      - name: Install Docker Compose
-        run: |
-          if ! command -v docker-compose &> /dev/null
-          then
-            sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-            sudo chmod +x /usr/local/bin/docker-compose
-            sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-          else
-            echo "Docker Compose already installed"
-          fi
+#      - name: Install Docker Compose
+#        run: |
+#          if ! command -v docker-compose &> /dev/null
+#          then
+#            sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+#            sudo chmod +x /usr/local/bin/docker-compose
+#            sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+#          else
+#            echo "Docker Compose already installed"
+#          fi
 
       - name: Clean up Docker to free space
         run: |
@@ -134,21 +134,21 @@ jobs:
           sudo apt-get clean
           sudo apt-get autoremove
 
-      - name: Set Docker Compose
-        run: |
-          sudo docker-compose -f docker-compose.yml down
-          sudo docker-compose -f docker-compose.yml up -d
-
-      - name: Wait for RabbitMQ to be ready
-        run: |
-          until sudo docker exec rabbitmq rabbitmq-diagnostics status; do
-            echo "Waiting for RabbitMQ..."
-            sleep 5
-          done
-
-      - name: Enable RabbitMQ STOMP Plugin
-        run: |
-          sudo docker exec rabbitmq rabbitmq-plugins enable rabbitmq_stomp
+#      - name: Set Docker Compose
+#        run: |
+#          sudo docker-compose -f docker-compose.yml down
+#          sudo docker-compose -f docker-compose.yml up -d
+#
+#      - name: Wait for RabbitMQ to be ready
+#        run: |
+#          until sudo docker exec rabbitmq rabbitmq-diagnostics status; do
+#            echo "Waiting for RabbitMQ..."
+#            sleep 5
+#          done
+#
+#      - name: Enable RabbitMQ STOMP Plugin
+#        run: |
+#          sudo docker exec rabbitmq rabbitmq-plugins enable rabbitmq_stomp
 
       - name: Run Docker
         run: |
