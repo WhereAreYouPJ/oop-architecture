@@ -11,6 +11,10 @@ services:
       TZ: Asia/Seoul
     ports:
       - 3306:3306
+    volumes:
+      - ./db/mysql/data:/var/lib/mysql
+      - ./db/mysql/init:/docker-entrypoint-initdb.d
+    command: --bind-address=1.231.217.175
     networks:
       - docker-bridge
 
@@ -22,6 +26,9 @@ services:
       TZ: Asia/Seoul
     ports:
       - "6379:6379"
+    volumes:
+      - ./redis/data:/data
+      - ./redis/conf/redis.conf:/usr/local/conf/redis.conf
     networks:
       - docker-bridge
 
