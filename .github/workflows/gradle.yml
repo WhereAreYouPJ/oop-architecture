@@ -124,15 +124,15 @@ jobs:
             echo "Docker Compose already installed"
           fi
 
-      - name: Clean up Docker to free space
-        run: |
-          sudo docker container prune -f
-          sudo docker image prune -a -f
-          sudo docker volume prune -f
-          sudo docker network prune -f
-          sudo rm -rf /var/lib/apt/lists/*
-          sudo apt-get clean
-          sudo apt-get autoremove
+#      - name: Clean up Docker to free space
+#        run: |
+#          sudo docker container prune -f
+#          sudo docker image prune -a -f
+#          sudo docker volume prune -f
+#          sudo docker network prune -f
+#          sudo rm -rf /var/lib/apt/lists/*
+#          sudo apt-get clean
+#          sudo apt-get autoremove
 
       - name: Set Docker Compose
         run: |
