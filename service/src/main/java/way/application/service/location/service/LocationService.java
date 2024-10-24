@@ -32,8 +32,9 @@ public class LocationService {
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(requestDto.memberSeq());
 
 		// 저장
+		Long sequence = locationRepository.findMaxSequenceByMemberEntity(memberEntity);
 		LocationEntity locationEntity = locationRepository.saveLocationEntity(
-			locationMapper.toLocationMapper(memberEntity, requestDto.location(), requestDto.streetName())
+			locationMapper.toLocationMapper(memberEntity, requestDto.location(), requestDto.streetName(), ++sequence)
 		);
 
 		return locationMapper.toAddLocationResponseDto(locationEntity);
@@ -63,5 +64,31 @@ public class LocationService {
 			.stream()
 			.map(locationMapper::toGetLocationResponseDto)
 			.collect(Collectors.toList());
+	}
+
+	@Transactional
+	public void modifyLocation(List<ModifyLocationRequestDto> requestDtoList, Long memberSeq) {
+		/*
+		 1. Member 유효성 검사
+		 2. Location 유효성 검사
+		*/
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
+		List<Long> locationSeqs = requestDtoList.stream()
+			.map(ModifyLocationRequestDto::locationSeq)
+			.toList();
+		List<LocationEntity> locationEntityList
+			= locationRepository.findAllByMemberEntityAndLocationSeqs(memberEntity, locationSeqs);
+
+		/// locationEntityList를 돌면서 ModifyLocationRequestDto의 sequence 값으로 수정
+		locationEntityList.forEach(locationEntity -> {
+			ModifyLocationRequestDto matchingDto = requestDtoList.stream()
+				.filter(dto -> dto.locationSeq().equals(locationEntity.getLocationSeq()))
+				.findFirst()
+				.get();
+
+			locationEntity.updateLocationSequence(matchingDto.sequence());
+		});
+
+		locationRepository.saveAll(locationEntityList);
 	}
 }
