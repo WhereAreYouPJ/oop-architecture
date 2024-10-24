@@ -14,4 +14,11 @@ public class LocationResponseDto {
 	) {
 
 	}
+
+	public record ModifyLocationRequestDto(
+		Long locationSeq,
+		Long sequence
+	) {
+
+	}
 }

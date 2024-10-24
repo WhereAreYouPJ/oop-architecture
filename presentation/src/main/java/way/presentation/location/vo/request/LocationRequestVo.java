@@ -1,6 +1,7 @@
 package way.presentation.location.vo.request;
 
 import static way.application.service.location.dto.request.LocationRequestDto.*;
+import static way.application.service.location.dto.response.LocationResponseDto.*;
 
 import java.util.List;
 
@@ -52,6 +53,27 @@ public class LocationRequestVo {
 			if (this.locationSeqs == null || this.locationSeqs.isEmpty()) {
 				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 			}
+		}
+	}
+
+	public record ModifyLocationRequest(
+		Long locationSeq,
+		Long sequence
+	) {
+		public void validateModifyLocationRequest() {
+			if (this.locationSeq == null) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
+			if (this.sequence == null) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
+		}
+
+		public ModifyLocationRequestDto toModifyLocationRequestDto() {
+			return new ModifyLocationRequestDto(
+				this.locationSeq,
+				this.sequence
+			);
 		}
 	}
 }
