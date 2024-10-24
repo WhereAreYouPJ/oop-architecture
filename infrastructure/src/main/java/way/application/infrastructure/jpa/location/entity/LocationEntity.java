@@ -41,4 +41,11 @@ public class LocationEntity {
 
 	@Column(name = "street_name", nullable = false)
 	private String streetName;
+
+	@Column(name = "sequence", nullable = false)
+	public Long sequence;
+
+	public void updateLocationSequence(Long newSequence) {
+		this.sequence = newSequence;
+	}
 }
