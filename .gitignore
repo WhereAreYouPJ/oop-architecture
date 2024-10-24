@@ -37,3 +37,22 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### MySQL 관련 파일
+*.ibd
+*.sdi
+*.cnf
+mysql.sock
+db/mysql/data/*
+db/mysql/data/way/*
+db/mysql/data/performance_schema/*
+db/mysql/data/#innodb_redo/*
+db/mysql/data/binlog.*
+
+### InnoDB redo 로그 파일
+ib_*_tmp
+ib_*.dblwr
+
+### Redis 관련 파일 (필요한 경우)
+dump.rdb
+appendonly.aof

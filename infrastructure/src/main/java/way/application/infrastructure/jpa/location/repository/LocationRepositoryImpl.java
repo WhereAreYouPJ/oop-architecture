@@ -60,6 +60,7 @@ public class LocationRepositoryImpl implements LocationRepository {
 			.where(
 				location.memberEntity.eq(memberEntity)
 			)
+			.orderBy(location.sequence.asc())
 			.fetch();
 	}
 
@@ -68,10 +69,33 @@ public class LocationRepositoryImpl implements LocationRepository {
 		QLocationEntity location = QLocationEntity.locationEntity;
 
 		queryFactory.delete(location)
-				.where(
-						location.memberEntity.eq(memberEntity)
-				)
-				.execute();
+			.where(
+				location.memberEntity.eq(memberEntity)
+			)
+			.execute();
 
+	}
+
+	@Override
+	public Long findMaxSequenceByMemberEntity(MemberEntity memberEntity) {
+		QLocationEntity location = QLocationEntity.locationEntity;
+
+		List<LocationEntity> results = queryFactory
+			.selectFrom(location)
+			.where(
+				location.memberEntity.eq(memberEntity)
+			)
+			.fetch();
+
+		// 만약 존재한다면 가장 큰 sequence 값을 반환하고, 없다면 0L을 반환
+		return results.isEmpty() ? 0L : results.stream()
+			.map(LocationEntity::getSequence)
+			.max(Long::compare)
+			.orElse(0L);  // 가장 큰 sequence 값 반환
+	}
+
+	@Override
+	public void saveAll(List<LocationEntity> locationEntities) {
+		locationJpaRepository.saveAll(locationEntities);
 	}
 }

@@ -15,4 +15,8 @@ public interface LocationRepository {
 	List<LocationEntity> findByMemberEntity(MemberEntity memberEntity);
 
     void deleteAllByMemberSeq(MemberEntity memberEntity);
+
+	Long findMaxSequenceByMemberEntity(MemberEntity memberEntity);
+
+	void saveAll(List<LocationEntity> locationEntities);
 }
