@@ -16,7 +16,8 @@ public interface LocationEntityMapper {
 	@Mapping(target = "memberEntity", source = "memberEntity")
 	@Mapping(target = "location", source = "location")
 	@Mapping(target = "streetName", source = "streetName")
-	LocationEntity toLocationMapper(MemberEntity memberEntity, String location, String streetName);
+	@Mapping(target = "sequence", source = "sequence")
+	LocationEntity toLocationMapper(MemberEntity memberEntity, String location, String streetName, Long sequence);
 
 	AddLocationResponseDto toAddLocationResponseDto(LocationEntity locationEntity);
 
