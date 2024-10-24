@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -82,7 +83,7 @@ public class LocationController {
 		@ApiResponse(responseCode = "S500", description = "서버 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(responseCode = "MSB002", description = "MEMBER SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
-	public ResponseEntity<BaseResponse<List<GetLocationResponse>>> getBookMark(
+	public ResponseEntity<BaseResponse<List<GetLocationResponse>>> getLocation(
 		@RequestParam(value = "memberSeq", required = true) Long memberSeq
 	) {
 		List<GetLocationResponseDto> responseDto = locationService.getLocation(memberSeq);
@@ -92,5 +93,32 @@ public class LocationController {
 			.toList();
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
+	}
+
+	@PutMapping(name = "위치 즐겨찾기 수정")
+	@Operation(summary = "위치 즐겨찾기 수정 API")
+	@Parameters({
+		@Parameter(name = "memberSeq", description = "회원 PK 값", example = "1"),
+	})
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", useReturnTypeSchema = true),
+		@ApiResponse(responseCode = "S500", description = "서버 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(responseCode = "B001", description = "요청 데이터 형식 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(responseCode = "MSB002", description = "MEMBER SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(responseCode = "LSB025", description = "LOCATION SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
+	})
+	public ResponseEntity<BaseResponse<String>> modifyBookMark(
+		@RequestBody List<ModifyLocationRequest> requests,
+		@RequestParam(value = "memberSeq") Long memberSeq
+	) {
+		requests.forEach(ModifyLocationRequest::validateModifyLocationRequest);
+
+		List<ModifyLocationRequestDto> requestDtoList = requests.stream()
+			.map(ModifyLocationRequest::toModifyLocationRequestDto)
+			.toList();
+
+		locationService.modifyLocation(requestDtoList, memberSeq);
+
+		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
 	}
 }
