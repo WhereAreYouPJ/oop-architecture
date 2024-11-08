@@ -17,6 +17,8 @@ public interface CoordinateEntityMapper {
 	@Mapping(target = "coordinateSeq", ignore = true)
 	@Mapping(target = "memberEntity", source = "memberEntity")
 	@Mapping(target = "scheduleEntity", source = "scheduleEntity")
+	@Mapping(target = "x", source = "requestDto.x")
+	@Mapping(target = "y", source = "requestDto.y")
 	CoordinateEntity toCoordinateEntity(
 		MemberEntity memberEntity,
 		ScheduleEntity scheduleEntity,
