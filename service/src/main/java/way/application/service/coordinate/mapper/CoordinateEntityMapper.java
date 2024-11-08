@@ -10,12 +10,18 @@ import org.mapstruct.ReportingPolicy;
 
 import way.application.infrastructure.jpa.coordinate.entity.CoordinateEntity;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
+import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
 
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface CoordinateEntityMapper {
 	@Mapping(target = "coordinateSeq", ignore = true)
 	@Mapping(target = "memberEntity", source = "memberEntity")
-	CoordinateEntity toCoordinateEntity(MemberEntity memberEntity, CreateCoordinateRequestDto requestDto);
+	@Mapping(target = "scheduleEntity", source = "scheduleEntity")
+	CoordinateEntity toCoordinateEntity(
+		MemberEntity memberEntity,
+		ScheduleEntity scheduleEntity,
+		CreateCoordinateRequestDto requestDto
+	);
 
 	@Mapping(target = "memberSeq", source = "memberEntity.memberSeq")
 	@Mapping(target = "userName", source = "memberEntity.userName")

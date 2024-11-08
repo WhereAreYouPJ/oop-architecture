@@ -7,8 +7,17 @@ import org.springframework.stereotype.Repository;
 
 import way.application.infrastructure.jpa.coordinate.entity.CoordinateEntity;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
+import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
 
 @Repository
 public interface CoordinateJpaRepository extends JpaRepository<CoordinateEntity, Long> {
-	Optional<CoordinateEntity> findByMemberEntity(MemberEntity memberEntity);
+	Optional<CoordinateEntity> findByMemberEntityAndScheduleEntity(
+		MemberEntity memberEntity,
+		ScheduleEntity scheduleEntity
+	);
+
+	Optional<CoordinateEntity> findOptionalByMemberEntityAndScheduleEntity(
+		MemberEntity memberEntity,
+		ScheduleEntity scheduleEntity
+	);
 }

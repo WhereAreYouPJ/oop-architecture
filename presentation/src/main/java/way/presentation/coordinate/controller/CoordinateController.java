@@ -42,6 +42,7 @@ public class CoordinateController {
 		@ApiResponse(responseCode = "S500", description = "500 서버 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(responseCode = "B001", description = "400 요청 데이터 형식 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(responseCode = "MSB002", description = "400 MEMBER SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(responseCode = "SSB003", description = "400 SCHEDULE SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
 	})
 	public ResponseEntity<BaseResponse<String>> createCoordinate(@RequestBody CreateCoordinateRequest request) {
 		request.validateCreateCoordinateRequest();
@@ -62,11 +63,13 @@ public class CoordinateController {
 		@ApiResponse(responseCode = "B001", description = "400 요청 데이터 형식 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(responseCode = "MSB002", description = "400 MEMBER SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(responseCode = "CN005", description = "404 좌표가 존재하지 않습니다", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(responseCode = "SSB003", description = "400 SCHEDULE SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
 	})
 	public ResponseEntity<BaseResponse<GetCoordinateResponse>> getCoordinate(
-		@RequestParam(value = "memberSeq") Long memberSeq
+		@RequestParam(value = "memberSeq") Long memberSeq,
+		@RequestParam(value = "scheduleSeq") Long scheduleSeq
 	) {
-		GetCoordinateResponseDto responseDto = coordinateService.getCoordinate(memberSeq);
+		GetCoordinateResponseDto responseDto = coordinateService.getCoordinate(memberSeq, scheduleSeq);
 		GetCoordinateResponse response = coordinateResponseMapper.toGetCoordinateResponse(responseDto);
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));

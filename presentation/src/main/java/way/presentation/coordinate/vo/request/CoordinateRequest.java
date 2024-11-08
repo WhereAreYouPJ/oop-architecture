@@ -8,11 +8,15 @@ import way.application.utils.exception.ErrorResult;
 public class CoordinateRequest {
 	public record CreateCoordinateRequest(
 		Long memberSeq,
+		Long scheduleSeq,
 		Double x,
 		Double y
 	) {
 		public void validateCreateCoordinateRequest() {
 			if (this.memberSeq == null) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
+			if (this.scheduleSeq == null) {
 				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 			}
 			if (this.x == null) {
@@ -26,6 +30,7 @@ public class CoordinateRequest {
 		public CreateCoordinateRequestDto toCreateCoordinateRequestDto() {
 			return new CreateCoordinateRequestDto(
 				this.memberSeq,
+				this.scheduleSeq,
 				this.x,
 				this.y
 			);
