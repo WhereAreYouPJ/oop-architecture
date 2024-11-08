@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
+import way.application.domain.feed.FeedDomain;
 import way.application.domain.schedule.ScheduleDomain;
 import way.application.domain.scheduleMember.ScheduleMemberDomain;
 import way.application.infrastructure.jpa.bookMark.repository.BookMarkRepository;
@@ -54,6 +56,7 @@ public class FeedService {
 	private final FeedImageMapper feedImageMapper;
 
 	private final ScheduleDomain scheduleDomain;
+	private final FeedDomain feedDomain;
 
 	@Transactional
 	public SaveFeedResponseDto saveFeed(SaveFeedRequestDto requestDto, List<MultipartFile> images) throws IOException {
@@ -77,13 +80,15 @@ public class FeedService {
 		feedRepository.saveFeedEntity(feedEntity);
 
 		if (images != null) {
+			feedDomain.validateFeedImageSize(requestDto.feedImageOrders(), images);
+
 			for (int i = 0; i < images.size(); i++) {
 				MultipartFile multipartFile = images.get(i);
 				String feedImageURL = s3Utils.uploadMultipartFile(multipartFile);
 				Integer feedImageOrder = requestDto.feedImageOrders().get(i);
 
-				FeedImageEntity feedImageEntity = feedImageMapper.toFeedImageEntity(feedEntity, feedImageURL,
-					feedImageOrder);
+				FeedImageEntity feedImageEntity
+					= feedImageMapper.toFeedImageEntity(feedEntity, feedImageURL, feedImageOrder);
 				feedImageRepository.saveFeedImageEntity(feedImageEntity);
 			}
 		}
@@ -124,16 +129,17 @@ public class FeedService {
 			.map(scheduleEntity -> {
 				// userName 생성
 				List<ScheduleMemberEntity> scheduleMemberEntityList
-					= scheduleMemberRepository.findAllAcceptedScheduleMembersFriendsInSchedule(scheduleEntity, memberEntity);
+					= scheduleMemberRepository.findAllAcceptedScheduleMembersFriendsInSchedule(scheduleEntity,
+					memberEntity);
 
 				List<ScheduleFriendInfo> scheduleFriendInfo =
-						scheduleMemberEntityList.stream()
-								.map(scheduleMemberEntity -> new ScheduleFriendInfo(
-										scheduleMemberEntity.getInvitedMember().getMemberSeq(),
-										scheduleMemberEntity.getInvitedMember().getUserName(),
-										scheduleMemberEntity.getInvitedMember().getProfileImage()
-								))
-								.toList();
+					scheduleMemberEntityList.stream()
+						.map(scheduleMemberEntity -> new ScheduleFriendInfo(
+							scheduleMemberEntity.getInvitedMember().getMemberSeq(),
+							scheduleMemberEntity.getInvitedMember().getUserName(),
+							scheduleMemberEntity.getInvitedMember().getProfileImage()
+						))
+						.toList();
 
 				FeedEntity feedEntity = feedRepository.findByScheduleExcludingHiddenRand(scheduleEntity, memberEntity);
 
@@ -150,7 +156,8 @@ public class FeedService {
 							bookMarkInfo
 						);
 
-						return feedEntityMapper.toGetFeedResponseDto(scheduleInfo, List.of(scheduleFeedInfo), scheduleFriendInfo);
+						return feedEntityMapper.toGetFeedResponseDto(scheduleInfo, List.of(scheduleFeedInfo),
+							scheduleFriendInfo);
 					})
 					.orElse(null);
 			})
@@ -172,16 +179,16 @@ public class FeedService {
 
 		// USER NAME 추출
 		List<ScheduleMemberEntity> scheduleMemberEntityList
-			= scheduleMemberRepository.findAllAcceptedScheduleMembersFriendsInSchedule(scheduleEntity,memberEntity);
+			= scheduleMemberRepository.findAllAcceptedScheduleMembersFriendsInSchedule(scheduleEntity, memberEntity);
 
 		List<ScheduleFriendInfo> scheduleFriendInfo =
-				scheduleMemberEntityList.stream()
-						.map(scheduleMemberEntity -> new ScheduleFriendInfo(
-								scheduleMemberEntity.getInvitedMember().getMemberSeq(),
-								scheduleMemberEntity.getInvitedMember().getUserName(),
-								scheduleMemberEntity.getInvitedMember().getProfileImage()
-						))
-						.toList();
+			scheduleMemberEntityList.stream()
+				.map(scheduleMemberEntity -> new ScheduleFriendInfo(
+					scheduleMemberEntity.getInvitedMember().getMemberSeq(),
+					scheduleMemberEntity.getInvitedMember().getUserName(),
+					scheduleMemberEntity.getInvitedMember().getProfileImage()
+				))
+				.toList();
 
 		// Feed 조회 및 변환
 		List<ScheduleFeedInfo> scheduleFeedInfos = feedRepository.findByScheduleEntity(scheduleEntity).stream()

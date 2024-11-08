@@ -178,6 +178,12 @@ public enum ErrorResult {
 		"MAASB034"
 	),
 
+	FEED_IMAGE_SIZE_BAD_REQUEST_EXCEPTION(
+		HttpStatus.BAD_REQUEST.value(),
+		"피드 이미지와 FeedImageOrder의 수가 맞지 않습니다.",
+		"FESB035"
+	),
+
 	// NOT FOUND
 	HIDE_FEED_NOT_FOUND_EXCEPTION(
 		HttpStatus.NOT_FOUND.value(),
