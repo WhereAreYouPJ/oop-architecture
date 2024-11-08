@@ -11,12 +11,15 @@ import way.application.infrastructure.jpa.coordinate.entity.CoordinateEntity;
 import way.application.infrastructure.jpa.coordinate.repository.CoordinateRepository;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.member.repository.MemberRepository;
+import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
+import way.application.infrastructure.jpa.schedule.repository.ScheduleRepository;
 import way.application.service.coordinate.mapper.CoordinateEntityMapper;
 
 @Service
 @RequiredArgsConstructor
 public class CoordinateService {
 	private final MemberRepository memberRepository;
+	private final ScheduleRepository scheduleRepository;
 	private final CoordinateRepository coordinateRepository;
 
 	private final CoordinateEntityMapper coordinateEntityMapper;
@@ -25,11 +28,14 @@ public class CoordinateService {
 	public void createCoordinate(CreateCoordinateRequestDto requestDto) {
 		/*
 		 1. Member 유효성 검사
+		 2. Schedule 유효성 검사
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(requestDto.memberSeq());
+		ScheduleEntity scheduleEntity = scheduleRepository.findByScheduleSeq(requestDto.scheduleSeq());
 
-		CoordinateEntity coordinateEntity = coordinateRepository.findOptionalCoordinateByMemberEntity(memberEntity)
-			.orElseGet(() -> coordinateEntityMapper.toCoordinateEntity(memberEntity, requestDto));
+		CoordinateEntity coordinateEntity
+			= coordinateRepository.findOptionalCoordinateByMemberEntity(memberEntity, scheduleEntity)
+			.orElseGet(() -> coordinateEntityMapper.toCoordinateEntity(memberEntity, scheduleEntity, requestDto));
 
 		// 좌표 정보 업데이트 및 저장
 		coordinateEntity.updateCoordinate(requestDto.x(), requestDto.y());
@@ -37,13 +43,15 @@ public class CoordinateService {
 	}
 
 	@Transactional(readOnly = true)
-	public GetCoordinateResponseDto getCoordinate(Long memberSeq) {
+	public GetCoordinateResponseDto getCoordinate(Long memberSeq, Long scheduleSeq) {
 		/*
 		 1. Member 유효성
-		 2. Coordinate 유효성
+		 2. Schedule 유효성
+		 3. Coordinate 유효성
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
-		CoordinateEntity coordinateEntity = coordinateRepository.findByMemberEntity(memberEntity);
+		ScheduleEntity scheduleEntity = scheduleRepository.findByScheduleSeq(scheduleSeq);
+		CoordinateEntity coordinateEntity = coordinateRepository.findByMemberEntity(memberEntity, scheduleEntity);
 
 		return coordinateEntityMapper.toGetCoordinateResponseDto(memberEntity, coordinateEntity);
 	}
