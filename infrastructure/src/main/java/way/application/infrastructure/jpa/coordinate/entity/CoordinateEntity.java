@@ -17,6 +17,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
+import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
 
 @Entity
 @Table(name = "COORDINATE")
@@ -35,6 +36,10 @@ public class CoordinateEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_seq")
 	private MemberEntity memberEntity;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "schedule_seq")
+	private ScheduleEntity scheduleEntity;
 
 	@Column(name = "x", nullable = false)
 	private double x;
