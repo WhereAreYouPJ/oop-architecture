@@ -31,4 +31,10 @@ public class FriendRequestDto {
     ) {
 
     }
+
+    public record CancelDto(
+            Long friendRequestSeq
+    ) {
+
+    }
 }

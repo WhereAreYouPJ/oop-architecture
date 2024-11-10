@@ -18,6 +18,7 @@ import way.application.service.friendRequest.service.FriendRequestService;
 import way.application.utils.exception.GlobalExceptionHandler;
 import way.presentation.base.BaseResponse;
 import way.presentation.friendRequest.validates.AcceptValidator;
+import way.presentation.friendRequest.validates.CancelValidator;
 import way.presentation.friendRequest.validates.RefuseValidator;
 import way.presentation.friendRequest.validates.SaveFriendRequestValidator;
 import way.presentation.friendRequest.vo.req.FriendRequestVo;
@@ -25,7 +26,9 @@ import way.presentation.friendRequest.vo.req.FriendRequestVo;
 import java.io.IOException;
 import java.util.List;
 
+import static way.application.service.friendRequest.dto.request.FriendRequestDto.*;
 import static way.application.service.friendRequest.dto.response.FriendRequestResponseDto.*;
+import static way.presentation.friendRequest.vo.req.FriendRequestVo.*;
 import static way.presentation.friendRequest.vo.res.FriendRequestResponseVo.*;
 
 @RestController
@@ -38,6 +41,7 @@ public class FriendRequestController {
     private final FriendRequestService friendRequestService;
     private final AcceptValidator acceptValidator;
     private final RefuseValidator refuseValidator;
+    private final CancelValidator cancelValidator;
 
 
     @PostMapping(name = "친구 요청")
@@ -90,21 +94,76 @@ public class FriendRequestController {
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class)))
     })
-    public ResponseEntity<BaseResponse<String>> friendRequest(@Valid @RequestBody FriendRequestVo.SaveFriendRequestRequest request) throws IOException {
+    public ResponseEntity<BaseResponse<String>> friendRequest(@Valid @RequestBody SaveFriendRequestRequest request) throws IOException {
 
         // DTO 유효성 검사
         saveFriendRequestValidator.validate(request);
 
         // VO -> DTO 변환
-        FriendRequestDto.SaveFriendRequestDto saveFriendRequestDto = request.toSaveFriendRequestDto();
+        SaveFriendRequestDto saveFriendRequestDto = request.toSaveFriendRequestDto();
 
         friendRequestService.saveFriendRequest(saveFriendRequestDto);
 
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
     }
 
-    @GetMapping(name = "친구 요청 리스트 조회")
-    @Operation(summary = "friend Request List API", description = "친구 요청 리스트 조회 API")
+    @GetMapping(name = "친구 요청 받은 리스트 조회")
+    @Operation(summary = "friend Requested List API", description = "친구 요청 받은 리스트 조회 API")
+    @Parameters({
+            @Parameter(
+                    name = "memberSeq",
+                    description = "memberSeq",
+                    example = "1")
+    })
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청에 성공하였습니다.",
+                    useReturnTypeSchema = true),
+            @ApiResponse(
+                    responseCode = "S500",
+                    description = "500 SERVER_ERROR",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "B001",
+                    description = "400 Invalid DTO Parameter errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "MSB002",
+                    description = "400 MEMBER_SEQ_BAD_REQUEST_EXCEPTION / MEMBER_SEQ 오류",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class)))
+    })
+    public ResponseEntity<BaseResponse<List<GetFriendRequestedListResponse>>> getFriendRequestedList(@Valid @RequestParam("memberSeq") Long memberSeq) {
+
+        // Param -> VO
+        GetFriendRequestList request = new GetFriendRequestList(memberSeq);
+
+        // VO -> DTO
+        List<FriendRequestedList> friendRequestedList
+                = friendRequestService.getFriendRequestedList(request.toGetFriendRequestList());
+
+        // DTO -> VO
+        List<GetFriendRequestedListResponse> response = friendRequestedList.stream()
+                .map(dto -> new GetFriendRequestedListResponse(
+                        dto.friendRequestSeq(),
+                        dto.senderSeq(),
+                        dto.createTime(),
+                        dto.profileImage(),
+                        dto.userName()))
+                .toList();
+
+
+        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
+    }
+
+    @GetMapping(name = "친구 요청한 리스트 조회", value = "/list")
+    @Operation(summary = "friend Request List API", description = "친구 요청한 리스트 조회 API")
     @Parameters({
             @Parameter(
                     name = "memberSeq",
@@ -138,17 +197,17 @@ public class FriendRequestController {
     public ResponseEntity<BaseResponse<List<GetFriendRequestListResponse>>> getFriendRequestList(@Valid @RequestParam("memberSeq") Long memberSeq) {
 
         // Param -> VO
-        FriendRequestVo.GetFriendRequestList request = new FriendRequestVo.GetFriendRequestList(memberSeq);
+        GetFriendRequestList request = new GetFriendRequestList(memberSeq);
 
         // VO -> DTO
-        List<FriendRequestList> friendRequestList
+        List<FriendRequestList> friendRequestedList
                 = friendRequestService.getFriendRequestList(request.toGetFriendRequestList());
 
         // DTO -> VO
-        List<GetFriendRequestListResponse> response = friendRequestList.stream()
+        List<GetFriendRequestListResponse> response = friendRequestedList.stream()
                 .map(dto -> new GetFriendRequestListResponse(
                         dto.friendRequestSeq(),
-                        dto.senderSeq(),
+                        dto.receiverSeq(),
                         dto.createTime(),
                         dto.profileImage(),
                         dto.userName()))
@@ -208,13 +267,13 @@ public class FriendRequestController {
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class)))
     })
-    public ResponseEntity<BaseResponse<String>> accept(@Valid @RequestBody FriendRequestVo.Accept request) {
+    public ResponseEntity<BaseResponse<String>> accept(@Valid @RequestBody Accept request) {
 
         // DTO 유효성 검사
         acceptValidator.validate(request);
 
         // VO -> DTO 변환
-        FriendRequestDto.AcceptDto acceptDto = request.toAccept();
+        AcceptDto acceptDto = request.toAccept();
 
         friendRequestService.accept(acceptDto);
 
@@ -248,15 +307,54 @@ public class FriendRequestController {
                             schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class)))
     })
-    public ResponseEntity<BaseResponse<String>> refuse(@Valid @RequestBody FriendRequestVo.Refuse request) {
+    public ResponseEntity<BaseResponse<String>> refuse(@Valid @RequestBody Refuse request) {
 
         // DTO 유효성 검사
         refuseValidator.validate(request);
 
         // VO -> DTO 변환
-        FriendRequestDto.RefuseDto refuseDto = request.toRefuse();
+        RefuseDto refuseDto = request.toRefuse();
 
         friendRequestService.refuse(refuseDto);
+
+        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
+    }
+
+    @DeleteMapping(value = "/cancel",name = "친구 요청 취소")
+    @Operation(summary = "friend Request Cancel API", description = "친구 요청 취소 API")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청에 성공하였습니다.",
+                    useReturnTypeSchema = true),
+            @ApiResponse(
+                    responseCode = "S500",
+                    description = "500 SERVER_ERROR",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "B001",
+                    description = "400 Invalid DTO Parameter errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "FSB026",
+                    description = "400 FRIENDREQUEST_SEQ_BAD_REQUEST_EXCEPTION / FRIENDREQUEST_SEQ 오류",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class)))
+    })
+    public ResponseEntity<BaseResponse<String>> cancel(@Valid @RequestBody Cancel request) {
+
+        // DTO 유효성 검사
+        cancelValidator.validate(request);
+
+        // VO -> DTO 변환
+        CancelDto cancelDto = request.toCancel();
+
+        friendRequestService.cancel(cancelDto);
 
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
     }
