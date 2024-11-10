@@ -76,8 +76,14 @@ public class FriendRequestRepositoryImpl implements FriendRequestRepository{
     }
 
     @Override
-    public List<FriendRequestEntity> findFriendRequestByMemberSeq(MemberEntity memberEntity) {
+    public List<FriendRequestEntity> findFriendRequestByReceiverSeq(MemberEntity memberEntity) {
         return friendRequestJpaRepository.findByReceiverSeq(memberEntity);
+
+    }
+
+    @Override
+    public List<FriendRequestEntity> findFriendRequestBySenderSeq(MemberEntity memberEntity) {
+        return friendRequestJpaRepository.findBySenderSeq(memberEntity);
 
     }
 

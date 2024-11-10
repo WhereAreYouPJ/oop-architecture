@@ -57,4 +57,15 @@ public class FriendRequestVo {
 
     }
 
+    public record Cancel(
+            Long friendRequestSeq
+    ) {
+        public FriendRequestDto.CancelDto toCancel() {
+            return new FriendRequestDto.CancelDto(
+                    this.friendRequestSeq
+            );
+        }
+
+    }
+
 }

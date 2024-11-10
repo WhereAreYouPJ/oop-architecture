@@ -10,13 +10,14 @@ import way.application.infrastructure.jpa.friendRequest.entity.FriendRequestEnti
 import way.application.infrastructure.jpa.friendRequest.respository.FriendRequestRepository;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.service.friend.mapper.FriendMapper;
-import way.application.service.friendRequest.dto.request.FriendRequestDto;
-import way.application.service.friendRequest.dto.response.FriendRequestResponseDto;
 import way.application.service.friendRequest.mapper.FriendRequestMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static way.application.service.friendRequest.dto.request.FriendRequestDto.*;
+import static way.application.service.friendRequest.dto.response.FriendRequestResponseDto.*;
 
 @Service
 @RequiredArgsConstructor
@@ -30,7 +31,7 @@ public class FriendRequestService {
     private final FriendRequestDomain friendRequestDomain;
 
     @Transactional
-    public void saveFriendRequest(FriendRequestDto.SaveFriendRequestDto saveFriendRequestDto) {
+    public void saveFriendRequest(SaveFriendRequestDto saveFriendRequestDto) {
 
         // 신청 보낸 멤버 유효성 검사
         MemberEntity sender = friendRequestRepository.validateSenderSeq(saveFriendRequestDto.memberSeq());
@@ -59,15 +60,15 @@ public class FriendRequestService {
 
     }
 
-    public List<FriendRequestResponseDto.FriendRequestList> getFriendRequestList(FriendRequestDto.GetFriendRequestListDto getFriendRequestListDto) {
+    public List<FriendRequestedList> getFriendRequestedList(GetFriendRequestListDto getFriendRequestListDto) {
 
         // 멤버 조회
         MemberEntity memberEntity = friendRequestRepository.validateMemberSeq(getFriendRequestListDto.memberSeq());
 
         // 친구 요청 조회
-        List<FriendRequestEntity> friendRequestList = friendRequestRepository.findFriendRequestByMemberSeq(memberEntity);
+        List<FriendRequestEntity> friendRequestList = friendRequestRepository.findFriendRequestByReceiverSeq(memberEntity);
 
-        return friendRequestList.stream().map(friendRequestEntity -> new FriendRequestResponseDto.FriendRequestList(
+        return friendRequestList.stream().map(friendRequestEntity -> new FriendRequestedList(
                 friendRequestEntity.getFriendRequestSeq(),
                 friendRequestEntity.getSenderSeq().getMemberSeq(),
                 friendRequestEntity.getCreateTime(),
@@ -77,8 +78,26 @@ public class FriendRequestService {
 
     }
 
+    public List<FriendRequestList> getFriendRequestList(GetFriendRequestListDto getFriendRequestListDto) {
+
+        // 멤버 조회
+        MemberEntity memberEntity = friendRequestRepository.validateMemberSeq(getFriendRequestListDto.memberSeq());
+
+        // 친구 요청 조회
+        List<FriendRequestEntity> friendRequestList = friendRequestRepository.findFriendRequestBySenderSeq(memberEntity);
+
+        return friendRequestList.stream().map(friendRequestEntity -> new FriendRequestList(
+                        friendRequestEntity.getFriendRequestSeq(),
+                        friendRequestEntity.getReceiverSeq().getMemberSeq(),
+                        friendRequestEntity.getCreateTime(),
+                        friendRequestEntity.getReceiverSeq().getProfileImage(),
+                        friendRequestEntity.getReceiverSeq().getUserName()))
+                .collect(Collectors.toList());
+
+    }
+
     @Transactional
-    public void accept(FriendRequestDto.AcceptDto acceptDto) {
+    public void accept(AcceptDto acceptDto) {
 
         // 조회
         MemberEntity member = friendRequestRepository.validateMemberSeq(acceptDto.memberSeq());
@@ -111,10 +130,21 @@ public class FriendRequestService {
     }
 
     @Transactional
-    public void refuse(FriendRequestDto.RefuseDto refuseDto) {
+    public void refuse(RefuseDto refuseDto) {
 
         // 친구 요청 확인
         FriendRequestEntity friendRequest = friendRequestRepository.findFriendRequestById(refuseDto.friendRequestSeq());
+
+        // 친규 요청 삭제
+        friendRequestRepository.delete(friendRequest);
+
+    }
+
+    @Transactional
+    public void cancel(CancelDto cancelDto) {
+
+        // 친구 요청 확인
+        FriendRequestEntity friendRequest = friendRequestRepository.findFriendRequestById(cancelDto.friendRequestSeq());
 
         // 친규 요청 삭제
         friendRequestRepository.delete(friendRequest);

@@ -20,7 +20,9 @@ public interface FriendRequestRepository {
 
     MemberEntity validateMemberSeq(Long memberSeq);
 
-    List<FriendRequestEntity> findFriendRequestByMemberSeq(MemberEntity memberEntity);
+    List<FriendRequestEntity> findFriendRequestByReceiverSeq(MemberEntity memberEntity);
+
+    List<FriendRequestEntity> findFriendRequestBySenderSeq(MemberEntity memberEntity);
 
     FriendRequestEntity findFriendRequestById(Long friendRequestSeq);
 

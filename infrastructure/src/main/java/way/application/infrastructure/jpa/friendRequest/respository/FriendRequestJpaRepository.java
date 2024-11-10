@@ -13,4 +13,5 @@ public interface FriendRequestJpaRepository extends JpaRepository<FriendRequestE
     boolean existsByReceiverSeqAndSenderSeq(MemberEntity senderSeq, MemberEntity receiverSeq);
 
     List<FriendRequestEntity> findByReceiverSeq(MemberEntity member);
+    List<FriendRequestEntity> findBySenderSeq(MemberEntity member);
 }
