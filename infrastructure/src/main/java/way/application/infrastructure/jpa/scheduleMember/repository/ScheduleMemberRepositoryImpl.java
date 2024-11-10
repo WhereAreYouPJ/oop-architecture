@@ -1,5 +1,6 @@
 package way.application.infrastructure.jpa.scheduleMember.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -228,12 +229,15 @@ public class ScheduleMemberRepositoryImpl implements ScheduleMemberRepository {
 	@Override
 	public List<ScheduleMemberEntity> findInvitedScheduleMemberEntity(MemberEntity memberEntity) {
 		QScheduleMemberEntity scheduleMember = QScheduleMemberEntity.scheduleMemberEntity;
+		QScheduleEntity schedule = QScheduleEntity.scheduleEntity;
 
 		return queryFactory
 			.selectFrom(scheduleMember)
+			.join(scheduleMember).on(schedule.scheduleSeq.eq(scheduleMember.schedule.scheduleSeq))
 			.where(
 				scheduleMember.invitedMember.eq(memberEntity)
 					.and(scheduleMember.acceptSchedule.isFalse())
+					.and(schedule.startTime.goe(LocalDate.now().atStartOfDay()))
 			).fetch();
 	}
 
