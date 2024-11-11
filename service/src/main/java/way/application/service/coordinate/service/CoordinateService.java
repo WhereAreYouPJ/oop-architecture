@@ -3,6 +3,8 @@ package way.application.service.coordinate.service;
 import static way.application.service.coordinate.dto.request.CoordinateRequestDto.*;
 import static way.application.service.coordinate.dto.response.CoordinateResponseDto.*;
 
+import java.time.LocalDateTime;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,10 +49,12 @@ public class CoordinateService {
 		/*
 		 1. Member 유효성
 		 2. Schedule 유효성
-		 3. Coordinate 유효성
+		 3. 시간 유효성 검사
+		 4. Coordinate 유효성
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
-		ScheduleEntity scheduleEntity = scheduleRepository.findByScheduleSeq(scheduleSeq);
+		scheduleRepository.findByScheduleSeq(scheduleSeq);
+		ScheduleEntity scheduleEntity = scheduleRepository.findScheduleByCurDateTime(scheduleSeq, LocalDateTime.now());
 		CoordinateEntity coordinateEntity = coordinateRepository.findByMemberEntity(memberEntity, scheduleEntity);
 
 		return coordinateEntityMapper.toGetCoordinateResponseDto(memberEntity, coordinateEntity);

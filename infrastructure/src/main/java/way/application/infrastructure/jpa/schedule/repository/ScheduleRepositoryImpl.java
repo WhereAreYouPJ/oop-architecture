@@ -3,6 +3,7 @@ package way.application.infrastructure.jpa.schedule.repository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -122,12 +123,29 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 	}
 
 	@Override
-	public void deleteAllByMemberSeq(MemberEntity memberEntity,List<ScheduleEntity> scheduleEntities) {
+	public void deleteAllByMemberSeq(MemberEntity memberEntity, List<ScheduleEntity> scheduleEntities) {
 		QScheduleEntity schedule = QScheduleEntity.scheduleEntity;
 
 		queryFactory.delete(schedule)
-				.where(schedule.in(scheduleEntities))
-				.execute();
+			.where(schedule.in(scheduleEntities))
+			.execute();
 
+	}
+
+	@Override
+	public ScheduleEntity findScheduleByCurDateTime(Long scheduleSeq, LocalDateTime curDateTime) {
+		QScheduleEntity schedule = QScheduleEntity.scheduleEntity;
+
+		LocalDateTime oneHourBeforeStart = curDateTime.minusHours(1);
+		LocalDateTime oneHourAfterStart = curDateTime.plusHours(1);
+
+		return Optional.ofNullable(
+			queryFactory
+				.selectFrom(schedule)
+				.where(
+					schedule.startTime.between(oneHourBeforeStart, oneHourAfterStart)
+				)
+				.fetchOne()
+		).orElseThrow(() -> new BadRequestException(ErrorResult.COORDINATE_TIME_BAD_REQUEST_EXCEPTION));
 	}
 }
