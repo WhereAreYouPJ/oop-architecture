@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import way.application.infrastructure.base.entity.BaseEntity;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 
 @Entity
@@ -26,7 +27,7 @@ import way.application.infrastructure.jpa.member.entity.MemberEntity;
 @DynamicUpdate
 @Getter
 @Builder(toBuilder = true)
-public class LocationEntity {
+public class LocationEntity extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "location_seq")

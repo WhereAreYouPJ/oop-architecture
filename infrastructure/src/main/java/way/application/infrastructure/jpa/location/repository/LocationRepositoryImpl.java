@@ -60,7 +60,7 @@ public class LocationRepositoryImpl implements LocationRepository {
 			.where(
 				location.memberEntity.eq(memberEntity)
 			)
-			.orderBy(location.sequence.asc())
+			.orderBy(location.createdAt.desc())
 			.fetch();
 	}
 
