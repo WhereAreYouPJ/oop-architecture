@@ -136,12 +136,14 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 	public ScheduleEntity findScheduleByCurDateTime(Long scheduleSeq, LocalDateTime curDateTime) {
 		QScheduleEntity schedule = QScheduleEntity.scheduleEntity;
 
+		LocalDateTime oneHourBeforeStart = curDateTime.minusHours(1);
+		LocalDateTime oneHourAfterStart = curDateTime.plusHours(1);
+
 		return Optional.ofNullable(
 			queryFactory
 				.selectFrom(schedule)
 				.where(
-					schedule.endTime.before(curDateTime)
-						.and(schedule.startTime.after(curDateTime))
+					schedule.startTime.between(oneHourBeforeStart, oneHourAfterStart)
 				)
 				.fetchOne()
 		).orElseThrow(() -> new BadRequestException(ErrorResult.COORDINATE_TIME_BAD_REQUEST_EXCEPTION));
