@@ -184,6 +184,12 @@ public enum ErrorResult {
 		"FESB035"
 	),
 
+	COORDINATE_TIME_BAD_REQUEST_EXCEPTION(
+		HttpStatus.BAD_REQUEST.value(),
+		"해당 일정의 좌표 정보를 가져올 시간이 아닙니다.",
+		"CTB036"
+	),
+
 	// NOT FOUND
 	HIDE_FEED_NOT_FOUND_EXCEPTION(
 		HttpStatus.NOT_FOUND.value(),
