@@ -121,7 +121,7 @@ public class ScheduleService {
 		 4. Schedule 작성자 확인
 		 5. 시작 시간 확인 (전 후 1시간 기준)
 		*/
-		memberRepository.findByMemberSeq(requestDto.createMemberSeq());
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(requestDto.createMemberSeq());
 		memberRepository.findByMemberSeqs(requestDto.invitedMemberSeqs());
 		scheduleRepository.findByScheduleSeq(requestDto.scheduleSeq());
 		ScheduleEntity scheduleEntity = scheduleMemberRepository.findScheduleIfCreatedByMember(
@@ -131,6 +131,9 @@ public class ScheduleService {
 		scheduleDomain.validateScheduleStartTime(scheduleEntity.getStartTime());
 
 		// 전체 삭제
+		chatRoomMemberRepository.deleteAllByMemberSeq(memberEntity);
+		// 채팅방 삭제
+		chatRoomRepository.deleteAllBySchedule(scheduleEntity);
 		scheduleRepository.deleteById(requestDto.scheduleSeq());
 		scheduleMemberRepository.deleteAllBySchedule(scheduleEntity);
 

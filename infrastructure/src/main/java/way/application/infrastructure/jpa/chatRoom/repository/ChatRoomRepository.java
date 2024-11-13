@@ -17,4 +17,5 @@ public interface ChatRoomRepository {
 	ChatRoomEntity findByScheduleEntity(ScheduleEntity scheduleEntity);
 
     void deleteAllByMemberSeq(List<ScheduleEntity> scheduleEntities);
+    void deleteAllBySchedule(ScheduleEntity scheduleEntities);
 }

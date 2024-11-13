@@ -88,4 +88,13 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepository {
 				.where(chatRoomEntity.scheduleEntity.in(scheduleEntities))
 				.execute();
 	}
+
+	@Override
+	public void deleteAllBySchedule(ScheduleEntity scheduleEntities) {
+		QChatRoomEntity chatRoomEntity = QChatRoomEntity.chatRoomEntity;
+
+		queryFactory.delete(chatRoomEntity)
+				.where(chatRoomEntity.scheduleEntity.eq(scheduleEntities))
+				.execute();
+	}
 }
