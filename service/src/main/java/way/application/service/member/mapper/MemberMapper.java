@@ -13,7 +13,7 @@ import static way.application.service.member.dto.request.MemberRequestDto.*;
 public interface MemberMapper {
 
 	@Mapping(target = "memberSeq", ignore = true)
-	MemberEntity toMemberEntity(SaveMemberRequestDto request, String encodedPassword, String memberCode);
+	MemberEntity toMemberEntity(SaveMemberRequestDto request, String encodedPassword, String memberCode, String profileImage);
 
 	@Mapping(target = "memberSeq", ignore = true)
 	MemberEntity toKakaoMemberEntity(SaveSnsMemberRequestDto request, String kakaoPassword, String memberCode);
