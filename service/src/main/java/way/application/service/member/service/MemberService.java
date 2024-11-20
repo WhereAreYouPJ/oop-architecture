@@ -32,7 +32,7 @@ import java.util.List;
 
 import static way.application.service.member.dto.request.MemberRequestDto.*;
 import static way.application.service.member.dto.response.MemberResponseDto.*;
-
+import static way.application.service.member.util.MemberUtil.*;
 
 @Service
 @RequiredArgsConstructor
@@ -74,7 +74,7 @@ public class MemberService {
 
 		// Member 저장
 		memberRepository.saveMember(
-				memberMapper.toMemberEntity(saveMemberRequestDto,encoder.encode(saveMemberRequestDto.password()),memberCode)
+				memberMapper.toMemberEntity(saveMemberRequestDto,encoder.encode(saveMemberRequestDto.password()),memberCode, initialMemberProfileImage)
 		);
 
 	}
