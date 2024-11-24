@@ -14,12 +14,6 @@ public class ScheduleResponseVo {
 
 	}
 
-	public record ModifyScheduleResponse(
-		Long scheduleSeq
-	) {
-
-	}
-
 	public record GetScheduleResponse(
 		String title,
 		LocalDateTime startTime,
