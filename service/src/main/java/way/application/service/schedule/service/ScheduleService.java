@@ -188,13 +188,11 @@ public class ScheduleService {
 		);
 
 		for (MemberEntity newMemberEntity : newMemberEntities) {
+			firebaseNotificationDomain.sendNotification(newMemberEntity, memberEntity);
+
 			scheduleMemberRepository.saveScheduleMemberEntity(
 				scheduleMemberMapper.toScheduleMemberEntity(updateScheduleEntity, newMemberEntity, false, false)
 			);
-		}
-
-		for (MemberEntity newMemberEntity : newMemberEntities) {
-			firebaseNotificationDomain.sendNotification(newMemberEntity, memberEntity);
 		}
 
 		// Chat Room Member Update
