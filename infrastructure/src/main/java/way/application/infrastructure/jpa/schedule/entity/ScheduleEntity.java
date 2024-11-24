@@ -61,4 +61,30 @@ public class ScheduleEntity {
 
 	@Column(name = "all_day", columnDefinition = "boolean default false")
 	private Boolean allDay;
+
+	public ScheduleEntity updateScheduleEntity(
+		String title,
+		LocalDateTime startTime,
+		LocalDateTime endTime,
+		String location,
+		String streetName,
+		Double x,
+		Double y,
+		String color,
+		String memo,
+		Boolean allDay
+	) {
+		this.title = title;
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.location = location;
+		this.streetName = streetName;
+		this.x = x;
+		this.y = y;
+		this.color = color;
+		this.memo = memo;
+		this.allDay = allDay;
+
+		return this;
+	}
 }
