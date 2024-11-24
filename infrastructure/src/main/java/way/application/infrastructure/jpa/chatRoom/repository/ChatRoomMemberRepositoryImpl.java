@@ -54,20 +54,43 @@ public class ChatRoomMemberRepositoryImpl implements ChatRoomMemberRepository {
 		QScheduleMemberEntity scheduleMemberEntity = QScheduleMemberEntity.scheduleMemberEntity;
 
 		List<ChatRoomMemberEntity> chatRoomMemberEntities = queryFactory.select(chatRoomMemberEntity)
-				.from(chatRoomMemberEntity)
-				.join(chatRoomEntity).on(chatRoomEntity.chatRoomSeq.eq(chatRoomMemberEntity.chatRoomEntity.chatRoomSeq))
-				.join(scheduleMemberEntity).on(chatRoomEntity.scheduleEntity.eq(scheduleMemberEntity.schedule))
-				.where(scheduleMemberEntity.isCreator.eq(true)
-						.and(scheduleMemberEntity.invitedMember.eq(memberEntity))
-				).fetch();
+			.from(chatRoomMemberEntity)
+			.join(chatRoomEntity).on(chatRoomEntity.chatRoomSeq.eq(chatRoomMemberEntity.chatRoomEntity.chatRoomSeq))
+			.join(scheduleMemberEntity).on(chatRoomEntity.scheduleEntity.eq(scheduleMemberEntity.schedule))
+			.where(scheduleMemberEntity.isCreator.eq(true)
+				.and(scheduleMemberEntity.invitedMember.eq(memberEntity))
+			).fetch();
 
 		queryFactory.delete(chatRoomMemberEntity)
-				.where(chatRoomMemberEntity.in(chatRoomMemberEntities))
-				.execute();
+			.where(chatRoomMemberEntity.in(chatRoomMemberEntities))
+			.execute();
 
 		queryFactory.delete(chatRoomMemberEntity)
-				.where(chatRoomMemberEntity.memberEntity.eq(memberEntity))
-				.execute();
+			.where(chatRoomMemberEntity.memberEntity.eq(memberEntity))
+			.execute();
+	}
+
+	@Override
+	public void deleteRemainChatRoomMember(ChatRoomEntity chatRoomEntity, List<MemberEntity> memberEntities) {
+		QChatRoomMemberEntity chatRoomMember = QChatRoomMemberEntity.chatRoomMemberEntity;
+
+		queryFactory
+			.delete(chatRoomMember)
+			.where(
+				chatRoomMember.chatRoomEntity.eq(chatRoomEntity)
+					.and(chatRoomMember.memberEntity.notIn(memberEntities))
+			).execute();
+	}
+
+	@Override
+	public List<ChatRoomMemberEntity> findAllByChatRoomEntity(ChatRoomEntity chatRoomEntity) {
+		QChatRoomMemberEntity chatRoomMember = QChatRoomMemberEntity.chatRoomMemberEntity;
+
+		return queryFactory
+			.selectFrom(chatRoomMember)
+			.where(
+				chatRoomMember.chatRoomEntity.eq(chatRoomEntity)
+			).fetch();
 	}
 
 	@Override
