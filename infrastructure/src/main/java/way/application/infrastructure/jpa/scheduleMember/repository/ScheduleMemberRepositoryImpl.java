@@ -84,6 +84,29 @@ public class ScheduleMemberRepositoryImpl implements ScheduleMemberRepository {
 	}
 
 	@Override
+	public List<ScheduleMemberEntity> findAllByScheduleEntity(ScheduleEntity scheduleEntity) {
+		QScheduleMemberEntity scheduleMember = QScheduleMemberEntity.scheduleMemberEntity;
+
+		return queryFactory
+			.selectFrom(scheduleMember)
+			.where(
+				scheduleMember.schedule.eq(scheduleEntity)
+			).fetch();
+	}
+
+	@Override
+	public void deleteRemainScheduleEntity(ScheduleEntity scheduleEntity, List<MemberEntity> memberEntities) {
+		QScheduleMemberEntity scheduleMember = QScheduleMemberEntity.scheduleMemberEntity;
+
+		queryFactory
+			.delete(scheduleMember)
+			.where(
+				scheduleMember.schedule.eq(scheduleEntity)
+					.and(scheduleMember.invitedMember.notIn(memberEntities))
+			).execute();
+	}
+
+	@Override
 	public void deleteAllBySchedule(ScheduleEntity scheduleEntity) {
 		scheduleMemberJpaRepository.deleteAllBySchedule(scheduleEntity);
 	}
