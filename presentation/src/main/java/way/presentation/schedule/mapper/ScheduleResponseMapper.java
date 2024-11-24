@@ -11,8 +11,6 @@ import org.mapstruct.ReportingPolicy;
 public interface ScheduleResponseMapper {
 	SaveScheduleResponse toSaveScheduleResponse(SaveScheduleResponseDto responseDto);
 
-	ModifyScheduleResponse toModifyScheduleResponse(ModifyScheduleResponseDto responseDto);
-
 	GetScheduleResponse toGetScheduleResponse(GetScheduleResponseDto responseDto);
 
 	GetScheduleByDateResponse toGetScheduleByDateResponse(GetScheduleByDateResponseDto responseDto);

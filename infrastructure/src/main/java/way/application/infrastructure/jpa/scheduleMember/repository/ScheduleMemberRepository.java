@@ -19,7 +19,11 @@ public interface ScheduleMemberRepository {
 	ScheduleMemberEntity findAcceptedScheduleMemberInSchedule(Long scheduleSeq, Long memberSeq);
 
 	List<ScheduleMemberEntity> findAllAcceptedScheduleMembersInSchedule(ScheduleEntity scheduleEntity);
-	List<ScheduleMemberEntity> findAllAcceptedScheduleMembersFriendsInSchedule(ScheduleEntity scheduleEntity, MemberEntity memberEntity);
+
+	List<ScheduleMemberEntity> findAllAcceptedScheduleMembersFriendsInSchedule(
+		ScheduleEntity scheduleEntity,
+		MemberEntity memberEntity
+	);
 
 	ScheduleMemberEntity findScheduleMemberInSchedule(Long memberSeq, Long scheduleSeq);
 
@@ -35,9 +39,13 @@ public interface ScheduleMemberRepository {
 
 	List<ScheduleMemberEntity> findInvitedScheduleMemberEntity(MemberEntity memberEntity);
 
-    Long findCreatorBySchedule(ScheduleEntity scheduleEntity);
+	Long findCreatorBySchedule(ScheduleEntity scheduleEntity);
 
 	List<ScheduleEntity> findSchedulesIfCreatedByMember(MemberEntity memberEntity);
 
 	void deleteAllByMemberSeq(MemberEntity memberEntity, List<ScheduleEntity> scheduleEntities);
+
+	List<ScheduleMemberEntity> findAllByScheduleEntity(ScheduleEntity scheduleEntity);
+
+	void deleteRemainScheduleEntity(ScheduleEntity scheduleEntity, List<MemberEntity> memberEntities);
 }

@@ -10,7 +10,8 @@ public class LocationResponseVo {
 	public record GetLocationResponse(
 		Long locationSeq,
 		String location,
-		String streetName
+		String streetName,
+		Long sequence
 	) {
 
 	}

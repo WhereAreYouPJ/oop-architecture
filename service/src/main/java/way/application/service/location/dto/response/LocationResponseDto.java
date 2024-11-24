@@ -10,7 +10,8 @@ public class LocationResponseDto {
 	public record GetLocationResponseDto(
 		Long locationSeq,
 		String location,
-		String streetName
+		String streetName,
+		Long sequence
 	) {
 
 	}

@@ -7,14 +7,13 @@ import static way.application.service.schedule.dto.response.ScheduleResponseDto.
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,6 +27,7 @@ import way.application.domain.schedule.ScheduleDomain;
 import way.application.domain.scheduleMember.ScheduleMemberDomain;
 import way.application.infrastructure.jpa.bookMark.repository.BookMarkRepository;
 import way.application.infrastructure.jpa.chatRoom.entity.ChatRoomEntity;
+import way.application.infrastructure.jpa.chatRoom.entity.ChatRoomMemberEntity;
 import way.application.infrastructure.jpa.chatRoom.repository.ChatRoomMemberRepository;
 import way.application.infrastructure.jpa.chatRoom.repository.ChatRoomRepository;
 import way.application.infrastructure.jpa.feed.entity.FeedEntity;
@@ -37,6 +37,7 @@ import way.application.infrastructure.jpa.friend.entity.FriendEntity;
 import way.application.infrastructure.jpa.friend.respository.FriendRepository;
 import way.application.infrastructure.jpa.hideFeed.repository.HideFeedRepository;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
+import way.application.infrastructure.jpa.member.repository.MemberJpaRepository;
 import way.application.infrastructure.jpa.member.repository.MemberRepository;
 import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
 import way.application.infrastructure.jpa.schedule.repository.ScheduleRepository;
@@ -44,6 +45,7 @@ import way.application.infrastructure.jpa.scheduleMember.entity.ScheduleMemberEn
 import way.application.infrastructure.jpa.scheduleMember.repository.ScheduleMemberRepository;
 import way.application.infrastructure.mongo.chat.repository.ChatRepository;
 import way.application.service.chat.mapper.ChatRoomMapper;
+import way.application.service.chat.mapper.ChatRoomMemberMapper;
 import way.application.service.schedule.mapper.ScheduleEntityMapper;
 import way.application.service.scheduleMember.mapper.ScheduleMemberMapper;
 
@@ -62,50 +64,67 @@ public class ScheduleService {
 	private final ChatRoomMemberRepository chatRoomMemberRepository;
 	private final ChatRepository chatRepository;
 
-	private final MemberDomain memberDomain;
 	private final ScheduleMemberDomain scheduleMemberDomain;
 	private final ScheduleDomain scheduleDomain;
-	private final FirebaseNotificationDomain firebaseNotificationDomain;
 	private final FriendDomain friendDomain;
+	private final MemberDomain memberDomain;
+	private final FirebaseNotificationDomain firebaseNotificationDomain;
 
 	private final ScheduleEntityMapper scheduleEntityMapper;
-	private final ScheduleMemberMapper scheduleMemberMapper;
 	private final ChatRoomMapper chatRoomMapper;
+	private final ChatRoomMemberMapper chatRoomMemberMapper;
+	private final ScheduleMemberMapper scheduleMemberMapper;
+	private final MemberJpaRepository memberJpaRepository;
 
 	@Transactional
 	public SaveScheduleResponseDto createSchedule(SaveScheduleRequestDto request) {
 		/*
+		 @Exception
+
 		 1. Member 유효성 검사
 		 2. 친구 목록 검사
 		*/
 		MemberEntity createMemberEntity = memberRepository.findByMemberSeq(request.createMemberSeq());
-		List<MemberEntity> invitedMemberEntity = memberRepository.findByMemberSeqs(request.invitedMemberSeqs());
+		List<MemberEntity> invitedMemberEntities = memberRepository.findByMemberSeqs(request.invitedMemberSeqs());
 		List<FriendEntity> friendEntities = friendRepository.findByOwner(createMemberEntity);
-		friendDomain.checkFriends(invitedMemberEntity, friendEntities);
+		friendDomain.checkFriends(invitedMemberEntities, friendEntities);
 
+		/*
+		 1. Schedule 저장
+		 2. Schedule Member 저장
+		 3. Chat Room 생성
+		 4. Chat Room Member 생성 (일정 생성자 저장)
+		*/
 		// Schedule 저장
 		ScheduleEntity savedScheduleEntity
 			= scheduleRepository.saveSchedule(scheduleEntityMapper.toScheduleEntity(request));
 
-		// ScheduleMember 저장
-		Set<MemberEntity> invitedMembers = memberDomain.createMemberSet(createMemberEntity, invitedMemberEntity);
+		// Schedule Member 저장
+		Set<MemberEntity> invitedMembers = memberDomain.createMemberSet(createMemberEntity, invitedMemberEntities);
 		for (MemberEntity invitedMember : invitedMembers) {
 
 			// 일정 생성자 여부 확인 (Domain 처리)
 			boolean isCreator = memberDomain.checkIsCreator(invitedMember, createMemberEntity);
+
 			scheduleMemberRepository.saveScheduleMemberEntity(
 				scheduleMemberMapper.toScheduleMemberEntity(savedScheduleEntity, invitedMember, isCreator, isCreator)
 			);
 
-			// 푸시 알림 여부 확인 (Domain 처리)
-			if (!isCreator)
+			if (!isCreator) {
 				firebaseNotificationDomain.sendNotification(invitedMember, createMemberEntity);
+			}
 		}
 
-		// 채팅방 생성
+		// Chat Room 저장
 		ChatRoomEntity chatRoomEntity
 			= chatRoomMapper.toChatRoomEntity(UUID.randomUUID().toString(), savedScheduleEntity);
 		ChatRoomEntity savedChatRoomEntity = chatRoomRepository.saveChatRoomEntity(chatRoomEntity);
+
+		// Chat Room Member 저장
+		ChatRoomMemberEntity chatRoomMemberEntity
+			= chatRoomMemberMapper.toChatRoomMemberEntity(createMemberEntity, savedChatRoomEntity);
+
+		chatRoomMemberRepository.saveChatRoomMemberEntity(chatRoomMemberEntity);
 
 		return scheduleEntityMapper.toSaveScheduleResponseDto(
 			savedScheduleEntity.getScheduleSeq(), savedChatRoomEntity.getChatRoomSeq()
@@ -113,34 +132,78 @@ public class ScheduleService {
 	}
 
 	@Transactional
-	public ModifyScheduleResponseDto modifySchedule(ModifyScheduleRequestDto requestDto) {
+	public void modifySchedule(ModifyScheduleRequestDto requestDto) {
 		/*
 		 1. Member 유효성 검사
 		 2. 초대 Member 유효성 검사
 		 3. Schedule 유효성 검사
 		 4. Schedule 작성자 확인
 		 5. 시작 시간 확인 (전 후 1시간 기준)
+		 6. Chat Room 유효성 검사
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(requestDto.createMemberSeq());
-		memberRepository.findByMemberSeqs(requestDto.invitedMemberSeqs());
+		List<MemberEntity> invitedMemberEntities = memberRepository.findByMemberSeqs(requestDto.invitedMemberSeqs());
 		scheduleRepository.findByScheduleSeq(requestDto.scheduleSeq());
 		ScheduleEntity scheduleEntity = scheduleMemberRepository.findScheduleIfCreatedByMember(
 			requestDto.scheduleSeq(),
 			requestDto.createMemberSeq()
 		);
 		scheduleDomain.validateScheduleStartTime(scheduleEntity.getStartTime());
+		ChatRoomEntity chatRoomEntity = chatRoomRepository.findByScheduleEntity(scheduleEntity);
 
-		// 전체 삭제
-		chatRoomMemberRepository.deleteAllByMemberSeq(memberEntity);
-		// 채팅방 삭제
-		chatRoomRepository.deleteAllBySchedule(scheduleEntity);
-		scheduleRepository.deleteById(requestDto.scheduleSeq());
-		scheduleMemberRepository.deleteAllBySchedule(scheduleEntity);
+		/*
+		 1. Schedule Update
+		 2. Schedule Member Update
+		 3, Chat Room Member Update
+		*/
 
-		// 재저장
-		SaveScheduleResponseDto saveScheduleResponseDto = createSchedule(requestDto.toSaveScheduleRequestDto());
+		// Schedule Update
+		ScheduleEntity updateScheduleEntity = scheduleEntity.updateScheduleEntity(
+			requestDto.title(),
+			requestDto.startTime(),
+			requestDto.endTime(),
+			requestDto.location(),
+			requestDto.streetName(),
+			requestDto.x(),
+			requestDto.y(),
+			requestDto.color(),
+			requestDto.memo(),
+			requestDto.allDay()
+		);
+		scheduleRepository.saveSchedule(updateScheduleEntity);
 
-		return new ModifyScheduleResponseDto(saveScheduleResponseDto.scheduleSeq());
+		// Schedule Member Udpate
+		Set<ScheduleMemberEntity> existingMemberEntities
+			= new HashSet<>(scheduleMemberRepository.findAllByScheduleEntity(updateScheduleEntity));
+
+		Set<MemberEntity> newMemberEntities = memberDomain.createMemberSet(memberEntity, invitedMemberEntities);
+		scheduleMemberRepository.deleteRemainScheduleEntity(updateScheduleEntity, newMemberEntities.stream().toList());
+		chatRoomMemberRepository.deleteRemainChatRoomMember(chatRoomEntity, newMemberEntities.stream().toList());
+
+		newMemberEntities.removeIf(invitedMember ->
+			existingMemberEntities.stream()
+				.anyMatch(existingMember ->
+					existingMember.getInvitedMember().equals(invitedMember)
+				)
+		);
+
+		for (MemberEntity newMemberEntity : newMemberEntities) {
+			scheduleMemberRepository.saveScheduleMemberEntity(
+				scheduleMemberMapper.toScheduleMemberEntity(updateScheduleEntity, newMemberEntity, false, false)
+			);
+		}
+
+		for (MemberEntity newMemberEntity : newMemberEntities) {
+			firebaseNotificationDomain.sendNotification(newMemberEntity, memberEntity);
+		}
+
+		// Chat Room Member Update
+		for (MemberEntity newMemberEntity : newMemberEntities) {
+			ChatRoomMemberEntity chatRoomMemberEntity
+				= chatRoomMemberMapper.toChatRoomMemberEntity(newMemberEntity, chatRoomEntity);
+
+			chatRoomMemberRepository.saveChatRoomMemberEntity(chatRoomMemberEntity);
+		}
 	}
 
 	@Transactional
@@ -240,7 +303,6 @@ public class ScheduleService {
 		scheduleMemberRepository.deleteByScheduleEntityAndMemberEntity(scheduleEntity, memberEntity);
 	}
 
-	@Cacheable(value = "schedules", key = "#scheduleSeq + '-' + #memberSeq")
 	@Transactional(readOnly = true)
 	public GetScheduleResponseDto getSchedule(Long scheduleSeq, Long memberSeq) {
 		/*
@@ -283,7 +345,7 @@ public class ScheduleService {
 			.map(scheduleEntity -> scheduleEntityMapper.toGetScheduleByDateResponseDto(
 				scheduleEntity,
 				scheduleMemberRepository.findAllAcceptedScheduleMembersInSchedule(scheduleEntity).size() > 1,
-					scheduleMemberRepository.findCreatorBySchedule(scheduleEntity)
+				scheduleMemberRepository.findCreatorBySchedule(scheduleEntity)
 			)).collect(Collectors.toList());
 	}
 
@@ -292,16 +354,24 @@ public class ScheduleService {
 		/*
 		 1. Member 유효성 검사
 		 2. Schedule 유효성 검사
+		 3. Chat Room 유효성 검사
 		*/
-		memberRepository.findByMemberSeq(requestDto.memberSeq());
-		scheduleRepository.findByScheduleSeq(requestDto.scheduleSeq());
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(requestDto.memberSeq());
+		ScheduleEntity scheduleEntity = scheduleRepository.findByScheduleSeq(requestDto.scheduleSeq());
+		ChatRoomEntity chatRoomEntity = chatRoomRepository.findByScheduleEntity(scheduleEntity);
 
-		// ScheduleEntity 추출
+		/*
+		 1. Schedule Accept True 로 수정
+		 2. Chat Room Member 생성
+		*/
 		ScheduleMemberEntity scheduleMemberEntity
 			= scheduleMemberRepository.findScheduleMemberInSchedule(requestDto.memberSeq(), requestDto.scheduleSeq());
-
 		scheduleMemberEntity.updateAcceptSchedule();
 		scheduleMemberRepository.saveScheduleMemberEntity(scheduleMemberEntity);
+
+		ChatRoomMemberEntity chatRoomMemberEntity
+			= chatRoomMemberMapper.toChatRoomMemberEntity(memberEntity, chatRoomEntity);
+		chatRoomMemberRepository.saveChatRoomMemberEntity(chatRoomMemberEntity);
 	}
 
 	@Transactional(readOnly = true)
