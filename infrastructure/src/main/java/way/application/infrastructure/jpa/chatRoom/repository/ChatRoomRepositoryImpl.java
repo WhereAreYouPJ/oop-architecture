@@ -12,7 +12,6 @@ import way.application.infrastructure.jpa.chatRoom.entity.ChatRoomEntity;
 import way.application.infrastructure.jpa.chatRoom.entity.QChatRoomEntity;
 import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
 import way.application.utils.exception.BadRequestException;
-import way.application.utils.exception.ConflictException;
 import way.application.utils.exception.ErrorResult;
 import way.application.utils.exception.NotFoundRequestException;
 
@@ -39,23 +38,6 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepository {
 				)
 				.fetchOne()
 		).orElseThrow(() -> new BadRequestException(ErrorResult.CHAT_ROOM_SEQ_BAD_REQUEST_EXCEPTION));
-	}
-
-	@Override
-	public void existChatRoomEntityByScheduleEntity(ScheduleEntity scheduleEntity) {
-		QChatRoomEntity chatRoomEntity = QChatRoomEntity.chatRoomEntity;
-
-		long count = queryFactory
-			.selectFrom(chatRoomEntity)
-			.where(
-				chatRoomEntity.scheduleEntity.eq(scheduleEntity)
-			)
-			.stream()
-			.count();
-
-		if (count > 1) {
-			throw new ConflictException(ErrorResult.CHAT_ROOM_DUPLICATION_CONFLICT_EXCEPTION);
-		}
 	}
 
 	@Override
@@ -86,15 +68,6 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepository {
 
 		queryFactory.delete(chatRoomEntity)
 				.where(chatRoomEntity.scheduleEntity.in(scheduleEntities))
-				.execute();
-	}
-
-	@Override
-	public void deleteAllBySchedule(ScheduleEntity scheduleEntities) {
-		QChatRoomEntity chatRoomEntity = QChatRoomEntity.chatRoomEntity;
-
-		queryFactory.delete(chatRoomEntity)
-				.where(chatRoomEntity.scheduleEntity.eq(scheduleEntities))
 				.execute();
 	}
 }

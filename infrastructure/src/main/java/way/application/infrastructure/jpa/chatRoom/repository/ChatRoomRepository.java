@@ -10,12 +10,9 @@ public interface ChatRoomRepository {
 
 	ChatRoomEntity findByChatRoomSeq(String chatRoomSeq);
 
-	void existChatRoomEntityByScheduleEntity(ScheduleEntity scheduleEntity);
-
 	void deleteChatRoomEntity(ChatRoomEntity chatRoomEntity);
 
 	ChatRoomEntity findByScheduleEntity(ScheduleEntity scheduleEntity);
 
     void deleteAllByMemberSeq(List<ScheduleEntity> scheduleEntities);
-    void deleteAllBySchedule(ScheduleEntity scheduleEntities);
 }
