@@ -20,6 +20,4 @@ public interface ChatRoomMemberRepository {
 	void deleteAllByMemberSeq(MemberEntity memberEntity);
 
 	void deleteRemainChatRoomMember(ChatRoomEntity chatRoomEntity, List<MemberEntity> memberEntities);
-
-	List<ChatRoomMemberEntity> findAllByChatRoomEntity(ChatRoomEntity chatRoomEntity);
 }

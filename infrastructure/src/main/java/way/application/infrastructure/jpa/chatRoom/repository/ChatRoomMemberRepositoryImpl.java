@@ -15,7 +15,6 @@ import way.application.infrastructure.jpa.chatRoom.entity.QChatRoomMemberEntity;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.scheduleMember.entity.QScheduleMemberEntity;
 import way.application.utils.exception.BadRequestException;
-import way.application.utils.exception.ConflictException;
 import way.application.utils.exception.ErrorResult;
 
 @Component
@@ -31,10 +30,15 @@ public class ChatRoomMemberRepositoryImpl implements ChatRoomMemberRepository {
 
 	@Override
 	public void existsChatRoomMemberEntity(MemberEntity memberEntity, ChatRoomEntity chatRoomEntity) {
-		chatRoomMemberJpaRepository.findByMemberEntityAndChatRoomEntity(memberEntity, chatRoomEntity)
-			.ifPresent(entity -> {
-				throw new ConflictException(ErrorResult.CHAT_ROOM_MEMBER_DUPLICATION_CONFLICT_EXCEPTION);
-			});
+		QChatRoomMemberEntity qChatRoomMemberEntity = QChatRoomMemberEntity.chatRoomMemberEntity;
+
+		Optional.ofNullable(queryFactory
+			.selectFrom(qChatRoomMemberEntity)
+			.where(
+				qChatRoomMemberEntity.chatRoomEntity.eq(chatRoomEntity)
+					.and(qChatRoomMemberEntity.memberEntity.eq(memberEntity))
+			).fetchOne()
+		).orElseThrow(() -> new BadRequestException(ErrorResult.CHAT_ROOM_DONT_HAVE_MEMBER_BAD_REQUEST_EXCEPTION));
 	}
 
 	@Override
@@ -80,17 +84,6 @@ public class ChatRoomMemberRepositoryImpl implements ChatRoomMemberRepository {
 				chatRoomMember.chatRoomEntity.eq(chatRoomEntity)
 					.and(chatRoomMember.memberEntity.notIn(memberEntities))
 			).execute();
-	}
-
-	@Override
-	public List<ChatRoomMemberEntity> findAllByChatRoomEntity(ChatRoomEntity chatRoomEntity) {
-		QChatRoomMemberEntity chatRoomMember = QChatRoomMemberEntity.chatRoomMemberEntity;
-
-		return queryFactory
-			.selectFrom(chatRoomMember)
-			.where(
-				chatRoomMember.chatRoomEntity.eq(chatRoomEntity)
-			).fetch();
 	}
 
 	@Override

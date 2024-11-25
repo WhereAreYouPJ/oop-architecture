@@ -162,7 +162,7 @@ public enum ErrorResult {
 
 	CHAT_ROOM_DONT_HAVE_MEMBER_BAD_REQUEST_EXCEPTION(
 		HttpStatus.BAD_REQUEST.value(),
-		"CHAT_ROOM_DONT_HAVE_MEMBER_BAD_REQUEST_EXCEPTION",
+		"채팅방에 해당 Member가 존재하지 않는 오류",
 		"CRDHMB032"
 	),
 
