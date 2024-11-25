@@ -1,11 +1,6 @@
 package way.application.service.chat.dto.request;
 
 public class ChatRoomRequestDto {
-	public record CreateChatRoomRequestDto(
-		Long scheduleSeq
-	) {
-
-	}
 
 	public record EnterChatRoomRequestDto(
 		Long memberSeq,
