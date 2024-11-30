@@ -66,7 +66,7 @@
                 const subscriptionCount = $('#subscriptionList .subscription-form').length; // 현재 구독 수
                 const subscriptionForm = `
                     <div class="mb-3 input-group subscription-form" id="subscription-${subscriptionCount}" style="width: 500px;">
-                        <input type="text" class="form-control" placeholder="SUB PATH" id="path-${subscriptionCount}" />
+                        <input type="text" class="form-control" placeholder="/sub/chat/room/{chatRoomSeq}" id="path-${subscriptionCount}" />
                         <button class="btn btn-primary subscribeBtn">SUB</button>
                         <button class="btn btn-danger unsubscribeBtn" style="display: none;">UNSUB</button>
                     </div>`;
@@ -113,7 +113,7 @@
 <div class="container">
     <h1>WebSocket CONNECT</h1>
     <div class="mb-3 input-group" style="width: 500px;">
-        <input type="text" id="websocketUrl" class="form-control" placeholder="ws://localhost:8080/ws-stomp"/>
+        <input type="text" id="websocketUrl" class="form-control" placeholder="wss:/wlrmadjel.com/ws"/>
         <button id="connectBtn" class="btn btn-primary">CONN</button>
     </div>
 
@@ -126,12 +126,12 @@
     <h2>SEND MESSAGE</h2>
     <div class="mb-3">
         <label for="destinationPath" class="form-label">DESTINATION PATH:</label>
-        <input type="text" id="destinationPath" class="form-control" placeholder="/pub/send/message"/>
+        <input type="text" id="destinationPath" class="form-control" placeholder="/pub/sendMessage"/>
     </div>
     <div class="mb-3">
         <label for="message" class="form-label">MESSAGE(JSON):</label>
         <textarea id="message" class="form-control"
-                  placeholder='{"targetUsername": "유저명", "message": "전송할 메시지", "sender": "발신자명"}'></textarea>
+                  placeholder='{"chatRoomSeq": 채팅방 SEQ (STRING), "senderMemberSeq": 메시지 전송 Member SEQ (LONG), "message": 메세지 (STRING)}'></textarea>
     </div>
     <button id="sendBtn" class="btn btn-success">SEND</button>
 
