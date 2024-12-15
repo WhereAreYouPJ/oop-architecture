@@ -37,7 +37,7 @@ public class FeedResponseDto {
 		public record ScheduleFriendInfo(
 			Long memberSeq,
 			String userName,
-			String profileImage
+			String profileImageURL
 
 		) {
 
@@ -47,7 +47,7 @@ public class FeedResponseDto {
 	public record MemberInfo(
 		Long memberSeq,
 		String userName,
-		String profileImage
+		String profileImageURL
 	) {
 
 	}
