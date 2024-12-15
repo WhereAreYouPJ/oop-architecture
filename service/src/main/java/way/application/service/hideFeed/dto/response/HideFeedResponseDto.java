@@ -6,6 +6,7 @@ import java.util.List;
 public class HideFeedResponseDto {
 
 	public record GetHideFeedResponseDto(
+		Long memberSeq,
 		String profileImage,
 		LocalDateTime startTime,
 		String location,
