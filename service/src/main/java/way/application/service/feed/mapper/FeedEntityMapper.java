@@ -38,16 +38,10 @@ public interface FeedEntityMapper {
 
 	@Mapping(source = "creatorMember.memberSeq", target = "memberSeq")
 	@Mapping(source = "creatorMember.userName", target = "userName")
-	@Mapping(source = "creatorMember.profileImage", target = "profileImage")
+	@Mapping(source = "creatorMember.profileImage", target = "profileImageURL")
 	MemberInfo toMemberInfo(MemberEntity creatorMember);
 
 	List<FeedImageInfo> toFeedImageInfos(List<FeedImageEntity> feedImageEntities);
-
-	// ScheduleFriendInfo로 매핑하는 메서드 추가
-	@Mapping(source = "memberSeq", target = "memberSeq")
-	@Mapping(source = "userName", target = "userName")
-	@Mapping(source = "profileImage", target = "profileImage")
-	ScheduleFriendInfo toScheduleFriendInfo(MemberEntity memberEntity);
 
 	default ScheduleFeedInfo toScheduleFeedInfo(
 		MemberEntity creatorMember,
