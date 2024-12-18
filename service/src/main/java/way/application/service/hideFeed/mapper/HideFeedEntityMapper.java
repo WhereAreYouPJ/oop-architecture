@@ -22,7 +22,7 @@ public interface HideFeedEntityMapper {
 	HideFeedEntity toHideFeedEntity(FeedEntity feedEntity, MemberEntity memberEntity);
 
 	@Mapping(target = "memberSeq", source = "hideFeedEntity.feedEntity.creatorMember.memberSeq")
-	@Mapping(target = "profileImage", source = "hideFeedEntity.memberEntity.profileImage")
+	@Mapping(target = "profileImageURL", source = "hideFeedEntity.memberEntity.profileImage")
 	@Mapping(target = "startTime", source = "hideFeedEntity.feedEntity.schedule.startTime")
 	@Mapping(target = "location", source = "hideFeedEntity.feedEntity.schedule.location")
 	@Mapping(target = "title", source = "hideFeedEntity.feedEntity.title")
@@ -40,6 +40,6 @@ public interface HideFeedEntityMapper {
 
 	@Mapping(target = "memberSeq", source = "memberSeq")
 	@Mapping(target = "userName", source = "userName")
-	@Mapping(target = "profileImage", source = "profileImage")
+	@Mapping(target = "profileImageURL", source = "profileImage")
 	hideFeedFriendInfo toHideFeedFriendInfo(MemberEntity memberEntity);
 }

@@ -7,7 +7,7 @@ public class HideFeedResponseDto {
 
 	public record GetHideFeedResponseDto(
 		Long memberSeq,
-		String profileImage,
+		String profileImageURL,
 		LocalDateTime startTime,
 		String location,
 		String title,
@@ -30,7 +30,7 @@ public class HideFeedResponseDto {
 	public record hideFeedFriendInfo(
 		Long memberSeq,
 		String userName,
-		String profileImage
+		String profileImageURL
 	) {
 
 	}
