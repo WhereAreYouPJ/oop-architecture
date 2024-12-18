@@ -15,6 +15,7 @@ import way.application.infrastructure.jpa.bookMark.entity.BookMarkEntity;
 import way.application.infrastructure.jpa.bookMark.entity.QBookMarkEntity;
 import way.application.infrastructure.jpa.feed.entity.FeedEntity;
 import way.application.infrastructure.jpa.feed.entity.QFeedEntity;
+import way.application.infrastructure.jpa.hideFeed.entity.QHideFeedEntity;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.schedule.entity.QScheduleEntity;
 import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
@@ -59,12 +60,20 @@ public class BookMarkRepositoryImpl implements BookMarkRepository {
 		QBookMarkEntity bookMark = QBookMarkEntity.bookMarkEntity;
 		QFeedEntity feed = QFeedEntity.feedEntity;
 		QScheduleEntity schedule = QScheduleEntity.scheduleEntity;
+		QHideFeedEntity hideFeed = QHideFeedEntity.hideFeedEntity;
 
 		QueryResults<BookMarkEntity> results = queryFactory
 			.selectFrom(bookMark)
 			.join(bookMark.feedEntity, feed)
 			.join(feed.schedule, schedule)
-			.where(bookMark.memberEntity.eq(memberEntity))
+			.leftJoin(hideFeed).on(
+				hideFeed.feedEntity.eq(feed)
+					.and(hideFeed.memberEntity.eq(memberEntity))
+			)
+			.where(
+				bookMark.memberEntity.eq(memberEntity),
+				hideFeed.isNull() // hide-feed가 없는 경우만 포함
+			)
 			.orderBy(schedule.startTime.desc())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
@@ -116,8 +125,8 @@ public class BookMarkRepositoryImpl implements BookMarkRepository {
 		QBookMarkEntity bookMark = QBookMarkEntity.bookMarkEntity;
 
 		queryFactory.delete(bookMark)
-				.where(bookMark.memberEntity.eq(memberEntity))
-				.execute();
+			.where(bookMark.memberEntity.eq(memberEntity))
+			.execute();
 
 	}
 }
