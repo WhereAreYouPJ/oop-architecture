@@ -195,4 +195,14 @@ public class MemberRequestVo {
         }
     }
 
+    public record TokenReissueRequest(
+            String refreshToken
+    ) {
+        public MemberRequestDto.TokenReissueRequestDto toTokenReissueRequest() {
+            return new MemberRequestDto.TokenReissueRequestDto(
+                    this.refreshToken
+            );
+        }
+    }
+
 }

@@ -2,12 +2,12 @@ package way.application.domain.member;
 
 import java.util.*;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,6 +16,8 @@ import org.springframework.stereotype.Component;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.utils.exception.BadRequestException;
 import way.application.utils.exception.ErrorResult;
+import way.application.utils.exception.NotFoundRequestException;
+import way.application.utils.exception.UnauthorizedException;
 
 @Component
 @RequiredArgsConstructor
@@ -29,6 +31,7 @@ public class MemberDomain {
 	private long refreshTokenExpiration;
 	private final BCryptPasswordEncoder encoder;
 	private final JavaMailSender javaMailSender;
+	private final RedisTemplate<String, String> redisTemplate;
 
 	/**
 	 * @param createMemberEntity
@@ -63,12 +66,12 @@ public class MemberDomain {
 
 	}
 
-	public String generateAccessToken(String email) {
+	public String generateAccessToken(Long memberSeq) {
 		Date now = new Date();
 		Date expiryDate = new Date(now.getTime() + accessTokenExpiration);
 
 		return Jwts.builder()
-				.setSubject(email)
+				.setSubject(String.valueOf(memberSeq))
 				.setIssuedAt(now)
 				.setExpiration(expiryDate)
 				.signWith(SignatureAlgorithm.HS512, jwtSecret)
@@ -76,12 +79,12 @@ public class MemberDomain {
 
 	}
 
-	public String generateRefreshToken(String email) {
+	public String generateRefreshToken(Long memberSeq) {
 		Date now = new Date();
 		Date expiryDate = new Date(now.getTime() + refreshTokenExpiration);
 
         return Jwts.builder()
-				.setSubject(email)
+				.setSubject(String.valueOf(memberSeq))
 				.setIssuedAt(now)
 				.setExpiration(expiryDate)
 				.signWith(SignatureAlgorithm.HS512, jwtSecret)
@@ -144,5 +147,38 @@ public class MemberDomain {
 		}
 
 		return sb.toString();
+	}
+
+    public Long extractMemberSeq(String refreshToken) {
+		Claims claims = Jwts.parser()
+				.setSigningKey(jwtSecret)
+				.parseClaimsJws(refreshToken)
+				.getBody();
+
+		return Long.parseLong(claims.getSubject());
+    }
+
+	public Long validateToken(String token) {
+		try{
+			Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
+			return extractMemberSeq(token);
+		} catch(ExpiredJwtException e) {
+			throw new UnauthorizedException(ErrorResult.EXPIRED_TOKEN_UNAUTHORIZED_EXCEPTION);
+		} catch(JwtException e) {
+			throw new NotFoundRequestException(ErrorResult.TOKEN_NOT_FOUND_EXCEPTION);
+		}
+	}
+
+	public void validateRefreshToken(Long memberSeq, String refreshToken) {
+
+		String savedRefreshToken = redisTemplate.opsForValue().get(String.valueOf(memberSeq));
+
+		if(savedRefreshToken == null) {
+			throw new NotFoundRequestException(ErrorResult.TOKEN_NOT_FOUND_EXCEPTION);
+		}
+
+        if(!savedRefreshToken.equals(refreshToken)) {
+			throw new BadRequestException(ErrorResult.TOKEN_MISMATCH_BAD_REQUEST_EXCEPTION);
+		}
 	}
 }

@@ -44,4 +44,12 @@ public class MemberResponseDto {
 
     }
 
+    public record TokenReissueResponseDto(
+            String accessToken,
+            String refreshToken,
+            Long memberSeq
+    ) {
+
+    }
+
 }

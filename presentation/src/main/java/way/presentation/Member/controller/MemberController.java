@@ -42,6 +42,7 @@ public class MemberController {
     private final ModifyUserNameValidator modifyUserNameValidator;
     private final SaveSnsMemberValidator saveSnsMemberValidator;
     private final DeleteMemberValidator deleteMemberValidator;
+    private final TokenReissueValidator tokenReissueValidator;
 
     @PostMapping(name = "회원가입")
     @Operation(summary = "join Member API", description = "회원가입 API")
@@ -667,5 +668,39 @@ public class MemberController {
         memberService.deleteMember(deleteMemberDtoRequest);
 
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
+    }
+
+    @PostMapping(value = "/tokenReissue", name = "토큰 재발행")
+    @Operation(summary = "TokenReissue API", description = "토큰 재발행 API")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청에 성공하였습니다.",
+                    useReturnTypeSchema = true),
+            @ApiResponse(
+                    responseCode = "B001",
+                    description = "400 Invalid DTO Parameter errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "S500",
+                    description = "500 SERVER_ERROR",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class)))
+    })
+    public ResponseEntity<BaseResponse<TokenReissueResponse>> reissue(@Valid @RequestBody TokenReissueRequest request) {
+
+        // DTO 유효성 검사
+        tokenReissueValidator.validate(request);
+
+        // VO -> DTO 변환
+        TokenReissueRequestDto tokenReissueRequest = request.toTokenReissueRequest();
+        TokenReissueResponseDto tokenReissueResponseDto = memberService.reissueToken(tokenReissueRequest);
+
+        TokenReissueResponse tokenReissueResponse = new TokenReissueResponse(tokenReissueResponseDto.accessToken(),tokenReissueResponseDto.refreshToken(),tokenReissueResponseDto.memberSeq());
+
+        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), tokenReissueResponse));
     }
 }

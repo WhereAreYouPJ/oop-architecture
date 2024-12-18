@@ -36,4 +36,12 @@ public class MemberResponseVo {
 
     }
 
+    public record TokenReissueResponse(
+            String accessToken,
+            String refreshToken,
+            Long memberSeq
+    ) {
+
+    }
+
 }
