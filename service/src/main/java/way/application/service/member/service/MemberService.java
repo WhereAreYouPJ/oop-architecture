@@ -1,6 +1,7 @@
 package way.application.service.member.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import way.application.domain.member.MemberDomain;
@@ -63,6 +64,7 @@ public class MemberService {
 	private final ChatRoomRepositoryImpl chatRoomRepository;
 	private final CommentRepository commentRepository;
 	private final CommentMapper commentMapper;
+	private final RedisTemplate<String, String> redisTemplate;
 
 	@Transactional
 	public void saveMember(SaveMemberRequestDto saveMemberRequestDto) {
@@ -125,11 +127,11 @@ public class MemberService {
 		}
 
 		// jwt 생성
-		String accessToken = memberDomain.generateAccessToken(loginRequestDto.email());
-		String refreshToken = memberDomain.generateRefreshToken(loginRequestDto.email());
+		String accessToken = memberDomain.generateAccessToken(memberEntity.getMemberSeq());
+		String refreshToken = memberDomain.generateRefreshToken(memberEntity.getMemberSeq());
 
 		// refreshToken 저장
-		memberRepository.saveRefreshToken(refreshToken, loginRequestDto.email());
+		memberRepository.saveRefreshToken(refreshToken, String.valueOf(memberEntity.getMemberSeq()));
 
 		// fcm 저장
 		memberEntity.saveFireBaseTargetToken(loginRequestDto.fcmToken());
@@ -338,5 +340,21 @@ public class MemberService {
 		commentRepository.saveComment(
 				commentMapper.toCommentEntity(deleteMemberDtoRequest)
 		);
+	}
+
+	public TokenReissueResponseDto reissueToken(TokenReissueRequestDto tokenReissueRequest) {
+
+		Long memberSeq = memberDomain.validateToken(tokenReissueRequest.refreshToken());
+
+		memberDomain.validateRefreshToken(memberSeq, tokenReissueRequest.refreshToken());
+
+		redisTemplate.delete(String.valueOf(memberSeq));
+
+		String accessToken = memberDomain.generateAccessToken(memberSeq);
+		String refreshToken = memberDomain.generateRefreshToken(memberSeq);
+
+		memberRepository.saveRefreshToken(refreshToken, String.valueOf(memberSeq));
+
+		return new TokenReissueResponseDto(accessToken, refreshToken, memberSeq);
 	}
 }

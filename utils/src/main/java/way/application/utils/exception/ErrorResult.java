@@ -190,6 +190,12 @@ public enum ErrorResult {
 		"CTB036"
 	),
 
+	TOKEN_MISMATCH_BAD_REQUEST_EXCEPTION(
+			HttpStatus.BAD_REQUEST.value(),
+			"이전 토큰 입니다.",
+			"TMB037"
+	),
+
 	// NOT FOUND
 	HIDE_FEED_NOT_FOUND_EXCEPTION(
 		HttpStatus.NOT_FOUND.value(),
@@ -225,6 +231,12 @@ public enum ErrorResult {
 		HttpStatus.BAD_REQUEST.value(),
 		"좌표가 존재하지 않습니다.",
 		"CN005"
+	),
+
+	TOKEN_NOT_FOUND_EXCEPTION(
+			HttpStatus.BAD_REQUEST.value(),
+			"존재 하지 않은 토큰 입니다.",
+			"TN006"
 	),
 
 	// CONFLICT
@@ -268,6 +280,13 @@ public enum ErrorResult {
 		HttpStatus.CONFLICT.value(),
 		"CHAT ROOM 중복 오류",
 		"CRDC007"
+	),
+
+	// UNAUTHORIZED
+	EXPIRED_TOKEN_UNAUTHORIZED_EXCEPTION(
+			HttpStatus.UNAUTHORIZED.value(),
+			"만료된 토큰",
+			"ETU001"
 	),
 
 

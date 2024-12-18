@@ -73,11 +73,11 @@ public class MemberRepositoryImpl implements MemberRepository {
 	}
 
 	@Override
-	public void saveRefreshToken(String refreshToken, String email) {
+	public void saveRefreshToken(String refreshToken, String memberSeq) {
 
 		redisTemplate.opsForValue()
 			.set(
-				email,
+				memberSeq,
 				refreshToken,
 				refreshTokenExpiration,
 				TimeUnit.MILLISECONDS

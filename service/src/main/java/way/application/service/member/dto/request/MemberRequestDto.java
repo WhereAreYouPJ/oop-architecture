@@ -102,4 +102,10 @@ public class MemberRequestDto {
     ) {
 
     }
+
+    public record TokenReissueRequestDto(
+
+            String refreshToken
+    ) {
+    }
 }
