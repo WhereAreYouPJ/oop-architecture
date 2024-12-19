@@ -55,7 +55,8 @@ public class CoordinateController {
 	@GetMapping()
 	@Operation(summary = "사용자 위치 정보 조회 API")
 	@Parameters({
-		@Parameter(name = "memberSeq", description = "Member Sequence", example = "1")
+		@Parameter(name = "memberSeq", description = "Member Sequence", example = "1"),
+		@Parameter(name = "scheduleSeq", description = "Schedule Sequence", example = "1")
 	})
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", useReturnTypeSchema = true),
