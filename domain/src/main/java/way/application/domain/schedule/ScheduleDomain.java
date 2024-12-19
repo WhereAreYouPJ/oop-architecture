@@ -10,12 +10,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
 import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
 import way.application.infrastructure.jpa.scheduleMember.entity.ScheduleMemberEntity;
 import way.application.utils.exception.BadRequestException;
 import way.application.utils.exception.ErrorResult;
 
 @Component
+@Slf4j
 public class ScheduleDomain {
 	public LocalDateTime getStartOfMonth(YearMonth yearMonth) {
 		return yearMonth.atDay(1).atStartOfDay();
@@ -27,6 +29,8 @@ public class ScheduleDomain {
 
 	public void validateScheduleStartTime(LocalDateTime startTime) {
 		LocalDateTime now = LocalDateTime.now();
+
+		log.info("LocalDateTime now = {}", now);
 
 		LocalDateTime oneHourBefore = now.minusHours(1);
 		LocalDateTime oneHourAfter = now.plusHours(1);

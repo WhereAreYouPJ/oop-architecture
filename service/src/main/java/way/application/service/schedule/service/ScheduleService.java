@@ -74,7 +74,6 @@ public class ScheduleService {
 	private final ChatRoomMapper chatRoomMapper;
 	private final ChatRoomMemberMapper chatRoomMemberMapper;
 	private final ScheduleMemberMapper scheduleMemberMapper;
-	private final MemberJpaRepository memberJpaRepository;
 
 	@Transactional
 	public SaveScheduleResponseDto createSchedule(SaveScheduleRequestDto request) {
@@ -305,12 +304,14 @@ public class ScheduleService {
 	public GetScheduleResponseDto getSchedule(Long scheduleSeq, Long memberSeq) {
 		/*
 		 1. Member 유효성 검사
-		 2. Schedule 유혀성 검사
+		 2. Schedule 유효성 검사
 		 3. Schdule Member 존재 유효성 검사
+		 4. Start Time 유효성 검사
 		*/
 		memberRepository.findByMemberSeq(memberSeq);
 		ScheduleEntity scheduleEntity = scheduleRepository.findByScheduleSeq(scheduleSeq);
 		scheduleMemberRepository.findAcceptedScheduleMemberInSchedule(scheduleSeq, memberSeq);
+		scheduleDomain.validateScheduleStartTime(scheduleEntity.getStartTime());
 
 		/*
 		 ScheduleEntity 에서 ScheduleMemberEntity 추출
