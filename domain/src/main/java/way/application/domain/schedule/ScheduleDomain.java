@@ -35,7 +35,7 @@ public class ScheduleDomain {
 		LocalDateTime oneHourBefore = now.minusHours(1);
 		LocalDateTime oneHourAfter = now.plusHours(1);
 
-		if (startTime.isAfter(oneHourBefore) && startTime.isBefore(oneHourAfter)) {
+		if (startTime.isBefore(oneHourBefore) || startTime.isAfter(oneHourAfter)) {
 			throw new BadRequestException(ErrorResult.START_TIME_BAD_REQUEST_EXCEPTION);
 		}
 	}
