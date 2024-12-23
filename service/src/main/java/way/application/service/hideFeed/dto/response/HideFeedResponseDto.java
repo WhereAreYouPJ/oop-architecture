@@ -7,6 +7,7 @@ public class HideFeedResponseDto {
 
 	public record GetHideFeedResponseDto(
 		Long memberSeq,
+		Long feedSeq,
 		String profileImageURL,
 		LocalDateTime startTime,
 		String location,

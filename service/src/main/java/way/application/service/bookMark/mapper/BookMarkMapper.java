@@ -33,6 +33,7 @@ public interface BookMarkMapper {
 
 		return new GetBookMarkResponseDto(
 			creatorMemberEntity.getMemberSeq(),
+			feedEntity.getFeedSeq(),
 			bookMarkEntity.getMemberEntity().getProfileImage(),
 			scheduleEntity.getStartTime(),
 			scheduleEntity.getLocation(),
@@ -60,15 +61,15 @@ public interface BookMarkMapper {
 
 	default List<BookMarkFriendInfo> toBookMarkFriendInfoList(List<MemberEntity> memberEntities) {
 		return memberEntities.stream()
-				.map(this::toBookMarkFriendInfoList)
-				.toList();
+			.map(this::toBookMarkFriendInfoList)
+			.toList();
 	}
 
 	default BookMarkFriendInfo toBookMarkFriendInfoList(MemberEntity memberEntity) {
 		return new BookMarkFriendInfo(
-				memberEntity.getMemberSeq(),
-				memberEntity.getUserName(),
-				memberEntity.getProfileImage()
+			memberEntity.getMemberSeq(),
+			memberEntity.getUserName(),
+			memberEntity.getProfileImage()
 		);
 	}
 
