@@ -22,6 +22,7 @@ public interface HideFeedEntityMapper {
 	HideFeedEntity toHideFeedEntity(FeedEntity feedEntity, MemberEntity memberEntity);
 
 	@Mapping(target = "memberSeq", source = "hideFeedEntity.feedEntity.creatorMember.memberSeq")
+	@Mapping(target = "feedSeq", source = "hideFeedEntity.feedEntity.feedSeq")
 	@Mapping(target = "profileImageURL", source = "hideFeedEntity.memberEntity.profileImage")
 	@Mapping(target = "startTime", source = "hideFeedEntity.feedEntity.schedule.startTime")
 	@Mapping(target = "location", source = "hideFeedEntity.feedEntity.schedule.location")
