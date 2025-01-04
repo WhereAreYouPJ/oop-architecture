@@ -1,4 +1,4 @@
-package way.presentation.Member.vo.res;
+package way.presentation.member.vo.res;
 
 import java.util.List;
 

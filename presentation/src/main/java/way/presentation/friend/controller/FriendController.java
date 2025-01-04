@@ -13,20 +13,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import way.application.service.friend.dto.request.FriendDto;
 import way.application.service.friend.dto.response.FriendResponseDto;
 import way.application.service.friend.service.FriendService;
-import way.application.service.friendRequest.dto.request.FriendRequestDto;
-import way.application.service.member.dto.request.MemberRequestDto;
 import way.application.utils.exception.GlobalExceptionHandler;
-import way.presentation.Member.vo.req.MemberRequestVo;
 import way.presentation.base.BaseResponse;
 import way.presentation.friend.validates.AddFavoritesValidator;
 import way.presentation.friend.validates.DeleteFriendValidator;
 import way.presentation.friend.validates.RemoveFavoritesValidator;
 import way.presentation.friend.vo.req.FriendVo;
-import way.presentation.friend.vo.res.FriendResponseVo;
-import way.presentation.friendRequest.vo.req.FriendRequestVo;
 
 import java.util.List;
 

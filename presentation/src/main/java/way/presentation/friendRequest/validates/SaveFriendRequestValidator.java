@@ -3,10 +3,7 @@ package way.presentation.friendRequest.validates;
 import org.springframework.stereotype.Component;
 import way.application.utils.exception.BadRequestException;
 import way.application.utils.exception.ErrorResult;
-import way.presentation.Member.vo.req.MemberRequestVo;
 import way.presentation.friendRequest.vo.req.FriendRequestVo;
-
-import java.time.LocalDateTime;
 
 @Component
 
