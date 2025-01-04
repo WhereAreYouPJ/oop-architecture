@@ -1,4 +1,4 @@
-package way.presentation.Member.controller;
+package way.presentation.member.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -16,15 +16,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import way.application.service.member.service.MemberService;
 import way.application.utils.exception.GlobalExceptionHandler;
-import way.presentation.Member.validates.*;
-import way.presentation.Member.vo.req.MemberRequestVo;
+import way.presentation.member.validates.*;
+import way.presentation.member.vo.req.MemberRequestVo;
 import way.presentation.base.BaseResponse;
 
 
 import static way.application.service.member.dto.request.MemberRequestDto.*;
 import static way.application.service.member.dto.response.MemberResponseDto.*;
-import static way.presentation.Member.vo.req.MemberRequestVo.*;
-import static way.presentation.Member.vo.res.MemberResponseVo.*;
+import static way.presentation.member.vo.req.MemberRequestVo.*;
+import static way.presentation.member.vo.res.MemberResponseVo.*;
 
 @RestController
 @RequestMapping("/member")

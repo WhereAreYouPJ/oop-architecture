@@ -1,4 +1,4 @@
-package way.presentation.Member.vo.req;
+package way.presentation.member.vo.req;
 
 import org.springframework.web.multipart.MultipartFile;
 import way.application.service.member.dto.request.MemberRequestDto;

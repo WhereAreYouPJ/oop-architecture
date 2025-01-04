@@ -23,7 +23,8 @@ public class MemberResponseDto {
             String accessToken,
             String refreshToken,
             Long memberSeq,
-            String memberCode
+            String memberCode,
+            String profileImage
     ) {
 
     }

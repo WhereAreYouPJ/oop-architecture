@@ -137,7 +137,7 @@ public class MemberService {
 		memberEntity.saveFireBaseTargetToken(loginRequestDto.fcmToken());
 		memberRepository.saveMember(memberEntity);
 
-		return new LoginResponseDto(accessToken,refreshToken,memberEntity.getMemberSeq(),memberEntity.getMemberCode());
+		return new LoginResponseDto(accessToken,refreshToken,memberEntity.getMemberSeq(),memberEntity.getMemberCode(),memberEntity.getProfileImage());
 	}
 
 	public void send(MailSendRequestDto mailSendRequestDto) {

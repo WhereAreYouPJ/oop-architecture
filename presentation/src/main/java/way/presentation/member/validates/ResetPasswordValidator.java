@@ -1,9 +1,9 @@
-package way.presentation.Member.validates;
+package way.presentation.member.validates;
 
 import org.springframework.stereotype.Component;
 import way.application.utils.exception.BadRequestException;
 import way.application.utils.exception.ErrorResult;
-import way.presentation.Member.vo.req.MemberRequestVo;
+import way.presentation.member.vo.req.MemberRequestVo;
 
 @Component
 public class ResetPasswordValidator {
