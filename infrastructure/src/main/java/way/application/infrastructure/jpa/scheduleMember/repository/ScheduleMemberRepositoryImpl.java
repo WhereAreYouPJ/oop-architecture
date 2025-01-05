@@ -256,7 +256,7 @@ public class ScheduleMemberRepositoryImpl implements ScheduleMemberRepository {
 
 		return queryFactory
 			.selectFrom(scheduleMember)
-			.join(scheduleMember).on(schedule.scheduleSeq.eq(scheduleMember.schedule.scheduleSeq))
+			.join(scheduleMember.schedule, schedule)
 			.where(
 				scheduleMember.invitedMember.eq(memberEntity)
 					.and(scheduleMember.acceptSchedule.isFalse())
