@@ -11,8 +11,14 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import jakarta.annotation.PostConstruct;
 
 @SpringBootApplication
-@EntityScan(basePackages = "way.application.infrastructure")
-@EnableJpaRepositories(basePackages = "way.application.infrastructure")
+@EntityScan(basePackages = {
+		"way.application.infrastructure",
+		"way.application.utils.log.entity"
+})
+@EnableJpaRepositories(basePackages = {
+		"way.application.infrastructure",
+		"way.application.utils.log.repository"
+})
 @ComponentScan(basePackages = {
 	"way.application.utils",
 	"way.application.core",

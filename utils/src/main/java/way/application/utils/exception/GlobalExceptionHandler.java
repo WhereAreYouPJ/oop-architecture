@@ -5,16 +5,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import org.springframework.context.ApplicationEventPublisher;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import way.application.utils.log.event.LogEvent;
 
 @Slf4j
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
+
+	private final ApplicationEventPublisher eventPublisher;
 
 	@ExceptionHandler({Exception.class})
 	public ResponseEntity<ErrorResponse> handleException(
@@ -22,6 +26,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		HttpServletResponse response
 	) {
 		log.warn("Server Exception occur: ", exception);
+
+		eventPublisher.publishEvent(new LogEvent(500, "서버 오류 ", "S500", "UNKNOWN_EXCEPTION"));
+		response.setStatus(500);
 
 		response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		return this.makeErrorResponseEntity(ErrorResult.UNKNOWN_EXCEPTION);
@@ -34,7 +41,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	) {
 		log.warn("BadRequest Exception occur: ", exception);
 
-		response.setStatus(exception.getErrorResult().getHttpStatus());
+		int httpStatus = exception.getErrorResult().getHttpStatus();
+		String message = exception.getErrorResult().getMessage();
+		String errorCode = exception.getErrorResult().getCode();
+		String exceptionType = exception.getErrorResult().toString();
+		eventPublisher.publishEvent(new LogEvent(httpStatus, message, errorCode, exceptionType));
+
+		response.setStatus(httpStatus);
 		return this.makeErrorResponseEntity(exception.getErrorResult());
 	}
 
@@ -45,7 +58,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	) {
 		log.warn("Not Found Exception occur: ", exception);
 
-		response.setStatus(exception.getErrorResult().getHttpStatus());
+		int httpStatus = exception.getErrorResult().getHttpStatus();
+		String message = exception.getErrorResult().getMessage();
+		String errorCode = exception.getErrorResult().getCode();
+		String exceptionType = exception.getErrorResult().toString();
+		eventPublisher.publishEvent(new LogEvent(httpStatus, message, errorCode, exceptionType));
+
+		response.setStatus(httpStatus);
 		return this.makeErrorResponseEntity(exception.getErrorResult());
 	}
 
@@ -56,7 +75,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	) {
 		log.warn("Conflict Exception occur: ", exception);
 
-		response.setStatus(exception.getErrorResult().getHttpStatus());
+		int httpStatus = exception.getErrorResult().getHttpStatus();
+		String message = exception.getErrorResult().getMessage();
+		String errorCode = exception.getErrorResult().getCode();
+		String exceptionType = exception.getErrorResult().toString();
+		eventPublisher.publishEvent(new LogEvent(httpStatus, message, errorCode, exceptionType));
+
+		response.setStatus(httpStatus);
 		return this.makeErrorResponseEntity(exception.getErrorResult());
 	}
 
@@ -67,7 +92,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	) {
 		log.warn("Unauthorized Exception occur: ", exception);
 
-		response.setStatus(exception.getErrorResult().getHttpStatus());
+		int httpStatus = exception.getErrorResult().getHttpStatus();
+		String message = exception.getErrorResult().getMessage();
+		String errorCode = exception.getErrorResult().getCode();
+		String exceptionType = exception.getErrorResult().toString();
+		eventPublisher.publishEvent(new LogEvent(httpStatus, message, errorCode, exceptionType));
+
+		response.setStatus(httpStatus);
 		return this.makeErrorResponseEntity(exception.getErrorResult());
 	}
 
