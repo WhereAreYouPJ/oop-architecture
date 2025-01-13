@@ -306,12 +306,10 @@ public class ScheduleService {
 		 1. Member 유효성 검사
 		 2. Schedule 유효성 검사
 		 3. Schdule Member 존재 유효성 검사
-		 4. Start Time 유효성 검사
 		*/
 		memberRepository.findByMemberSeq(memberSeq);
 		ScheduleEntity scheduleEntity = scheduleRepository.findByScheduleSeq(scheduleSeq);
 		scheduleMemberRepository.findAcceptedScheduleMemberInSchedule(scheduleSeq, memberSeq);
-		scheduleDomain.validateScheduleStartTime(scheduleEntity.getStartTime());
 
 		/*
 		 ScheduleEntity 에서 ScheduleMemberEntity 추출
