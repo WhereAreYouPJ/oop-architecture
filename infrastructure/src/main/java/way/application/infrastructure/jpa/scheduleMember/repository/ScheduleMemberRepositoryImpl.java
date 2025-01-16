@@ -168,27 +168,21 @@ public class ScheduleMemberRepositoryImpl implements ScheduleMemberRepository {
 	}
 
 	@Override
-	public Page<ScheduleMemberEntity> findByMemberEntity(MemberEntity memberEntity, Pageable pageable) {
+	public List<ScheduleMemberEntity> findByMemberEntity(MemberEntity memberEntity) {
 		QScheduleMemberEntity scheduleMember = QScheduleMemberEntity.scheduleMemberEntity;
 		QScheduleEntity schedule = QScheduleEntity.scheduleEntity;
 
 		// QueryDSL을 사용하여 ScheduleMemberEntity를 조회
-		QueryResults<ScheduleMemberEntity> results = queryFactory
+		return queryFactory
 			.selectFrom(scheduleMember)
 			.join(scheduleMember.schedule, schedule).fetchJoin()
 			.where(
 				scheduleMember.invitedMember.eq(memberEntity)
 					.and(scheduleMember.acceptSchedule.isTrue())
 			)
-			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize())
-			.fetchResults();
-
-		List<ScheduleMemberEntity> content = results.getResults();
-		long total = results.getTotal();
-
-		return new PageImpl<>(content, pageable, total);
+			.fetch();
 	}
+
 
 	@Override
 	public void deleteByScheduleEntity(ScheduleEntity scheduleEntity) {

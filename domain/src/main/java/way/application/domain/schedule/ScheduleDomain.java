@@ -47,17 +47,10 @@ public class ScheduleDomain {
 		return ChronoUnit.DAYS.between(now.toLocalDate(), startTime.toLocalDate());
 	}
 
-	public Page<ScheduleEntity> getScheduleEntityFromScheduleMember(Page<ScheduleMemberEntity> scheduleMemberEntity) {
-		List<ScheduleEntity> scheduleEntities = scheduleMemberEntity
-			.getContent()
+	public List<ScheduleEntity> getScheduleEntityFromScheduleMember(List<ScheduleMemberEntity> scheduleMemberEntities) {
+		return scheduleMemberEntities
 			.stream()
 			.map(ScheduleMemberEntity::getSchedule)
 			.collect(Collectors.toList());
-
-		return new PageImpl<>(
-			scheduleEntities,
-			scheduleMemberEntity.getPageable(),
-			scheduleMemberEntity.getTotalElements()
-		);
 	}
 }

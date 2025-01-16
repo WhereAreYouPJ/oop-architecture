@@ -10,7 +10,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -19,9 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import way.application.domain.feed.FeedDomain;
 import way.application.domain.schedule.ScheduleDomain;
-import way.application.domain.scheduleMember.ScheduleMemberDomain;
 import way.application.infrastructure.jpa.bookMark.repository.BookMarkRepository;
 import way.application.infrastructure.jpa.feed.entity.FeedEntity;
 import way.application.infrastructure.jpa.feed.repository.FeedRepository;
@@ -36,7 +35,6 @@ import way.application.infrastructure.jpa.scheduleMember.entity.ScheduleMemberEn
 import way.application.infrastructure.jpa.scheduleMember.repository.ScheduleMemberRepository;
 import way.application.service.feed.mapper.FeedEntityMapper;
 import way.application.service.feedImage.mapper.FeedImageMapper;
-import way.application.service.hideFeed.dto.response.HideFeedResponseDto;
 import way.application.utils.s3.S3Utils;
 
 @Service
@@ -125,10 +123,14 @@ public class FeedService {
 		 1. Member 유효성 검사
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
-		Page<ScheduleMemberEntity> scheduleMemberEntityPage
-			= scheduleMemberRepository.findByMemberEntity(memberEntity, pageable);
+		List<ScheduleMemberEntity> scheduleMemberEntities
+			= scheduleMemberRepository.findByMemberEntity(memberEntity);
 
-		return scheduleDomain.getScheduleEntityFromScheduleMember(scheduleMemberEntityPage)
+		// ScheduleEntity 리스트를 가져오고 Stream으로 변환
+		List<ScheduleEntity> scheduleEntities
+			= scheduleDomain.getScheduleEntityFromScheduleMember(scheduleMemberEntities);
+
+		return scheduleEntities.stream()
 			.map(scheduleEntity -> {
 				// userName 생성
 				List<ScheduleMemberEntity> scheduleMemberEntityList
@@ -165,7 +167,7 @@ public class FeedService {
 					.orElse(null);
 			})
 			.filter(Objects::nonNull)
-			.stream().collect(Collectors.collectingAndThen(Collectors.toList(), list ->
+			.collect(Collectors.collectingAndThen(Collectors.toList(), list ->
 				new PageImpl<>(list, pageable, list.size())));
 	}
 
@@ -175,10 +177,14 @@ public class FeedService {
 		 1. Member 유효성 검사
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
-		Page<ScheduleMemberEntity> scheduleMemberEntityPage
-			= scheduleMemberRepository.findByMemberEntity(memberEntity, pageable);
+		List<ScheduleMemberEntity> scheduleMemberEntities
+			= scheduleMemberRepository.findByMemberEntity(memberEntity);
 
-		return scheduleDomain.getScheduleEntityFromScheduleMember(scheduleMemberEntityPage)
+		// ScheduleEntity 리스트를 가져오고 Stream으로 변환
+		List<ScheduleEntity> scheduleEntities
+			= scheduleDomain.getScheduleEntityFromScheduleMember(scheduleMemberEntities);
+
+		return scheduleEntities.stream()
 			.map(scheduleEntity -> {
 				// userName 생성
 				List<ScheduleMemberEntity> scheduleMemberEntityList
@@ -216,7 +222,7 @@ public class FeedService {
 					scheduleFriendInfo);
 			})
 			.filter(Objects::nonNull)
-			.stream().collect(Collectors.collectingAndThen(Collectors.toList(), list ->
+			.collect(Collectors.collectingAndThen(Collectors.toList(), list ->
 				new PageImpl<>(list, pageable, list.size())));
 	}
 

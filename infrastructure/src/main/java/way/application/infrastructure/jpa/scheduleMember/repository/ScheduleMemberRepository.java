@@ -27,7 +27,7 @@ public interface ScheduleMemberRepository {
 
 	ScheduleMemberEntity findScheduleMemberInSchedule(Long memberSeq, Long scheduleSeq);
 
-	Page<ScheduleMemberEntity> findByMemberEntity(MemberEntity memberEntity, Pageable pageable);
+	List<ScheduleMemberEntity> findByMemberEntity(MemberEntity memberEntity);
 
 	void deleteByScheduleEntity(ScheduleEntity scheduleEntity);
 
