@@ -90,6 +90,27 @@ public class FeedRepositoryImpl implements FeedRepository {
 	}
 
 	@Override
+	public FeedEntity findFeedEntityExcludingCreatorMember(
+		ScheduleEntity scheduleEntity,
+		MemberEntity memberEntity
+	) {
+		QFeedEntity feed = QFeedEntity.feedEntity;
+		QHideFeedEntity hideFeed = QHideFeedEntity.hideFeedEntity;
+
+		// Member가 작성한 Feed가 아닌 무작위 Feed를 반환
+		return queryFactory
+			.selectFrom(feed)
+			.leftJoin(hideFeed)
+			.on(feed.eq(hideFeed.feedEntity)
+				.and(hideFeed.memberEntity.eq(memberEntity)))
+			.where(feed.schedule.eq(scheduleEntity)
+				.and(hideFeed.feedEntity.isNull())
+				.and(feed.creatorMember.ne(memberEntity))) // 작성자 제외 조건
+			.orderBy(Expressions.numberTemplate(Double.class, "function('RAND')").asc())
+			.fetchFirst();
+	}
+
+	@Override
 	public void deleteFeedEntity(FeedEntity feedEntity) {
 		feedJpaRepository.delete(feedEntity);
 	}
@@ -141,8 +162,8 @@ public class FeedRepositoryImpl implements FeedRepository {
 		QFeedEntity feed = QFeedEntity.feedEntity;
 
 		queryFactory
-				.delete(feed)
-				.where(feed.creatorMember.eq(memberEntity))
-				.execute();
+			.delete(feed)
+			.where(feed.creatorMember.eq(memberEntity))
+			.execute();
 	}
 }

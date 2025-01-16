@@ -3,9 +3,6 @@ package way.application.infrastructure.jpa.feed.repository;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
 import way.application.infrastructure.jpa.feed.entity.FeedEntity;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
@@ -23,6 +20,8 @@ public interface FeedRepository {
 
 	FeedEntity findByScheduleExcludingHiddenRand(ScheduleEntity scheduleEntity, MemberEntity memberEntity);
 
+	FeedEntity findFeedEntityExcludingCreatorMember(ScheduleEntity scheduleEntity, MemberEntity memberEntity);
+
 	void deleteFeedEntity(FeedEntity feedEntity);
 
 	void deleteByScheduleEntity(ScheduleEntity scheduleEntity);
@@ -31,5 +30,5 @@ public interface FeedRepository {
 
 	List<FeedEntity> findByScheduleEntity(ScheduleEntity scheduleEntity);
 
-    void deleteAllByMemberSeq(MemberEntity memberEntity);
+	void deleteAllByMemberSeq(MemberEntity memberEntity);
 }
