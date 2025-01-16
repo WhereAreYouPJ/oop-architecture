@@ -119,6 +119,30 @@ public class FeedController {
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
 
+	@GetMapping(value = "/main", name = "메인 화면 피드 리스트 조회")
+	@Operation(summary = "메인 화면 피드 리스트 조회 API")
+	@Parameters({
+		@Parameter(name = "memberSeq", description = "Member Seq", example = "1", required = true),
+		@Parameter(name = "page", description = "페이지 번호 (기본값: 0)", example = "0"),
+		@Parameter(name = "size", description = "페이지당 항목 수 (기본값: 10)", example = "10")
+	})
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "200 요청에 성공하였습니다.", useReturnTypeSchema = true),
+		@ApiResponse(responseCode = "S500", description = "500 서버 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(responseCode = "MSB002", description = "400 MEMBER SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
+	})
+	public ResponseEntity<BaseResponse<Page<GetFeedResponseDto>>> getMainFeed(
+		@Valid
+		@RequestParam(value = "memberSeq") Long memberSeq,
+		@RequestParam(value = "page", defaultValue = "0") int page,
+		@RequestParam(value = "size", defaultValue = "10") int size
+	) {
+		Pageable pageable = PageRequest.of(page, size);
+		Page<GetFeedResponseDto> response = feedService.getMainFeed(memberSeq, pageable);
+
+		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
+	}
+
 	@GetMapping(value = "/details", name = "피드 상세 조회")
 	@Operation(summary = "피드 상세 조회 API")
 	@Parameters({
