@@ -121,6 +121,9 @@ public class FeedService {
 
 	@Transactional(readOnly = true)
 	public Page<GetFeedResponseDto> getAllFeed(Long memberSeq, Pageable pageable) {
+		/*
+		 1. Member 유효성 검사
+		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
 		Page<ScheduleMemberEntity> scheduleMemberEntityPage
 			= scheduleMemberRepository.findByMemberEntity(memberEntity, pageable);
@@ -160,6 +163,57 @@ public class FeedService {
 							scheduleFriendInfo);
 					})
 					.orElse(null);
+			})
+			.filter(Objects::nonNull)
+			.stream().collect(Collectors.collectingAndThen(Collectors.toList(), list ->
+				new PageImpl<>(list, pageable, list.size())));
+	}
+
+	@Transactional(readOnly = true)
+	public Page<GetFeedResponseDto> getMainFeed(Long memberSeq, Pageable pageable) {
+		/*
+		 1. Member 유효성 검사
+		*/
+		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
+		Page<ScheduleMemberEntity> scheduleMemberEntityPage
+			= scheduleMemberRepository.findByMemberEntity(memberEntity, pageable);
+
+		return scheduleDomain.getScheduleEntityFromScheduleMember(scheduleMemberEntityPage)
+			.map(scheduleEntity -> {
+				// userName 생성
+				List<ScheduleMemberEntity> scheduleMemberEntityList
+					= scheduleMemberRepository.findAllAcceptedScheduleMembersFriendsInSchedule(scheduleEntity,
+					memberEntity);
+
+				List<ScheduleFriendInfo> scheduleFriendInfo =
+					scheduleMemberEntityList.stream()
+						.map(scheduleMemberEntity -> new ScheduleFriendInfo(
+							scheduleMemberEntity.getInvitedMember().getMemberSeq(),
+							scheduleMemberEntity.getInvitedMember().getUserName(),
+							scheduleMemberEntity.getInvitedMember().getProfileImage()
+						))
+						.toList();
+
+				FeedEntity feedEntity
+					= feedRepository.findFeedEntityExcludingCreatorMember(scheduleEntity, memberEntity);
+
+				if (feedEntity == null) {
+					return null;
+				}
+
+				ScheduleInfo scheduleInfo = feedEntityMapper.toScheduleInfo(scheduleEntity);
+				boolean bookMarkInfo = bookMarkRepository.existsByFeedEntityAndMemberEntity(feedEntity, memberEntity);
+				List<FeedImageEntity> feedImageEntities = feedImageRepository.findAllByFeedEntity(feedEntity);
+
+				ScheduleFeedInfo scheduleFeedInfo = feedEntityMapper.toScheduleFeedInfo(
+					feedEntity.getCreatorMember(),
+					feedEntity,
+					feedImageEntities,
+					bookMarkInfo
+				);
+
+				return feedEntityMapper.toGetFeedResponseDto(scheduleInfo, List.of(scheduleFeedInfo),
+					scheduleFriendInfo);
 			})
 			.filter(Objects::nonNull)
 			.stream().collect(Collectors.collectingAndThen(Collectors.toList(), list ->
