@@ -39,6 +39,7 @@ import way.application.utils.s3.S3Utils;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class FeedService {
 	private final MemberRepository memberRepository;
 	private final ScheduleRepository scheduleRepository;
@@ -53,7 +54,6 @@ public class FeedService {
 	private final FeedEntityMapper feedEntityMapper;
 	private final FeedImageMapper feedImageMapper;
 
-	private final ScheduleDomain scheduleDomain;
 	private final FeedDomain feedDomain;
 
 	@Transactional
@@ -123,19 +123,15 @@ public class FeedService {
 		 1. Member 유효성 검사
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
-		List<ScheduleMemberEntity> scheduleMemberEntities
-			= scheduleMemberRepository.findByMemberEntity(memberEntity);
-
-		// ScheduleEntity 리스트를 가져오고 Stream으로 변환
-		List<ScheduleEntity> scheduleEntities
-			= scheduleDomain.getScheduleEntityFromScheduleMember(scheduleMemberEntities);
+		Page<ScheduleEntity> scheduleEntities
+			= scheduleRepository.findSchedulesByMemberEntity(memberEntity, pageable);
 
 		return scheduleEntities.stream()
 			.map(scheduleEntity -> {
-				// userName 생성
+				// Schedule의 ScheduleMember 반환
 				List<ScheduleMemberEntity> scheduleMemberEntityList
-					= scheduleMemberRepository.findAllAcceptedScheduleMembersFriendsInSchedule(scheduleEntity,
-					memberEntity);
+					= scheduleMemberRepository
+					.findAllAcceptedScheduleMembersFriendsInSchedule(scheduleEntity, memberEntity);
 
 				List<ScheduleFriendInfo> scheduleFriendInfo =
 					scheduleMemberEntityList.stream()
@@ -146,11 +142,17 @@ public class FeedService {
 						))
 						.toList();
 
+				// Feed 반환 (작성자 여부 확인 후 반환)
 				FeedEntity feedEntity = feedRepository.findByScheduleExcludingHiddenRand(scheduleEntity, memberEntity);
+				ScheduleInfo scheduleInfo = feedEntityMapper.toScheduleInfo(scheduleEntity);
 
 				return Optional.ofNullable(feedEntity)
 					.map(fe -> {
-						ScheduleInfo scheduleInfo = feedEntityMapper.toScheduleInfo(scheduleEntity);
+
+						/*
+						 1. 북마크 확인
+						 2. 이미지 반환
+						*/
 						boolean bookMarkInfo = bookMarkRepository.existsByFeedEntityAndMemberEntity(fe, memberEntity);
 						List<FeedImageEntity> feedImageEntities = feedImageRepository.findAllByFeedEntity(fe);
 
@@ -161,14 +163,15 @@ public class FeedService {
 							bookMarkInfo
 						);
 
-						return feedEntityMapper.toGetFeedResponseDto(scheduleInfo, List.of(scheduleFeedInfo),
-							scheduleFriendInfo);
+						return feedEntityMapper
+							.toGetFeedResponseDto(scheduleInfo, List.of(scheduleFeedInfo), scheduleFriendInfo);
 					})
 					.orElse(null);
 			})
 			.filter(Objects::nonNull)
-			.collect(Collectors.collectingAndThen(Collectors.toList(), list ->
-				new PageImpl<>(list, pageable, list.size())));
+			.collect(Collectors.collectingAndThen(
+				Collectors.toList(), list -> new PageImpl<>(list, pageable, list.size()))
+			);
 	}
 
 	@Transactional(readOnly = true)
@@ -177,19 +180,14 @@ public class FeedService {
 		 1. Member 유효성 검사
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
-		List<ScheduleMemberEntity> scheduleMemberEntities
-			= scheduleMemberRepository.findByMemberEntity(memberEntity);
-
-		// ScheduleEntity 리스트를 가져오고 Stream으로 변환
-		List<ScheduleEntity> scheduleEntities
-			= scheduleDomain.getScheduleEntityFromScheduleMember(scheduleMemberEntities);
+		Page<ScheduleEntity> scheduleEntities
+			= scheduleRepository.findSchedulesByMemberEntity(memberEntity, pageable);
 
 		return scheduleEntities.stream()
 			.map(scheduleEntity -> {
-				// userName 생성
+				// Schedule의 ScheduleMember 반환
 				List<ScheduleMemberEntity> scheduleMemberEntityList
-					= scheduleMemberRepository.findAllAcceptedScheduleMembersFriendsInSchedule(scheduleEntity,
-					memberEntity);
+					= scheduleMemberRepository.findAllAcceptedScheduleMembersInSchedule(scheduleEntity);
 
 				List<ScheduleFriendInfo> scheduleFriendInfo =
 					scheduleMemberEntityList.stream()
@@ -202,28 +200,34 @@ public class FeedService {
 
 				FeedEntity feedEntity
 					= feedRepository.findFeedEntityExcludingCreatorMember(scheduleEntity, memberEntity);
-
-				if (feedEntity == null) {
-					return null;
-				}
-
 				ScheduleInfo scheduleInfo = feedEntityMapper.toScheduleInfo(scheduleEntity);
-				boolean bookMarkInfo = bookMarkRepository.existsByFeedEntityAndMemberEntity(feedEntity, memberEntity);
-				List<FeedImageEntity> feedImageEntities = feedImageRepository.findAllByFeedEntity(feedEntity);
 
-				ScheduleFeedInfo scheduleFeedInfo = feedEntityMapper.toScheduleFeedInfo(
-					feedEntity.getCreatorMember(),
-					feedEntity,
-					feedImageEntities,
-					bookMarkInfo
-				);
+				return Optional.ofNullable(feedEntity)
+					.map(fe -> {
 
-				return feedEntityMapper.toGetFeedResponseDto(scheduleInfo, List.of(scheduleFeedInfo),
-					scheduleFriendInfo);
+						/*
+						 1. 북마크 확인
+						 2. 이미지 반환
+						*/
+						boolean bookMarkInfo = bookMarkRepository.existsByFeedEntityAndMemberEntity(fe, memberEntity);
+						List<FeedImageEntity> feedImageEntities = feedImageRepository.findAllByFeedEntity(fe);
+
+						ScheduleFeedInfo scheduleFeedInfo = feedEntityMapper.toScheduleFeedInfo(
+							fe.getCreatorMember(),
+							fe,
+							feedImageEntities,
+							bookMarkInfo
+						);
+
+						return feedEntityMapper
+							.toGetFeedResponseDto(scheduleInfo, List.of(scheduleFeedInfo), scheduleFriendInfo);
+					})
+					.orElse(null);
 			})
 			.filter(Objects::nonNull)
-			.collect(Collectors.collectingAndThen(Collectors.toList(), list ->
-				new PageImpl<>(list, pageable, list.size())));
+			.collect(Collectors.collectingAndThen(
+				Collectors.toList(), list -> new PageImpl<>(list, pageable, list.size()))
+			);
 	}
 
 	@Transactional(readOnly = true)
@@ -251,7 +255,8 @@ public class FeedService {
 				.toList();
 
 		// Feed 조회 및 변환
-		List<ScheduleFeedInfo> scheduleFeedInfos = feedRepository.findByScheduleEntity(scheduleEntity).stream()
+		List<ScheduleFeedInfo> scheduleFeedInfos = feedRepository.findByScheduleEntity(scheduleEntity, memberEntity)
+			.stream()
 			.map(fe -> {
 				boolean bookMarkInfo = bookMarkRepository.existsByFeedEntityAndMemberEntity(fe, memberEntity);
 				List<FeedImageEntity> feedImageEntities = feedImageRepository.findAllByFeedEntity(fe);
