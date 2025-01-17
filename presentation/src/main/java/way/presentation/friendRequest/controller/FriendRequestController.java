@@ -155,7 +155,8 @@ public class FriendRequestController {
                         dto.senderSeq(),
                         dto.createTime(),
                         dto.profileImage(),
-                        dto.userName()))
+                        dto.userName(),
+                        dto.memberCode()))
                 .toList();
 
 

@@ -73,7 +73,8 @@ public class FriendRequestService {
                 friendRequestEntity.getSenderSeq().getMemberSeq(),
                 friendRequestEntity.getCreateTime(),
                 friendRequestEntity.getSenderSeq().getProfileImage(),
-                friendRequestEntity.getSenderSeq().getUserName()))
+                friendRequestEntity.getSenderSeq().getUserName(),
+                friendRequestEntity.getSenderSeq().getMemberCode()))
                 .collect(Collectors.toList());
 
     }

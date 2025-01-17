@@ -9,7 +9,8 @@ public class FriendRequestResponseDto {
             Long senderSeq,
             LocalDateTime createTime,
             String profileImage,
-            String userName
+            String userName,
+            String memberCode
     ) {
 
     }
