@@ -272,7 +272,28 @@ public class FeedService {
 		// Schedule Info 생성
 		ScheduleInfo scheduleInfo = feedEntityMapper.toScheduleInfo(scheduleEntity);
 
-		return feedEntityMapper.toGetFeedResponseDto(scheduleInfo, scheduleFeedInfos, scheduleFriendInfo);
+		// ScheduleFriendInfo 정렬
+		List<Long> feedMemberSeqs = scheduleFeedInfos.stream()
+			.map(scheduleFeedInfo -> scheduleFeedInfo.memberInfo().memberSeq())
+			.toList();
+
+		List<ScheduleFriendInfo> sortedScheduleFriendInfo = scheduleFriendInfo.stream()
+			.sorted((friend1, friend2) -> {
+				int index1 = feedMemberSeqs.indexOf(friend1.memberSeq());
+				int index2 = feedMemberSeqs.indexOf(friend2.memberSeq());
+
+				if (index1 == -1) {
+					index1 = Integer.MAX_VALUE;
+				}
+				if (index2 == -1) {
+					index2 = Integer.MAX_VALUE;
+				}
+
+				return Integer.compare(index1, index2);
+			})
+			.toList();
+
+		return feedEntityMapper.toGetFeedResponseDto(scheduleInfo, scheduleFeedInfos, sortedScheduleFriendInfo);
 	}
 
 	@Transactional
