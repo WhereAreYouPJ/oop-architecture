@@ -13,8 +13,6 @@ import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
 public interface ScheduleRepository {
 	ScheduleEntity saveSchedule(ScheduleEntity scheduleEntity);
 
-	void deleteById(Long scheduleSeq);
-
 	ScheduleEntity findByScheduleSeq(Long scheduleSeq);
 
 	List<ScheduleEntity> findAcceptedSchedulesByMemberAndDate(Long memberSeq, LocalDate date);
@@ -23,7 +21,9 @@ public interface ScheduleRepository {
 
 	void deleteScheduleEntity(ScheduleEntity scheduleEntity);
 
-	List<ScheduleEntity> findSchedulesByMember(MemberEntity memberEntity);
+	List<ScheduleEntity> findSchedulesByMemberAndStartTime(MemberEntity memberEntity);
+
+	Page<ScheduleEntity> findSchedulesByMemberEntity(MemberEntity memberEntity, Pageable pageable);
 
 	Page<ScheduleEntity> findSchedulesByMemberEntityAndStartTime(
 		MemberEntity memberEntity,
@@ -32,6 +32,4 @@ public interface ScheduleRepository {
 	);
 
 	void deleteAllByMemberSeq(MemberEntity memberEntity,List<ScheduleEntity> scheduleEntities);
-
-	ScheduleEntity findScheduleByCurDateTime(Long scheduleSeq, LocalDateTime curDateTime);
 }
