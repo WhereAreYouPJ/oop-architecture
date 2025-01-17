@@ -37,7 +37,6 @@ import way.application.infrastructure.jpa.friend.entity.FriendEntity;
 import way.application.infrastructure.jpa.friend.respository.FriendRepository;
 import way.application.infrastructure.jpa.hideFeed.repository.HideFeedRepository;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
-import way.application.infrastructure.jpa.member.repository.MemberJpaRepository;
 import way.application.infrastructure.jpa.member.repository.MemberRepository;
 import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
 import way.application.infrastructure.jpa.schedule.repository.ScheduleRepository;
@@ -397,7 +396,7 @@ public class ScheduleService {
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
 
-		List<ScheduleEntity> scheduleEntities = scheduleRepository.findSchedulesByMember(memberEntity);
+		List<ScheduleEntity> scheduleEntities = scheduleRepository.findSchedulesByMemberAndStartTime(memberEntity);
 
 		return scheduleEntities.stream()
 			.map(scheduleEntity -> scheduleEntityMapper.toGetDdayScheduleResponseDto(
