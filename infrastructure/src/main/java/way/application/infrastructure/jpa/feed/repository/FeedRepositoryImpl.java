@@ -62,31 +62,19 @@ public class FeedRepositoryImpl implements FeedRepository {
 		QFeedEntity feed = QFeedEntity.feedEntity;
 		QHideFeedEntity hideFeed = QHideFeedEntity.hideFeedEntity;
 
-		// Member가 작성한 Feed가 있는지 먼저 조회
-		FeedEntity memberFeed = queryFactory
+		return queryFactory
 			.selectFrom(feed)
 			.leftJoin(hideFeed)
 			.on(feed.eq(hideFeed.feedEntity)
 				.and(hideFeed.memberEntity.eq(memberEntity)))
 			.where(feed.schedule.eq(scheduleEntity)
-				.and(hideFeed.feedEntity.isNull())
-				.and(feed.creatorMember.eq(memberEntity)))
+				.and(hideFeed.feedEntity.isNull()))
+			.orderBy(
+				Expressions.booleanTemplate(
+					"case when {0} = {1} then 1 else 0 end", feed.creatorMember, memberEntity
+				).desc()
+			)
 			.fetchFirst();
-
-		// 만약 memberFeed가 존재하면 그 Feed를 반환하고, 없다면 무작위로 하나를 반환
-		if (memberFeed != null) {
-			return memberFeed;
-		} else {
-			return queryFactory
-				.selectFrom(feed)
-				.leftJoin(hideFeed)
-				.on(feed.eq(hideFeed.feedEntity)
-					.and(hideFeed.memberEntity.eq(memberEntity)))
-				.where(feed.schedule.eq(scheduleEntity)
-					.and(hideFeed.feedEntity.isNull()))
-				.orderBy(Expressions.numberTemplate(Double.class, "function('RAND')").asc())
-				.fetchFirst();
-		}
 	}
 
 	@Override
@@ -103,10 +91,11 @@ public class FeedRepositoryImpl implements FeedRepository {
 			.leftJoin(hideFeed)
 			.on(feed.eq(hideFeed.feedEntity)
 				.and(hideFeed.memberEntity.eq(memberEntity)))
-			.where(feed.schedule.eq(scheduleEntity)
-				.and(hideFeed.feedEntity.isNull())
-				.and(feed.creatorMember.ne(memberEntity))) // 작성자 제외 조건
-			.orderBy(Expressions.numberTemplate(Double.class, "function('RAND')").asc())
+			.where(
+				feed.schedule.eq(scheduleEntity)
+					.and(hideFeed.feedEntity.isNull())
+					.and(feed.creatorMember.ne(memberEntity))
+			) // 작성자 제외 조건
 			.fetchFirst();
 	}
 
@@ -146,13 +135,21 @@ public class FeedRepositoryImpl implements FeedRepository {
 	}
 
 	@Override
-	public List<FeedEntity> findByScheduleEntity(ScheduleEntity scheduleEntity) {
+	public List<FeedEntity> findByScheduleEntity(ScheduleEntity scheduleEntity, MemberEntity memberEntity) {
 		QFeedEntity feed = QFeedEntity.feedEntity;
+		QHideFeedEntity hideFeed = QHideFeedEntity.hideFeedEntity;
 
 		return queryFactory
 			.selectFrom(feed)
-			.where(
-				feed.schedule.eq(scheduleEntity)
+			.leftJoin(hideFeed)
+			.on(feed.eq(hideFeed.feedEntity)
+				.and(hideFeed.memberEntity.eq(memberEntity)))
+			.where(feed.schedule.eq(scheduleEntity)
+				.and(hideFeed.feedEntity.isNull()))
+			.orderBy(
+				Expressions.booleanTemplate(
+					"case when {0} = {1} then 1 else 0 end", feed.creatorMember, memberEntity
+				).desc()
 			)
 			.fetch();
 	}

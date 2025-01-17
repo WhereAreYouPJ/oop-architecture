@@ -34,11 +34,6 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 	}
 
 	@Override
-	public void deleteById(Long scheduleSeq) {
-		scheduleJpaRepository.deleteById(scheduleSeq);
-	}
-
-	@Override
 	public ScheduleEntity findByScheduleSeq(Long scheduleSeq) {
 		return scheduleJpaRepository.findById(scheduleSeq)
 			.orElseThrow(() -> new BadRequestException(ErrorResult.SCHEDULE_SEQ_BAD_REQUEST_EXCEPTION));
@@ -77,7 +72,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 	}
 
 	@Override
-	public List<ScheduleEntity> findSchedulesByMember(MemberEntity memberEntity) {
+	public List<ScheduleEntity> findSchedulesByMemberAndStartTime(MemberEntity memberEntity) {
 		QScheduleEntity schedule = QScheduleEntity.scheduleEntity;
 		QScheduleMemberEntity scheduleMember = QScheduleMemberEntity.scheduleMemberEntity;
 
@@ -92,6 +87,30 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 			)
 			.orderBy(schedule.startTime.asc())
 			.fetch();
+	}
+
+	@Override
+	public Page<ScheduleEntity> findSchedulesByMemberEntity(MemberEntity memberEntity, Pageable pageable) {
+		QScheduleEntity schedule = QScheduleEntity.scheduleEntity;
+		QScheduleMemberEntity scheduleMember = QScheduleMemberEntity.scheduleMemberEntity;
+
+		QueryResults<ScheduleEntity> results = queryFactory
+			.select(schedule)
+			.from(schedule)
+			.join(scheduleMember).on(schedule.scheduleSeq.eq(scheduleMember.schedule.scheduleSeq))
+			.where(
+				scheduleMember.invitedMember.eq(memberEntity)
+					.and(scheduleMember.acceptSchedule.isTrue())
+			)
+			.orderBy(schedule.startTime.desc())
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.fetchResults();
+
+		List<ScheduleEntity> scheduleEntities = results.getResults();
+		long total = results.getTotal();
+
+		return new PageImpl<>(scheduleEntities, pageable, total);
 	}
 
 	@Override
@@ -114,7 +133,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 					.and(schedule.startTime.before(startTime))
 					.and(member.memberSeq.eq(memberEntity.getMemberSeq()))
 			)
-			.orderBy(schedule.startTime.asc())
+			.orderBy(schedule.startTime.desc())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.fetchResults();
@@ -130,22 +149,5 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 			.where(schedule.in(scheduleEntities))
 			.execute();
 
-	}
-
-	@Override
-	public ScheduleEntity findScheduleByCurDateTime(Long scheduleSeq, LocalDateTime curDateTime) {
-		QScheduleEntity schedule = QScheduleEntity.scheduleEntity;
-
-		LocalDateTime oneHourBeforeStart = curDateTime.minusHours(1);
-		LocalDateTime oneHourAfterStart = curDateTime.plusHours(1);
-
-		return Optional.ofNullable(
-			queryFactory
-				.selectFrom(schedule)
-				.where(
-					schedule.startTime.between(oneHourBeforeStart, oneHourAfterStart)
-				)
-				.fetchOne()
-		).orElseThrow(() -> new BadRequestException(ErrorResult.COORDINATE_TIME_BAD_REQUEST_EXCEPTION));
 	}
 }

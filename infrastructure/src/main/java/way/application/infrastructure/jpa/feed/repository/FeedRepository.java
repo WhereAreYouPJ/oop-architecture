@@ -28,7 +28,7 @@ public interface FeedRepository {
 
 	Optional<FeedEntity> findByScheduleEntityAndMemberEntity(ScheduleEntity scheduleEntity, MemberEntity memberEntity);
 
-	List<FeedEntity> findByScheduleEntity(ScheduleEntity scheduleEntity);
+	List<FeedEntity> findByScheduleEntity(ScheduleEntity scheduleEntity, MemberEntity memberEntity);
 
 	void deleteAllByMemberSeq(MemberEntity memberEntity);
 }
