@@ -12,8 +12,10 @@ import org.mapstruct.ReportingPolicy;
 import way.application.infrastructure.jpa.bookMark.entity.BookMarkEntity;
 import way.application.infrastructure.jpa.feed.entity.FeedEntity;
 import way.application.infrastructure.jpa.feedImage.entity.FeedImageEntity;
+import way.application.infrastructure.jpa.hideFeed.entity.HideFeedEntity;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
+import way.application.service.hideFeed.dto.response.HideFeedResponseDto;
 
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface BookMarkMapper {
@@ -34,7 +36,7 @@ public interface BookMarkMapper {
 		return new GetBookMarkResponseDto(
 			creatorMemberEntity.getMemberSeq(),
 			feedEntity.getFeedSeq(),
-			bookMarkEntity.getMemberEntity().getProfileImage(),
+			feedEntity.getCreatorMember().getProfileImage(),
 			scheduleEntity.getStartTime(),
 			scheduleEntity.getLocation(),
 			feedEntity.getTitle(),
@@ -44,6 +46,7 @@ public interface BookMarkMapper {
 			true
 		);
 	}
+
 
 	default List<BookMarkImageInfo> toBookMarkImageInfoList(List<FeedImageEntity> feedImageEntities) {
 		return feedImageEntities.stream()

@@ -23,7 +23,7 @@ public interface HideFeedEntityMapper {
 
 	@Mapping(target = "memberSeq", source = "hideFeedEntity.feedEntity.creatorMember.memberSeq")
 	@Mapping(target = "feedSeq", source = "hideFeedEntity.feedEntity.feedSeq")
-	@Mapping(target = "profileImageURL", source = "hideFeedEntity.memberEntity.profileImage")
+	@Mapping(target = "profileImageURL", source = "feedEntity.creatorMember.profileImage")
 	@Mapping(target = "startTime", source = "hideFeedEntity.feedEntity.schedule.startTime")
 	@Mapping(target = "location", source = "hideFeedEntity.feedEntity.schedule.location")
 	@Mapping(target = "title", source = "hideFeedEntity.feedEntity.title")
@@ -31,6 +31,7 @@ public interface HideFeedEntityMapper {
 	@Mapping(target = "bookMark", source = "bookMark")
 	@Mapping(target = "feedFriendInfos", source = "feedFriendInfos")
 	GetHideFeedResponseDto toGetHideFeedResponseDto(
+		FeedEntity feedEntity,
 		HideFeedEntity hideFeedEntity,
 		List<hideFeedImageInfo> hideFeedImageInfos,
 		Boolean bookMark,

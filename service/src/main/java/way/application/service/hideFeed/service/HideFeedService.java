@@ -93,6 +93,7 @@ public class HideFeedService {
 				.toList();
 
 			return hideFeedMapper.toGetHideFeedResponseDto(
+				feedEntity,
 				hideFeedEntity,
 				hideFeedImageInfos,
 				bookMark,
