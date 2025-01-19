@@ -48,4 +48,11 @@ public class FeedEntity {
 	@Lob
 	@Column(name = "content", nullable = true, columnDefinition = "TEXT")
 	private String content;
+
+	public FeedEntity updateFeedEntity(String title, String content) {
+		this.title = title;
+		this.content = content;
+
+		return this;
+	}
 }

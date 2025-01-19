@@ -95,9 +95,7 @@ public class FeedService {
 	}
 
 	@Transactional
-	public ModifyFeedResponseDto modifyFeed(
-		ModifyFeedRequestDto requestDto, List<MultipartFile> images
-	) throws IOException {
+	public void modifyFeed(ModifyFeedRequestDto requestDto, List<MultipartFile> images) throws IOException {
 		/*
 		 1. Member 유효성 검사
 		 2. Feed 유효성 검사
@@ -107,14 +105,25 @@ public class FeedService {
 		feedRepository.findByFeedSeq(requestDto.feedSeq());
 		FeedEntity savedFeed = feedRepository.findByCreatorMemberAndFeedSeq(creatorMemberEntity, requestDto.feedSeq());
 
-		// Feed, Feed Image
-		feedRepository.deleteAllByFeedSeq(savedFeed.getFeedSeq());
+		// Feed 데이터 수정
+		FeedEntity updateFeedEntity = savedFeed.updateFeedEntity(requestDto.title(), requestDto.content());
+		feedRepository.saveFeedEntity(updateFeedEntity);
+
+		// Feed Image 데이터 삭제 및 저장
 		feedImageRepository.deleteAllByFeedEntity(savedFeed);
+		if (images != null) {
+			feedDomain.validateFeedImageSize(requestDto.feedImageOrders(), images);
 
-		SaveFeedResponseDto saveFeedResponseDto
-			= saveFeed(requestDto.toSaveFeedRequestDto(savedFeed.getSchedule().getScheduleSeq()), images);
+			for (int i = 0; i < images.size(); i++) {
+				MultipartFile multipartFile = images.get(i);
+				String feedImageURL = s3Utils.uploadMultipartFile(multipartFile);
+				Integer feedImageOrder = requestDto.feedImageOrders().get(i);
 
-		return saveFeedResponseDto.toModifyFeedResponseDto();
+				FeedImageEntity feedImageEntity
+					= feedImageMapper.toFeedImageEntity(updateFeedEntity, feedImageURL, feedImageOrder);
+				feedImageRepository.saveFeedImageEntity(feedImageEntity);
+			}
+		}
 	}
 
 	@Transactional(readOnly = true)

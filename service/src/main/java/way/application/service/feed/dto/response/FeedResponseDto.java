@@ -7,11 +7,7 @@ public class FeedResponseDto {
 	public record SaveFeedResponseDto(
 		Long feedSeq
 	) {
-		public ModifyFeedResponseDto toModifyFeedResponseDto() {
-			return new ModifyFeedResponseDto(
-				this.feedSeq
-			);
-		}
+
 	}
 
 	public record ModifyFeedResponseDto(

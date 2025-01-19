@@ -82,17 +82,16 @@ public class FeedController {
 		@ApiResponse(responseCode = "FSB019", description = "400 FEED SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(responseCode = "FDCBMB020", description = "400 회원이 생성한 피드가 아닙니다.", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
-	public ResponseEntity<BaseResponse<ModifyFeedResponse>> modifyFeed(
+	public ResponseEntity<BaseResponse<String>> modifyFeed(
 		@Valid
 		@RequestPart(value = "feedImageList", required = false) List<MultipartFile> feedImageList,
 		@RequestPart ModifyFeedRequest request
 	) throws IOException {
 		request.modifyFeedRequestValidator();
 
-		ModifyFeedResponseDto responseDto = feedService.modifyFeed(request.toModifyFeedRequestDto(), feedImageList);
-		ModifyFeedResponse response = feedResponseMapper.toModifyFeedResponse(responseDto);
+		feedService.modifyFeed(request.toModifyFeedRequestDto(), feedImageList);
 
-		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
+		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
 	}
 
 	@GetMapping(value = "/list", name = "피드 리스트 조회")

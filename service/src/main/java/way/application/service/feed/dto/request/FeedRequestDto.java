@@ -20,15 +20,6 @@ public class FeedRequestDto {
 		String content,
 		List<Integer> feedImageOrders
 	) {
-		public SaveFeedRequestDto toSaveFeedRequestDto(Long scheduleSeq) {
-			return new SaveFeedRequestDto(
-				scheduleSeq,
-				this.memberSeq,
-				this.title,
-				this.content,
-				this.feedImageOrders
-			);
-		}
 	}
 
 	public record DeleteFeedRequestDto(
