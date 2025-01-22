@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import way.application.infrastructure.base.entity.BaseEntity;
 
 @Entity
 @Table(name = "SCHEDULE")
@@ -25,7 +26,7 @@ import lombok.NoArgsConstructor;
 @DynamicUpdate
 @Getter
 @Builder
-public class ScheduleEntity {
+public class ScheduleEntity extends BaseEntity {
 	@Id
 	@Column(name = "schedule_seq")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
