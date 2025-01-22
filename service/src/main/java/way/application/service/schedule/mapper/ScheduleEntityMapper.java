@@ -42,5 +42,10 @@ public interface ScheduleEntityMapper {
 
 	SaveScheduleResponseDto toSaveScheduleResponseDto(Long scheduleSeq, String chatRoomSeq);
 
+	@Mapping(target = "scheduleSeq", source = "scheduleEntity.scheduleSeq")
+	@Mapping(target = "startTime", source = "scheduleEntity.createdAt")
+	@Mapping(target = "title", source = "scheduleEntity.scheduleSeq")
+	@Mapping(target = "location", source = "scheduleEntity.location")
+	@Mapping(target = "dDay", source = "dDay")
 	GetInvitedScheduleListResponseDto toGetInvitedScheduleListResponseDto(ScheduleEntity scheduleEntity, Long dDay);
 }
