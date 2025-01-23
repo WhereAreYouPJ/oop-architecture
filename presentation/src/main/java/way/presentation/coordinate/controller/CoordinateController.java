@@ -66,6 +66,7 @@ public class CoordinateController {
 		@ApiResponse(responseCode = "CN005", description = "404 좌표가 존재하지 않습니다", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(responseCode = "SSB003", description = "400 SCHEDULE SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(responseCode = "STB029", description = "400 START TIME 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
+		@ApiResponse(responseCode = "SADB038", description = "400 하루 종일 일정일 경우 위치를 확인할 수 없습니다.", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
 	})
 	public ResponseEntity<BaseResponse<GetCoordinateResponse>> getCoordinate(
 		@RequestParam(value = "memberSeq") Long memberSeq,

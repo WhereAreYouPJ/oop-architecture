@@ -196,6 +196,12 @@ public enum ErrorResult {
 			"TMB037"
 	),
 
+	SCHEDULE_ALL_DAY_BAD_REQUEST_EXCEPTION(
+		HttpStatus.BAD_REQUEST.value(),
+		"하루 종일 일정일 경우 위치를 확인할 수 없습니다.",
+		"SADB038"
+	),
+
 	// NOT FOUND
 	HIDE_FEED_NOT_FOUND_EXCEPTION(
 		HttpStatus.NOT_FOUND.value(),

@@ -52,11 +52,13 @@ public class CoordinateService {
 		 2. Schedule 유효성
 		 3. 시간 유효성 검사
 		 4. Coordinate 유효성
+		 5. 하루 종일 여부 확인
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
 		ScheduleEntity scheduleEntity = scheduleRepository.findByScheduleSeq(scheduleSeq);
 		scheduleDomain.validateScheduleStartTime(scheduleEntity.getStartTime());
 		CoordinateEntity coordinateEntity = coordinateRepository.findByMemberEntity(memberEntity, scheduleEntity);
+		scheduleDomain.validateAllDay(scheduleEntity);
 
 		return coordinateEntityMapper.toGetCoordinateResponseDto(memberEntity, coordinateEntity);
 	}

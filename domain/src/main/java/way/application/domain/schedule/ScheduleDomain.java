@@ -47,10 +47,9 @@ public class ScheduleDomain {
 		return ChronoUnit.DAYS.between(now.toLocalDate(), startTime.toLocalDate());
 	}
 
-	public List<ScheduleEntity> getScheduleEntityFromScheduleMember(List<ScheduleMemberEntity> scheduleMemberEntities) {
-		return scheduleMemberEntities
-			.stream()
-			.map(ScheduleMemberEntity::getSchedule)
-			.collect(Collectors.toList());
+	public void validateAllDay(ScheduleEntity scheduleEntity) {
+		if (scheduleEntity.getAllDay()) {
+			throw new BadRequestException(ErrorResult.SCHEDULE_ALL_DAY_BAD_REQUEST_EXCEPTION);
+		}
 	}
 }
