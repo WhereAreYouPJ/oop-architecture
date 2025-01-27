@@ -92,6 +92,7 @@ public class ScheduleResponseDto {
 
 	public record GetInvitedScheduleListResponseDto(
 		Long scheduleSeq,
+		LocalDateTime createdAt,
 		LocalDateTime startTime,
 		String title,
 		String location,
