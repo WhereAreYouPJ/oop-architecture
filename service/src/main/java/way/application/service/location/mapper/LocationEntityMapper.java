@@ -1,5 +1,6 @@
 package way.application.service.location.mapper;
 
+import static way.application.service.location.dto.request.LocationRequestDto.*;
 import static way.application.service.location.dto.response.LocationResponseDto.*;
 
 import org.mapstruct.InjectionStrategy;
@@ -14,10 +15,8 @@ import way.application.infrastructure.jpa.member.entity.MemberEntity;
 public interface LocationEntityMapper {
 	@Mapping(target = "locationSeq", ignore = true)
 	@Mapping(target = "memberEntity", source = "memberEntity")
-	@Mapping(target = "location", source = "location")
-	@Mapping(target = "streetName", source = "streetName")
 	@Mapping(target = "sequence", source = "sequence")
-	LocationEntity toLocationMapper(MemberEntity memberEntity, String location, String streetName, Long sequence);
+	LocationEntity toLocationMapper(MemberEntity memberEntity, AddLocationRequestDto requestDto, Long sequence);
 
 	AddLocationResponseDto toAddLocationResponseDto(LocationEntity locationEntity);
 
