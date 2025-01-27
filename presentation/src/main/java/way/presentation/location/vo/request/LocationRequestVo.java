@@ -12,13 +12,17 @@ public class LocationRequestVo {
 	public record AddLocationRequest(
 		Long memberSeq,
 		String location,
-		String streetName
+		String streetName,
+		Double x,
+		Double y
 	) {
 		public AddLocationRequestDto toAddLocationRequestDto() {
 			return new AddLocationRequestDto(
 				this.memberSeq,
 				this.location,
-				this.streetName
+				this.streetName,
+				this.x,
+				this.y
 			);
 		}
 
@@ -30,6 +34,12 @@ public class LocationRequestVo {
 				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 			}
 			if (this.streetName == null || this.streetName.isEmpty()) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
+			if (this.x == null) {
+				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
+			}
+			if (this.y == null) {
 				throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
 			}
 		}
