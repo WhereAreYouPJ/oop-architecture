@@ -34,7 +34,7 @@ public class LocationService {
 		// 저장
 		Long sequence = locationRepository.findMaxSequenceByMemberEntity(memberEntity);
 		LocationEntity locationEntity = locationRepository.saveLocationEntity(
-			locationMapper.toLocationMapper(memberEntity, requestDto.location(), requestDto.streetName(), ++sequence)
+			locationMapper.toLocationMapper(memberEntity, requestDto, ++sequence)
 		);
 
 		return locationMapper.toAddLocationResponseDto(locationEntity);

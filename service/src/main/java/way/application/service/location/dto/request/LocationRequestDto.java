@@ -6,7 +6,9 @@ public class LocationRequestDto {
 	public record AddLocationRequestDto(
 		Long memberSeq,
 		String location,
-		String streetName
+		String streetName,
+		Double x,
+		Double y
 	) {
 
 	}

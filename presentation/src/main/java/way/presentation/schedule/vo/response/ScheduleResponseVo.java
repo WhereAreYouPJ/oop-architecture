@@ -80,6 +80,7 @@ public class ScheduleResponseVo {
 
 	public record GetInvitedScheduleListResponse(
 		Long scheduleSeq,
+		LocalDateTime createdAt,
 		LocalDateTime startTime,
 		String title,
 		String location,

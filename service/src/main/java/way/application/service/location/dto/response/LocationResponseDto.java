@@ -11,7 +11,9 @@ public class LocationResponseDto {
 		Long locationSeq,
 		String location,
 		String streetName,
-		Long sequence
+		Long sequence,
+		Double x,
+		Double y
 	) {
 
 	}

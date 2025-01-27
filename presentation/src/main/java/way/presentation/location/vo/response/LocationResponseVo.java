@@ -11,7 +11,9 @@ public class LocationResponseVo {
 		Long locationSeq,
 		String location,
 		String streetName,
-		Long sequence
+		Long sequence,
+		Double x,
+		Double y
 	) {
 
 	}

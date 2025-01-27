@@ -44,7 +44,13 @@ public class LocationEntity extends BaseEntity {
 	private String streetName;
 
 	@Column(name = "sequence", nullable = false)
-	public Long sequence;
+	private Long sequence;
+
+	@Column(name = "x", nullable = false)
+	private Double x;
+
+	@Column(name = "y", nullable = false)
+	private Double y;
 
 	public void updateLocationSequence(Long newSequence) {
 		this.sequence = newSequence;
