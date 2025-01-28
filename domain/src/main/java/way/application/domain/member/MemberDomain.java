@@ -1,17 +1,23 @@
 package way.application.domain.member;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import io.jsonwebtoken.*;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.utils.exception.BadRequestException;
@@ -23,15 +29,16 @@ import way.application.utils.exception.UnauthorizedException;
 @RequiredArgsConstructor
 public class MemberDomain {
 
+	private final BCryptPasswordEncoder encoder;
+	private final JavaMailSender javaMailSender;
+	private final RedisTemplate<String, String> redisTemplate;
+	private final TemplateEngine templateEngine;
 	@Value("${jwt.secret}")
 	private String jwtSecret;
 	@Value("${jwt.accessTokenExpiration}")
 	private long accessTokenExpiration;
 	@Value("${jwt.refreshTokenExpiration}")
 	private long refreshTokenExpiration;
-	private final BCryptPasswordEncoder encoder;
-	private final JavaMailSender javaMailSender;
-	private final RedisTemplate<String, String> redisTemplate;
 
 	/**
 	 * @param createMemberEntity
@@ -98,18 +105,29 @@ public class MemberDomain {
 	}
 
 	public void sendAuthKey(String email, String authKey) {
-		String subject = "지금어디 인증번호 입니다.";
-		String text = "인증번호는 " + authKey + "입니다. <br/>";
+		String subject = "지금어디 이메일 인증번호";
+
+		// Thymeleaf 컨텍스트 설정
+		Context context = new Context();
+		context.setVariable("authKey", authKey);
+
+		// HTML 템플릿 렌더링
+		String htmlContent = templateEngine.process("email-template", context);
 
 		try {
 			MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-			MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "utf-8");
+			MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, StandardCharsets.UTF_8.name());
+
 			helper.setTo(email);
 			helper.setSubject(subject);
-			helper.setText(text, true);
+			helper.setText(htmlContent, true);
+
+			// 로고 이미지 첨부 (cid를 사용하여 inline 삽입)
+			helper.addInline("logoImage", new ClassPathResource("static/images/logo.png"));
+
 			javaMailSender.send(mimeMessage);
 		} catch (MessagingException e) {
-			throw new BadRequestException(ErrorResult.EMAIL_BAD_REQUEST_EXCEPTION);
+			throw new RuntimeException("이메일 전송 실패", e);
 		}
 	}
 
