@@ -30,6 +30,7 @@ import way.application.infrastructure.jpa.chatRoom.entity.ChatRoomEntity;
 import way.application.infrastructure.jpa.chatRoom.entity.ChatRoomMemberEntity;
 import way.application.infrastructure.jpa.chatRoom.repository.ChatRoomMemberRepository;
 import way.application.infrastructure.jpa.chatRoom.repository.ChatRoomRepository;
+import way.application.infrastructure.jpa.coordinate.repository.CoordinateRepository;
 import way.application.infrastructure.jpa.feed.entity.FeedEntity;
 import way.application.infrastructure.jpa.feed.repository.FeedRepository;
 import way.application.infrastructure.jpa.feedImage.repository.FeedImageRepository;
@@ -62,6 +63,7 @@ public class ScheduleService {
 	private final ChatRoomRepository chatRoomRepository;
 	private final ChatRoomMemberRepository chatRoomMemberRepository;
 	private final ChatRepository chatRepository;
+	private final CoordinateRepository coordinateRepository;
 
 	private final ScheduleMemberDomain scheduleMemberDomain;
 	private final ScheduleDomain scheduleDomain;
@@ -237,6 +239,11 @@ public class ScheduleService {
 		chatRoomRepository.deleteChatRoomEntity(chatRoomEntity);
 
 		/*
+		 해당 일정의 모든 Coordinate 삭제
+		*/
+		coordinateRepository.deleteByScheduleEntity(scheduleEntity);
+
+		/*
 		 해당 일정의 모든 Schedule 삭제
 		 1. Schedule Member
 		 2. Schedule
@@ -297,6 +304,11 @@ public class ScheduleService {
 		 1. Schedule Member
 		*/
 		scheduleMemberRepository.deleteByScheduleEntityAndMemberEntity(scheduleEntity, memberEntity);
+
+		/*
+		 해당 일정의 모든 Coordinate 삭제
+		*/
+		coordinateRepository.deleteByScheduleEntity(scheduleEntity);
 	}
 
 	@Transactional(readOnly = true)

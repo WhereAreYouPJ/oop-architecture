@@ -20,4 +20,6 @@ public interface CoordinateJpaRepository extends JpaRepository<CoordinateEntity,
 		MemberEntity memberEntity,
 		ScheduleEntity scheduleEntity
 	);
+
+	void deleteAllByScheduleEntity(ScheduleEntity scheduleEntity);
 }

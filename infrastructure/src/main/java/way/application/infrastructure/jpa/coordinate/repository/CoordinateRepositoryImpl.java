@@ -34,4 +34,9 @@ public class CoordinateRepositoryImpl implements CoordinateRepository {
 		return coordinateJpaRepository.findByMemberEntityAndScheduleEntity(memberEntity, scheduleEntity)
 			.orElseThrow(() -> new BadRequestException(ErrorResult.COORDINATE_NOT_FOUND_EXCEPTION));
 	}
+
+	@Override
+	public void deleteByScheduleEntity(ScheduleEntity scheduleEntity) {
+		coordinateJpaRepository.deleteAllByScheduleEntity(scheduleEntity);
+	}
 }
