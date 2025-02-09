@@ -11,4 +11,10 @@ public class PolicyController {
 		return "policy";
 	}
 
+	@GetMapping("/upload")
+	public String upload() {
+
+		return "upload";
+	}
+
 }
