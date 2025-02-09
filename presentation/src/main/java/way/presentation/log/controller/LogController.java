@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import way.application.utils.log.entity.LogEntity;
 import way.application.utils.log.service.LogService;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 public class LogController {
@@ -21,16 +23,11 @@ public class LogController {
             @RequestParam(value = "level", required = false) Integer level,
             @RequestParam(value = "startDate", required = false) String startDate,
             @RequestParam(value = "endDate", required = false) String endDate,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size,
             Model model
     ) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        Page<LogEntity> logPage = logService.searchLogs(level, startDate, endDate, pageRequest);
+        List<LogEntity> logs = logService.searchLogs(level, startDate, endDate);
 
-        model.addAttribute("logs", logPage.getContent());
-        model.addAttribute("totalPages", logPage.getTotalPages());
-        model.addAttribute("currentPage", logPage.getNumber());
+        model.addAttribute("logs", logs);
         model.addAttribute("level", level);
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);

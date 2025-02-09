@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import way.application.utils.log.entity.LogEntity;
 
+import java.util.List;
+
 
 @Repository
 public interface LogJpaRepository extends JpaRepository<LogEntity, Long> {
@@ -17,11 +19,10 @@ public interface LogJpaRepository extends JpaRepository<LogEntity, Long> {
             "AND (:startDate IS NULL OR l.timestamp >= :startDate) " +
             "AND (:endDate IS NULL OR l.timestamp <= :endDate)" +
             "order by l.timestamp desc ")
-    Page<LogEntity> searchLogs(
+    List<LogEntity> searchLogs(
             @Param("level") Integer level,
             @Param("startDate") String startDate,
-            @Param("endDate") String endDate,
-            Pageable pageable
+            @Param("endDate") String endDate
     );
 }
 

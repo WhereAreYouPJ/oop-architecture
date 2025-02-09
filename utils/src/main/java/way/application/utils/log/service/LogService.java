@@ -11,6 +11,7 @@ import way.application.utils.log.repository.LogJpaRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +33,7 @@ public class LogService {
         logJpaRepository.save(logEntity);
     }
 
-    public Page<LogEntity> searchLogs(Integer level, String startDate, String endDate, Pageable pageable) {
-        return logJpaRepository.searchLogs(level, startDate, endDate, pageable);
+    public List<LogEntity> searchLogs(Integer level, String startDate, String endDate) {
+        return logJpaRepository.searchLogs(level, startDate, endDate + " 23:59:59");
     }
 }
