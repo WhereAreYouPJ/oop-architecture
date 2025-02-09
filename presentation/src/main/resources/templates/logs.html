@@ -33,6 +33,7 @@
         <tr>
             <th>ID</th>
             <th>HTTP Status</th>
+            <th>Uri</th>
             <th>Message</th>
             <th>Error Code</th>
             <th>Exception</th>
@@ -43,6 +44,7 @@
         <tr th:each="log : ${logs}">
             <td th:text="${log.logSeq}"></td>
             <td th:text="${log.httpStatus}"></td>
+            <td th:text="${log.requestUri}"></td>
             <td th:text="${log.message}"></td>
             <td th:text="${log.errorCode}"></td>
             <td th:text="${log.exception}"></td>
