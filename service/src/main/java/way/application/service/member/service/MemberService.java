@@ -2,6 +2,7 @@ package way.application.service.member.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import way.application.domain.member.MemberDomain;
@@ -140,6 +141,7 @@ public class MemberService {
 		return new LoginResponseDto(accessToken,refreshToken,memberEntity.getMemberSeq(),memberEntity.getMemberCode(),memberEntity.getProfileImage());
 	}
 
+	@Async("mailExecutor")
 	public void send(MailSendRequestDto mailSendRequestDto) {
 
 		// authKey 생성
