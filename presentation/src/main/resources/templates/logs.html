@@ -52,22 +52,6 @@
         </tr>
         </tbody>
     </table>
-
-    <!-- Pagination -->
-    <nav>
-        <ul class="pagination">
-            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                <a class="page-link" th:href="@{/admin/logs(level=${level}, startDate=${startDate}, endDate=${endDate}, page=${currentPage - 1}, size=10)}">Previous</a>
-            </li>
-            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-                th:classappend="${currentPage == i} ? 'active'">
-                <a class="page-link" th:href="@{/admin/logs(level=${level}, startDate=${startDate}, endDate=${endDate}, page=${i}, size=10)}" th:text="${i + 1}"></a>
-            </li>
-            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
-                <a class="page-link" th:href="@{/admin/logs(level=${level}, startDate=${startDate}, endDate=${endDate}, page=${currentPage + 1}, size=10)}">Next</a>
-            </li>
-        </ul>
-    </nav>
 </div>
 </body>
 </html>
