@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>이미지 업로드</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h2>이미지 업로드</h2>
+<form id="uploadForm" enctype="multipart/form-data">
+    <label for="homeImage">이미지 선택:</label>
+    <input type="file" id="homeImage" name="homeImage" accept="image/*" required>
+    <button type="submit">업로드</button>
+</form>
+
+<script>
+    $(document).ready(function () {
+        $('#uploadForm').on('submit', function (event) {
+            event.preventDefault();
+            let formData = new FormData(this);
+
+            $.ajax({
+                url: '/admin/image',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    alert('이미지 업로드 성공!');
+                },
+                error: function (xhr, status, error) {
+                    alert('업로드 실패: ' + xhr.responseText);
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
