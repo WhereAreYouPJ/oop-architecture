@@ -11,4 +11,5 @@ public class LogEvent {
     private final String message;
     private final String errorCode;
     private final String exception;
+    private final String requestUri;
 }

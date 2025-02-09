@@ -22,6 +22,7 @@ public class LogService {
     public void handleLogEvent(LogEvent event) {
         LogEntity logEntity = LogEntity.builder()
                 .httpStatus(event.getHttpStatus())
+                .requestUri(event.getRequestUri())
                 .message(event.getMessage())
                 .errorCode(event.getErrorCode())
                 .exception(event.getException())
@@ -32,7 +33,6 @@ public class LogService {
     }
 
     public Page<LogEntity> searchLogs(Integer level, String startDate, String endDate, Pageable pageable) {
-        Page<LogEntity> logEntities = logJpaRepository.searchLogs(level, startDate, endDate, pageable);
-        return logEntities;
+        return logJpaRepository.searchLogs(level, startDate, endDate, pageable);
     }
 }

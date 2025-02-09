@@ -1,5 +1,6 @@
 package way.application.utils.exception;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,11 +24,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler({Exception.class})
 	public ResponseEntity<ErrorResponse> handleException(
 		final Exception exception,
-		HttpServletResponse response
+		HttpServletResponse response,
+		HttpServletRequest request
 	) {
 		log.warn("Server Exception occur: ", exception);
 
-		eventPublisher.publishEvent(new LogEvent(500, "서버 오류 ", "S500", "UNKNOWN_EXCEPTION"));
+		eventPublisher.publishEvent(new LogEvent(500, "서버 오류 ", "S500", "UNKNOWN_EXCEPTION",request.getRequestURI()));
 		response.setStatus(500);
 
 		response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -37,7 +39,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler({BadRequestException.class})
 	public ResponseEntity<ErrorResponse> handleBadRequestException(
 		final BadRequestException exception,
-		HttpServletResponse response
+		HttpServletResponse response,
+		HttpServletRequest request
 	) {
 		log.warn("BadRequest Exception occur: ", exception);
 
@@ -45,7 +48,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		String message = exception.getErrorResult().getMessage();
 		String errorCode = exception.getErrorResult().getCode();
 		String exceptionType = exception.getErrorResult().toString();
-		eventPublisher.publishEvent(new LogEvent(httpStatus, message, errorCode, exceptionType));
+		eventPublisher.publishEvent(new LogEvent(httpStatus, message, errorCode, exceptionType,request.getRequestURI()));
 
 		response.setStatus(httpStatus);
 		return this.makeErrorResponseEntity(exception.getErrorResult());
@@ -54,7 +57,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler({NotFoundRequestException.class})
 	public ResponseEntity<ErrorResponse> handleNotFoundException(
 		final NotFoundRequestException exception,
-		HttpServletResponse response
+		HttpServletResponse response,
+		HttpServletRequest request
 	) {
 		log.warn("Not Found Exception occur: ", exception);
 
@@ -62,7 +66,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		String message = exception.getErrorResult().getMessage();
 		String errorCode = exception.getErrorResult().getCode();
 		String exceptionType = exception.getErrorResult().toString();
-		eventPublisher.publishEvent(new LogEvent(httpStatus, message, errorCode, exceptionType));
+		eventPublisher.publishEvent(new LogEvent(httpStatus, message, errorCode, exceptionType, request.getRequestURI()));
 
 		response.setStatus(httpStatus);
 		return this.makeErrorResponseEntity(exception.getErrorResult());
@@ -71,7 +75,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler({ConflictException.class})
 	public ResponseEntity<ErrorResponse> handleConflictException(
 		final ConflictException exception,
-		HttpServletResponse response
+		HttpServletResponse response,
+		HttpServletRequest request
 	) {
 		log.warn("Conflict Exception occur: ", exception);
 
@@ -79,7 +84,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		String message = exception.getErrorResult().getMessage();
 		String errorCode = exception.getErrorResult().getCode();
 		String exceptionType = exception.getErrorResult().toString();
-		eventPublisher.publishEvent(new LogEvent(httpStatus, message, errorCode, exceptionType));
+		eventPublisher.publishEvent(new LogEvent(httpStatus, message, errorCode, exceptionType, request.getRequestURI()));
 
 		response.setStatus(httpStatus);
 		return this.makeErrorResponseEntity(exception.getErrorResult());
@@ -88,7 +93,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler({UnauthorizedException.class})
 	public ResponseEntity<ErrorResponse> handleUnauthorizedException(
 			final UnauthorizedException exception,
-			HttpServletResponse response
+			HttpServletResponse response,
+			HttpServletRequest request
 	) {
 		log.warn("Unauthorized Exception occur: ", exception);
 
@@ -96,7 +102,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		String message = exception.getErrorResult().getMessage();
 		String errorCode = exception.getErrorResult().getCode();
 		String exceptionType = exception.getErrorResult().toString();
-		eventPublisher.publishEvent(new LogEvent(httpStatus, message, errorCode, exceptionType));
+		eventPublisher.publishEvent(new LogEvent(httpStatus, message, errorCode, exceptionType, request.getRequestURI()));
 
 		response.setStatus(httpStatus);
 		return this.makeErrorResponseEntity(exception.getErrorResult());

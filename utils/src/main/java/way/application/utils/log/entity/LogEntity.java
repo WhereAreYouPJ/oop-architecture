@@ -29,5 +29,6 @@ public class LogEntity {
     private String errorCode;
     private String exception;
     private String timestamp;
+    private String requestUri;
 }
 
