@@ -310,7 +310,7 @@ public class ScheduleService {
 		/*
 		 해당 일정의 모든 Coordinate 삭제
 		*/
-		coordinateRepository.deleteByScheduleEntity(scheduleEntity);
+		coordinateRepository.deleteByScheduleEntityAndMemberEntity(scheduleEntity, memberEntity);
 	}
 
 	@Transactional(readOnly = true)
