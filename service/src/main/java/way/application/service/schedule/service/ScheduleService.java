@@ -172,35 +172,37 @@ public class ScheduleService {
 		);
 		scheduleRepository.saveSchedule(updateScheduleEntity);
 
-		// Schedule Member Udpate
-		Set<ScheduleMemberEntity> existingMemberEntities
-			= new HashSet<>(scheduleMemberRepository.findAllByScheduleEntity(updateScheduleEntity));
+		if(!scheduleDomain.isWithinOneHourRange(scheduleEntity.getStartTime()) || updateScheduleEntity.getAllDay()){
+			// Schedule Member Update
+			Set<ScheduleMemberEntity> existingMemberEntities
+					= new HashSet<>(scheduleMemberRepository.findAllByScheduleEntity(updateScheduleEntity));
 
-		Set<MemberEntity> newMemberEntities = memberDomain.createMemberSet(memberEntity, invitedMemberEntities);
-		scheduleMemberRepository.deleteRemainScheduleEntity(updateScheduleEntity, newMemberEntities.stream().toList());
-		chatRoomMemberRepository.deleteRemainChatRoomMember(chatRoomEntity, newMemberEntities.stream().toList());
+			Set<MemberEntity> newMemberEntities = memberDomain.createMemberSet(memberEntity, invitedMemberEntities);
+			scheduleMemberRepository.deleteRemainScheduleEntity(updateScheduleEntity, newMemberEntities.stream().toList());
+			chatRoomMemberRepository.deleteRemainChatRoomMember(chatRoomEntity, newMemberEntities.stream().toList());
 
-		newMemberEntities.removeIf(invitedMember ->
-			existingMemberEntities.stream()
-				.anyMatch(existingMember ->
-					existingMember.getInvitedMember().equals(invitedMember)
-				)
-		);
-
-		for (MemberEntity newMemberEntity : newMemberEntities) {
-			firebaseNotificationDomain.sendNotification(newMemberEntity, memberEntity);
-
-			scheduleMemberRepository.saveScheduleMemberEntity(
-				scheduleMemberMapper.toScheduleMemberEntity(updateScheduleEntity, newMemberEntity, false, false)
+			newMemberEntities.removeIf(invitedMember ->
+					existingMemberEntities.stream()
+							.anyMatch(existingMember ->
+									existingMember.getInvitedMember().equals(invitedMember)
+							)
 			);
-		}
 
-		// Chat Room Member Update
-		for (MemberEntity newMemberEntity : newMemberEntities) {
-			ChatRoomMemberEntity chatRoomMemberEntity
-				= chatRoomMemberMapper.toChatRoomMemberEntity(newMemberEntity, chatRoomEntity);
+			for (MemberEntity newMemberEntity : newMemberEntities) {
+				firebaseNotificationDomain.sendNotification(newMemberEntity, memberEntity);
 
-			chatRoomMemberRepository.saveChatRoomMemberEntity(chatRoomMemberEntity);
+				scheduleMemberRepository.saveScheduleMemberEntity(
+						scheduleMemberMapper.toScheduleMemberEntity(updateScheduleEntity, newMemberEntity, false, false)
+				);
+			}
+
+			// Chat Room Member Update
+			for (MemberEntity newMemberEntity : newMemberEntities) {
+				ChatRoomMemberEntity chatRoomMemberEntity
+						= chatRoomMemberMapper.toChatRoomMemberEntity(newMemberEntity, chatRoomEntity);
+
+				chatRoomMemberRepository.saveChatRoomMemberEntity(chatRoomMemberEntity);
+			}
 		}
 	}
 

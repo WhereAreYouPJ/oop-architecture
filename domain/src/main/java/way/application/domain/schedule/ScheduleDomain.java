@@ -40,6 +40,17 @@ public class ScheduleDomain {
 		}
 	}
 
+	public Boolean isWithinOneHourRange(LocalDateTime startTime) {
+		LocalDateTime now = LocalDateTime.now();
+
+		log.info("LocalDateTime now = {}", now);
+
+		LocalDateTime oneHourBefore = now.minusHours(1);
+		LocalDateTime oneHourAfter = now.plusHours(1);
+
+        return startTime.isBefore(oneHourAfter) || startTime.isAfter(oneHourBefore);
+	}
+
 	public Long getDdaySchedule(LocalDateTime startTime) {
 
 		LocalDateTime now = LocalDateTime.now();
