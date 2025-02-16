@@ -39,4 +39,9 @@ public class CoordinateRepositoryImpl implements CoordinateRepository {
 	public void deleteByScheduleEntity(ScheduleEntity scheduleEntity) {
 		coordinateJpaRepository.deleteAllByScheduleEntity(scheduleEntity);
 	}
+
+	@Override
+	public void deleteByScheduleEntityAndMemberEntity(ScheduleEntity scheduleEntity, MemberEntity memberEntity) {
+		coordinateJpaRepository.deleteByScheduleEntityAndMemberEntity(scheduleEntity, memberEntity);
+	}
 }

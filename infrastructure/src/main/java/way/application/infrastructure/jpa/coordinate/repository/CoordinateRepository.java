@@ -17,4 +17,6 @@ public interface CoordinateRepository {
 	CoordinateEntity findByMemberEntity(MemberEntity memberEntity, ScheduleEntity scheduleEntity);
 
 	void deleteByScheduleEntity(ScheduleEntity scheduleEntity);
+
+	void deleteByScheduleEntityAndMemberEntity(ScheduleEntity scheduleEntity, MemberEntity memberEntity);
 }
