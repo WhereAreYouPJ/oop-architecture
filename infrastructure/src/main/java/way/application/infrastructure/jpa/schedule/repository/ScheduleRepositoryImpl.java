@@ -123,20 +123,23 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 		QScheduleMemberEntity scheduleMember = QScheduleMemberEntity.scheduleMemberEntity;
 		QMemberEntity member = QMemberEntity.memberEntity;
 
+		LocalDateTime currentTime = LocalDateTime.now();
+		LocalDateTime currentDate = LocalDate.now().atStartOfDay();
+
 		QueryResults<ScheduleEntity> results = queryFactory
-			.select(schedule)
-			.from(schedule)
-			.join(scheduleMember).on(schedule.scheduleSeq.eq(scheduleMember.schedule.scheduleSeq))
-			.join(member).on(scheduleMember.invitedMember.memberSeq.eq(member.memberSeq))
-			.where(
-				scheduleMember.acceptSchedule.isTrue()
-					.and(schedule.startTime.before(startTime))
-					.and(member.memberSeq.eq(memberEntity.getMemberSeq()))
-			)
-			.orderBy(schedule.startTime.desc())
-			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize())
-			.fetchResults();
+				.select(schedule)
+				.from(schedule)
+				.join(scheduleMember).on(schedule.scheduleSeq.eq(scheduleMember.schedule.scheduleSeq))
+				.join(member).on(scheduleMember.invitedMember.memberSeq.eq(member.memberSeq))
+				.where(scheduleMember.acceptSchedule.isTrue()
+						.and(schedule.endTime.before(currentTime) // 현재 시간 기준 endTime이 이전인 일정
+								.or(schedule.allDay.eq(true) // 하루종일 일정
+										.and(schedule.startTime.before(currentDate)))) // 현재 시간 이전
+						.and(member.memberSeq.eq(memberEntity.getMemberSeq())))
+				.orderBy(schedule.startTime.desc())
+				.offset(pageable.getOffset())
+				.limit(pageable.getPageSize())
+				.fetchResults();
 
 		return new PageImpl<>(results.getResults(), pageable, results.getTotal());
 	}

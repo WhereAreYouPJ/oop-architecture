@@ -138,7 +138,7 @@ public class ScheduleService {
 		 2. 초대 Member 유효성 검사
 		 3. Schedule 유효성 검사
 		 4. Schedule 작성자 확인
-		 5. 시작 시간 확인 (전 후 1시간 기준)
+		 5. 시작 시간 1시간 이내 시 멤버 수정 x 검사
 		 6. Chat Room 유효성 검사
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(requestDto.createMemberSeq());
@@ -148,7 +148,8 @@ public class ScheduleService {
 			requestDto.scheduleSeq(),
 			requestDto.createMemberSeq()
 		);
-		scheduleDomain.validateScheduleStartTime(scheduleEntity.getStartTime());
+//		scheduleDomain.validateScheduleStartTime(scheduleEntity.getStartTime());
+//		scheduleDomain.validate(requestDto.invitedMemberSeqs(), requestDto.startTime());
 		ChatRoomEntity chatRoomEntity = chatRoomRepository.findByScheduleEntity(scheduleEntity);
 
 		/*
@@ -172,35 +173,37 @@ public class ScheduleService {
 		);
 		scheduleRepository.saveSchedule(updateScheduleEntity);
 
-		// Schedule Member Udpate
-		Set<ScheduleMemberEntity> existingMemberEntities
-			= new HashSet<>(scheduleMemberRepository.findAllByScheduleEntity(updateScheduleEntity));
+		if(!scheduleDomain.isWithinOneHourRange(scheduleEntity.getStartTime()) || updateScheduleEntity.getAllDay()){
+			// Schedule Member Update
+			Set<ScheduleMemberEntity> existingMemberEntities
+					= new HashSet<>(scheduleMemberRepository.findAllByScheduleEntity(updateScheduleEntity));
 
-		Set<MemberEntity> newMemberEntities = memberDomain.createMemberSet(memberEntity, invitedMemberEntities);
-		scheduleMemberRepository.deleteRemainScheduleEntity(updateScheduleEntity, newMemberEntities.stream().toList());
-		chatRoomMemberRepository.deleteRemainChatRoomMember(chatRoomEntity, newMemberEntities.stream().toList());
+			Set<MemberEntity> newMemberEntities = memberDomain.createMemberSet(memberEntity, invitedMemberEntities);
+			scheduleMemberRepository.deleteRemainScheduleEntity(updateScheduleEntity, newMemberEntities.stream().toList());
+			chatRoomMemberRepository.deleteRemainChatRoomMember(chatRoomEntity, newMemberEntities.stream().toList());
 
-		newMemberEntities.removeIf(invitedMember ->
-			existingMemberEntities.stream()
-				.anyMatch(existingMember ->
-					existingMember.getInvitedMember().equals(invitedMember)
-				)
-		);
-
-		for (MemberEntity newMemberEntity : newMemberEntities) {
-			firebaseNotificationDomain.sendNotification(newMemberEntity, memberEntity);
-
-			scheduleMemberRepository.saveScheduleMemberEntity(
-				scheduleMemberMapper.toScheduleMemberEntity(updateScheduleEntity, newMemberEntity, false, false)
+			newMemberEntities.removeIf(invitedMember ->
+					existingMemberEntities.stream()
+							.anyMatch(existingMember ->
+									existingMember.getInvitedMember().equals(invitedMember)
+							)
 			);
-		}
 
-		// Chat Room Member Update
-		for (MemberEntity newMemberEntity : newMemberEntities) {
-			ChatRoomMemberEntity chatRoomMemberEntity
-				= chatRoomMemberMapper.toChatRoomMemberEntity(newMemberEntity, chatRoomEntity);
+			for (MemberEntity newMemberEntity : newMemberEntities) {
+				firebaseNotificationDomain.sendNotification(newMemberEntity, memberEntity);
 
-			chatRoomMemberRepository.saveChatRoomMemberEntity(chatRoomMemberEntity);
+				scheduleMemberRepository.saveScheduleMemberEntity(
+						scheduleMemberMapper.toScheduleMemberEntity(updateScheduleEntity, newMemberEntity, false, false)
+				);
+			}
+
+			// Chat Room Member Update
+			for (MemberEntity newMemberEntity : newMemberEntities) {
+				ChatRoomMemberEntity chatRoomMemberEntity
+						= chatRoomMemberMapper.toChatRoomMemberEntity(newMemberEntity, chatRoomEntity);
+
+				chatRoomMemberRepository.saveChatRoomMemberEntity(chatRoomMemberEntity);
+			}
 		}
 	}
 
@@ -308,7 +311,7 @@ public class ScheduleService {
 		/*
 		 해당 일정의 모든 Coordinate 삭제
 		*/
-		coordinateRepository.deleteByScheduleEntity(scheduleEntity);
+		coordinateRepository.deleteByScheduleEntityAndMemberEntity(scheduleEntity, memberEntity);
 	}
 
 	@Transactional(readOnly = true)

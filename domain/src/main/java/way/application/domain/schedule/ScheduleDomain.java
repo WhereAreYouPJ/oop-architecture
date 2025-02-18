@@ -40,6 +40,23 @@ public class ScheduleDomain {
 		}
 	}
 
+	public Boolean isWithinOneHourRange(LocalDateTime startTime) {
+		LocalDateTime now = LocalDateTime.now();
+
+		log.info("LocalDateTime now = {}", now);
+
+		LocalDateTime oneHourBefore = now.minusHours(1);
+		LocalDateTime oneHourAfter = now.plusHours(1);
+
+        return startTime.isBefore(oneHourAfter) || startTime.isAfter(oneHourBefore);
+	}
+
+	public void validate(List<Long> invitedMemberSeqs, LocalDateTime startTime) {
+		if(this.isWithinOneHourRange(startTime) && !invitedMemberSeqs.isEmpty()) {
+			throw new BadRequestException(ErrorResult.IN_ONE_HOUR_RANGE_SCHEDULE_BAD_REQUEST_EXCEPTION);
+		}
+	}
+
 	public Long getDdaySchedule(LocalDateTime startTime) {
 
 		LocalDateTime now = LocalDateTime.now();
