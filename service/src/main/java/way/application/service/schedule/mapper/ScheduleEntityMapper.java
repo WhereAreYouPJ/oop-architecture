@@ -28,7 +28,11 @@ public interface ScheduleEntityMapper {
 
 	default List<GetScheduleMemberInfoDto> mapToGetScheduleMemberInfo(List<ScheduleMemberEntity> scheduleEntities) {
 		return scheduleEntities.stream()
-			.map(entry -> new GetScheduleMemberInfoDto(entry.getInvitedMember().getMemberSeq(), entry.getInvitedMember().getUserName(),entry.getIsCreator()))
+			.map(entry -> new GetScheduleMemberInfoDto(
+					entry.getInvitedMember().getMemberSeq(),
+					entry.getInvitedMember().getUserName(),
+					entry.getIsCreator(),
+					entry.getAcceptSchedule()))
 			.collect(Collectors.toList());
 	}
 
