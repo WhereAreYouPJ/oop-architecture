@@ -138,7 +138,7 @@ public class ScheduleService {
 		 2. 초대 Member 유효성 검사
 		 3. Schedule 유효성 검사
 		 4. Schedule 작성자 확인
-		 5. 시작 시간 확인 (전 후 1시간 기준)
+		 5. 시작 시간 1시간 이내 시 멤버 수정 x 검사
 		 6. Chat Room 유효성 검사
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(requestDto.createMemberSeq());
@@ -148,7 +148,8 @@ public class ScheduleService {
 			requestDto.scheduleSeq(),
 			requestDto.createMemberSeq()
 		);
-		scheduleDomain.validateScheduleStartTime(scheduleEntity.getStartTime());
+//		scheduleDomain.validateScheduleStartTime(scheduleEntity.getStartTime());
+//		scheduleDomain.validate(requestDto.invitedMemberSeqs(), requestDto.startTime());
 		ChatRoomEntity chatRoomEntity = chatRoomRepository.findByScheduleEntity(scheduleEntity);
 
 		/*

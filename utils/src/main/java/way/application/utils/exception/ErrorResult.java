@@ -202,6 +202,12 @@ public enum ErrorResult {
 		"SADB038"
 	),
 
+	IN_ONE_HOUR_RANGE_SCHEDULE_BAD_REQUEST_EXCEPTION(
+			HttpStatus.BAD_REQUEST.value(),
+			"1시간 이내 일정은 멤버를 수정 할 수 없습니다.",
+			"IOHRSB038"
+	),
+
 	// NOT FOUND
 	HIDE_FEED_NOT_FOUND_EXCEPTION(
 		HttpStatus.NOT_FOUND.value(),

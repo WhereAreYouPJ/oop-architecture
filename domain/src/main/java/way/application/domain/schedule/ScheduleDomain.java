@@ -51,6 +51,12 @@ public class ScheduleDomain {
         return startTime.isBefore(oneHourAfter) || startTime.isAfter(oneHourBefore);
 	}
 
+	public void validate(List<Long> invitedMemberSeqs, LocalDateTime startTime) {
+		if(this.isWithinOneHourRange(startTime) && !invitedMemberSeqs.isEmpty()) {
+			throw new BadRequestException(ErrorResult.IN_ONE_HOUR_RANGE_SCHEDULE_BAD_REQUEST_EXCEPTION);
+		}
+	}
+
 	public Long getDdaySchedule(LocalDateTime startTime) {
 
 		LocalDateTime now = LocalDateTime.now();
