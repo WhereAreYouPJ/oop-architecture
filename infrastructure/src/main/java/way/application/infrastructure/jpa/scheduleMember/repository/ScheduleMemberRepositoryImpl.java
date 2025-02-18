@@ -134,7 +134,6 @@ public class ScheduleMemberRepositoryImpl implements ScheduleMemberRepository {
 			.selectFrom(scheduleMember)
 			.where(
 				scheduleMember.schedule.eq(scheduleEntity)
-					.and(scheduleMember.acceptSchedule.isTrue())
 			)
 			.fetch();
 	}

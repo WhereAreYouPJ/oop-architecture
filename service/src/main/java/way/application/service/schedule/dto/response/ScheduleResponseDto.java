@@ -36,7 +36,8 @@ public class ScheduleResponseDto {
 		public record GetScheduleMemberInfoDto(
 			Long memberSeq,
 			String userName,
-			boolean isCreate
+			boolean isCreate,
+			boolean isAccepted
 		) {
 
 		}
