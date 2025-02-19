@@ -127,12 +127,12 @@ public class FeedService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<GetFeedResponseDto> getAllFeed(Long memberSeq, Pageable pageable) {
+	public Page<GetFeedResponseDto> getAllFeed(Long memberSeq, Pageable pageable) {
 		/*
 		 1. Member 유효성 검사
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
-		List<ScheduleEntity> scheduleEntities
+		Page<ScheduleEntity> scheduleEntities
 			= scheduleRepository.findSchedulesByMemberEntity(memberEntity, pageable);
 
 		return scheduleEntities.stream()
@@ -178,16 +178,18 @@ public class FeedService {
 					.orElse(null);
 			})
 			.filter(Objects::nonNull)
-			.collect(Collectors.toList());
+			.collect(Collectors.collectingAndThen(
+				Collectors.toList(), list -> new PageImpl<>(list, pageable, list.size()))
+			);
 	}
 
 	@Transactional(readOnly = true)
-	public List<GetFeedResponseDto> getMainFeed(Long memberSeq, Pageable pageable) {
+	public Page<GetFeedResponseDto> getMainFeed(Long memberSeq, Pageable pageable) {
 		/*
 		 1. Member 유효성 검사
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
-		List<ScheduleEntity> scheduleEntities
+		Page<ScheduleEntity> scheduleEntities
 			= scheduleRepository.findSchedulesByMemberEntity(memberEntity, pageable);
 
 		return scheduleEntities.stream()
@@ -232,7 +234,9 @@ public class FeedService {
 					.orElse(null);
 			})
 			.filter(Objects::nonNull)
-			.collect(Collectors.toList());
+			.collect(Collectors.collectingAndThen(
+				Collectors.toList(), list -> new PageImpl<>(list, pageable, list.size()))
+			);
 	}
 
 	@Transactional(readOnly = true)
