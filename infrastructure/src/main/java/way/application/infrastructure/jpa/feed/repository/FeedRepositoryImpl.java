@@ -55,48 +55,17 @@ public class FeedRepositoryImpl implements FeedRepository {
 	}
 
 	@Override
-	public FeedEntity findByScheduleExcludingHiddenRand(
-		ScheduleEntity scheduleEntity,
-		MemberEntity memberEntity
-	) {
-		QFeedEntity feed = QFeedEntity.feedEntity;
-		QHideFeedEntity hideFeed = QHideFeedEntity.hideFeedEntity;
-
-		return queryFactory
-			.selectFrom(feed)
-			.leftJoin(hideFeed).on(feed.eq(hideFeed.feedEntity))
-			.where(feed.schedule.eq(scheduleEntity)
-				.and(hideFeed.memberEntity.eq(memberEntity).not())
-				.or(hideFeed.feedEntity.isNull()))
-			.orderBy(
-				Expressions.booleanTemplate(
-					"case when {0} = {1} then 1 else 0 end", feed.creatorMember, memberEntity
-				).desc()
-			)
-			.fetchFirst();
-
+	public FeedEntity findByScheduleExcludingHiddenRand(ScheduleEntity scheduleEntity, MemberEntity memberEntity) {
+		return feedJpaRepository
+			.findFeedByScheduleExcludingHiddenRand(scheduleEntity.getScheduleSeq(), memberEntity.getMemberSeq())
+			.stream().findFirst().orElse(null);
 	}
 
 	@Override
-	public FeedEntity findFeedEntityExcludingCreatorMember(
-		ScheduleEntity scheduleEntity,
-		MemberEntity memberEntity
-	) {
-		QFeedEntity feed = QFeedEntity.feedEntity;
-		QHideFeedEntity hideFeed = QHideFeedEntity.hideFeedEntity;
-
-		// Member가 작성한 Feed가 아닌 무작위 Feed를 반환
-		return queryFactory
-			.selectFrom(feed)
-			.leftJoin(hideFeed)
-			.on(feed.eq(hideFeed.feedEntity)
-				.and(hideFeed.memberEntity.eq(memberEntity)))
-			.where(
-				feed.schedule.eq(scheduleEntity)
-					.and(hideFeed.feedEntity.isNull())
-					.and(feed.creatorMember.ne(memberEntity))
-			) // 작성자 제외 조건
-			.fetchFirst();
+	public FeedEntity findFeedEntityExcludingCreatorMember(ScheduleEntity scheduleEntity, MemberEntity memberEntity) {
+		return feedJpaRepository
+			.findFeedByScheduleExcludingHiddenAndCreator(scheduleEntity.getScheduleSeq(), memberEntity.getMemberSeq())
+			.stream().findFirst().orElse(null);
 	}
 
 	@Override

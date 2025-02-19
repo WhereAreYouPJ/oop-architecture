@@ -106,14 +106,14 @@ public class FeedController {
 		@ApiResponse(responseCode = "S500", description = "500 서버 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(responseCode = "MSB002", description = "400 MEMBER SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
-	public ResponseEntity<BaseResponse<Page<GetFeedResponseDto>>> getAllFeed(
+	public ResponseEntity<BaseResponse<List<GetFeedResponseDto>>> getAllFeed(
 		@Valid
 		@RequestParam(value = "memberSeq") Long memberSeq,
 		@RequestParam(value = "page", defaultValue = "0") int page,
 		@RequestParam(value = "size", defaultValue = "10") int size
 	) {
 		Pageable pageable = PageRequest.of(page, size);
-		Page<GetFeedResponseDto> response = feedService.getAllFeed(memberSeq, pageable);
+		List<GetFeedResponseDto> response = feedService.getAllFeed(memberSeq, pageable);
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}
@@ -130,14 +130,14 @@ public class FeedController {
 		@ApiResponse(responseCode = "S500", description = "500 서버 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class))),
 		@ApiResponse(responseCode = "MSB002", description = "400 MEMBER SEQ 오류", content = @Content(schema = @Schema(implementation = GlobalExceptionHandler.ErrorResponse.class)))
 	})
-	public ResponseEntity<BaseResponse<Page<GetFeedResponseDto>>> getMainFeed(
+	public ResponseEntity<BaseResponse<List<GetFeedResponseDto>>> getMainFeed(
 		@Valid
 		@RequestParam(value = "memberSeq") Long memberSeq,
 		@RequestParam(value = "page", defaultValue = "0") int page,
 		@RequestParam(value = "size", defaultValue = "10") int size
 	) {
 		Pageable pageable = PageRequest.of(page, size);
-		Page<GetFeedResponseDto> response = feedService.getMainFeed(memberSeq, pageable);
+		List<GetFeedResponseDto> response = feedService.getMainFeed(memberSeq, pageable);
 
 		return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), response));
 	}

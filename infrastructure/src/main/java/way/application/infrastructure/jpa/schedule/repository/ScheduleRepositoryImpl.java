@@ -90,11 +90,11 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 	}
 
 	@Override
-	public Page<ScheduleEntity> findSchedulesByMemberEntity(MemberEntity memberEntity, Pageable pageable) {
+	public List<ScheduleEntity> findSchedulesByMemberEntity(MemberEntity memberEntity, Pageable pageable) {
 		QScheduleEntity schedule = QScheduleEntity.scheduleEntity;
 		QScheduleMemberEntity scheduleMember = QScheduleMemberEntity.scheduleMemberEntity;
 
-		QueryResults<ScheduleEntity> results = queryFactory
+		return queryFactory
 			.select(schedule)
 			.from(schedule)
 			.join(scheduleMember).on(schedule.scheduleSeq.eq(scheduleMember.schedule.scheduleSeq))
@@ -103,14 +103,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 					.and(scheduleMember.acceptSchedule.isTrue())
 			)
 			.orderBy(schedule.startTime.desc())
-			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize())
-			.fetchResults();
-
-		List<ScheduleEntity> scheduleEntities = results.getResults();
-		long total = results.getTotal();
-
-		return new PageImpl<>(scheduleEntities, pageable, total);
+			.fetch();
 	}
 
 	@Override

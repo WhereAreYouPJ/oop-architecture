@@ -23,7 +23,7 @@ public interface ScheduleRepository {
 
 	List<ScheduleEntity> findSchedulesByMemberAndStartTime(MemberEntity memberEntity);
 
-	Page<ScheduleEntity> findSchedulesByMemberEntity(MemberEntity memberEntity, Pageable pageable);
+	List<ScheduleEntity> findSchedulesByMemberEntity(MemberEntity memberEntity, Pageable pageable);
 
 	Page<ScheduleEntity> findSchedulesByMemberEntityAndStartTime(
 		MemberEntity memberEntity,
