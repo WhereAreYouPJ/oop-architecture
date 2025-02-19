@@ -64,17 +64,17 @@ public class FeedRepositoryImpl implements FeedRepository {
 
 		return queryFactory
 			.selectFrom(feed)
-			.leftJoin(hideFeed)
-			.on(feed.eq(hideFeed.feedEntity)
-				.and(hideFeed.memberEntity.eq(memberEntity)))
+			.leftJoin(hideFeed).on(feed.eq(hideFeed.feedEntity))
 			.where(feed.schedule.eq(scheduleEntity)
-				.and(hideFeed.feedEntity.isNull()))
+				.and(hideFeed.memberEntity.eq(memberEntity).not())
+				.or(hideFeed.feedEntity.isNull()))
 			.orderBy(
 				Expressions.booleanTemplate(
 					"case when {0} = {1} then 1 else 0 end", feed.creatorMember, memberEntity
 				).desc()
 			)
 			.fetchFirst();
+
 	}
 
 	@Override
