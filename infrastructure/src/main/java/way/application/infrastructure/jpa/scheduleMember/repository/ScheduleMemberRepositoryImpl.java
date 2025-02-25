@@ -4,12 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -268,5 +264,18 @@ public class ScheduleMemberRepositoryImpl implements ScheduleMemberRepository {
 				scheduleMember.isCreator.isTrue()
 					.and(scheduleMember.schedule.scheduleSeq.eq(scheduleEntity.getScheduleSeq()))
 			).fetchOne();
+	}
+
+	@Override
+	public String findCreatorNameBySchedule(ScheduleEntity scheduleEntity) {
+		QScheduleMemberEntity scheduleMember = QScheduleMemberEntity.scheduleMemberEntity;
+
+		return queryFactory
+				.select(scheduleMember.invitedMember.userName)
+				.from(scheduleMember)
+				.where(
+						scheduleMember.isCreator.isTrue()
+								.and(scheduleMember.schedule.scheduleSeq.eq(scheduleEntity.getScheduleSeq()))
+				).fetchOne();
 	}
 }
