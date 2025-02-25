@@ -48,4 +48,6 @@ public interface ScheduleMemberRepository {
 	List<ScheduleMemberEntity> findAllByScheduleEntity(ScheduleEntity scheduleEntity);
 
 	void deleteRemainScheduleEntity(ScheduleEntity scheduleEntity, List<MemberEntity> memberEntities);
+
+	String findCreatorNameBySchedule(ScheduleEntity scheduleEntity);
 }

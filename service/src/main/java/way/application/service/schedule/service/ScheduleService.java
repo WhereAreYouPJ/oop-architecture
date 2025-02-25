@@ -470,16 +470,18 @@ public class ScheduleService {
 		*/
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(memberSeq);
 
-		// 초대 받은 일정 추출
+		// 초대 받은 일정 조회
 		List<ScheduleMemberEntity> scheduleMemberEntityList
 			= scheduleMemberRepository.findInvitedScheduleMemberEntity(memberEntity);
+		// 초대 받은 일정 추출
 		List<ScheduleEntity> scheduleEntityList
 			= scheduleMemberDomain.extractScheduleEntityList(scheduleMemberEntityList);
 
 		return scheduleEntityList.stream()
 			.map(scheduleEntity -> {
 				Long dDay = scheduleDomain.getDdaySchedule(scheduleEntity.getStartTime());
-				return scheduleEntityMapper.toGetInvitedScheduleListResponseDto(scheduleEntity, dDay);
+				String creatorName = scheduleMemberRepository.findCreatorNameBySchedule(scheduleEntity);
+				return scheduleEntityMapper.toGetInvitedScheduleListResponseDto(scheduleEntity, dDay, creatorName);
 			})
 			.collect(Collectors.toList());
 	}

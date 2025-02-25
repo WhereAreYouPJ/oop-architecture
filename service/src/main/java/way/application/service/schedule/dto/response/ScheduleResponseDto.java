@@ -97,7 +97,8 @@ public class ScheduleResponseDto {
 		LocalDateTime startTime,
 		String title,
 		String location,
-		Long dDay
+		Long dDay,
+		String creatorName
 	) {
 
 	}

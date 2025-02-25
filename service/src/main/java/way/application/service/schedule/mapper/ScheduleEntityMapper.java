@@ -52,5 +52,6 @@ public interface ScheduleEntityMapper {
 	@Mapping(target = "title", source = "scheduleEntity.title")
 	@Mapping(target = "location", source = "scheduleEntity.location")
 	@Mapping(target = "dDay", source = "dDay")
-	GetInvitedScheduleListResponseDto toGetInvitedScheduleListResponseDto(ScheduleEntity scheduleEntity, Long dDay);
+	@Mapping(target = "creatorName", source = "creatorName")
+	GetInvitedScheduleListResponseDto toGetInvitedScheduleListResponseDto(ScheduleEntity scheduleEntity, Long dDay, String creatorName);
 }
