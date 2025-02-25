@@ -8,7 +8,6 @@ import way.application.infrastructure.jpa.friend.respository.FriendRepository;
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.member.repository.MemberRepository;
 import way.application.infrastructure.jpa.scheduleMember.repository.ScheduleMemberRepository;
-import way.application.service.friend.dto.request.FriendDto;
 import way.application.service.friend.dto.response.FriendResponseDto;
 
 import java.util.List;
@@ -41,7 +40,7 @@ public class FriendService {
     }
 
     @Transactional
-    public void delete(DeleteFriendDto deleteFriendDto) {
+    public void deleteFriend(DeleteFriendDto deleteFriendDto) {
 
         MemberEntity member = memberRepository.findByMemberSeq(deleteFriendDto.memberSeq());
         MemberEntity friend = memberRepository.findByMemberSeq(deleteFriendDto.friendSeq());

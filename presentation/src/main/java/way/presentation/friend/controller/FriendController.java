@@ -127,7 +127,7 @@ public class FriendController {
         // VO -> DTO 변환
         DeleteFriendDto deleteFriendDto = request.toDeleteFriend();
 
-        friendService.delete(deleteFriendDto);
+        friendService.deleteFriend(deleteFriendDto);
 
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
     }
