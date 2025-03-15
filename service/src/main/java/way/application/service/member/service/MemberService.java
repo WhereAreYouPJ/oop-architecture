@@ -209,7 +209,7 @@ public class MemberService {
 
 	}
 
-	public void modifyProfileImage(ModifyProfileImage modifyProfileImage) throws IOException {
+	public String modifyProfileImage(ModifyProfileImage modifyProfileImage) throws IOException {
 
 		// memberSeq 검사
 		MemberEntity memberEntity = memberRepository.findByMemberSeq(modifyProfileImage.memberSeq());
@@ -220,6 +220,8 @@ public class MemberService {
 
 		// 변경 저장
 		memberRepository.saveMember(memberEntity);
+
+		return uploadImage;
 	}
 
 	public void logout(LogoutRequestDto logoutRequest) {
