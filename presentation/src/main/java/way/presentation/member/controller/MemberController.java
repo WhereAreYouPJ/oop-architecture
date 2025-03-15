@@ -551,9 +551,9 @@ public class MemberController {
         // Part -> VO
         MemberRequestVo.ModifyProfileImage request = new MemberRequestVo.ModifyProfileImage(memberSeq, multipartFile);
         // VO -> DTO
-        memberService.modifyProfileImage(request.toModifyProfileImage());
+        String profileImage = memberService.modifyProfileImage(request.toModifyProfileImage());
 
-        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
+        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), profileImage));
     }
 
     @PostMapping(value = "/logout", name = "로그아웃")
