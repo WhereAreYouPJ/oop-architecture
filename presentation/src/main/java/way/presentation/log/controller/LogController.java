@@ -25,6 +25,11 @@ public class LogController {
             @RequestParam(value = "endDate", required = false) String endDate,
             Model model
     ) {
+
+        startDate = startDate.isEmpty() ? null : startDate;
+        endDate = endDate.isEmpty() ? null : endDate;
+
+
         List<LogEntity> logs = logService.searchLogs(level, startDate, endDate);
 
         model.addAttribute("logs", logs);
