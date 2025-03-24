@@ -26,9 +26,12 @@ public class LogController {
             Model model
     ) {
 
-        startDate = startDate.isEmpty() ? null : startDate;
-        endDate = endDate.isEmpty() ? null : endDate;
-
+        if(startDate != null) {
+            startDate = startDate.isEmpty() ? null : startDate;
+        }
+        if(endDate != null ) {
+            endDate = endDate.isEmpty() ? null : endDate;
+        }
 
         List<LogEntity> logs = logService.searchLogs(level, startDate, endDate);
 
