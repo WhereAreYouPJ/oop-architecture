@@ -112,6 +112,9 @@ subprojects {
         // RabbitMQ
         implementation group: 'org.springframework.boot', name: 'spring-boot-starter-reactor-netty', version: '2.4.6'
         implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
+        // aop
+        implementation 'org.springframework.boot:spring-boot-starter-aop'
     }
 
     tasks.named('test') {
@@ -174,5 +177,6 @@ project(':core') {
     bootJar { enabled = false }
     jar {enabled = true }
     dependencies {
+        implementation project(':utils')
     }
 }
