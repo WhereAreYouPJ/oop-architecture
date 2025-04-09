@@ -23,7 +23,8 @@ public class RequestLoggingInterceptor implements HandlerInterceptor {
             "/swagger-ui/index.html", "/swagger-ui/swagger-ui-standalone-preset.js",
             "/swagger-ui/index.css", "/swagger-ui/swagger-initializer.js",
             "/swagger-ui/swagger-ui-bundle.js", "/swagger-ui/swagger-ui.css",
-            "/admin/logs","/actuator/health","/index.html","/","/swagger-ui/favicon-32x32.png","/error"
+            "/admin/logs","/actuator/health","/index.html","/","/swagger-ui/favicon-32x32.png","/error",
+            "/private-policy","/swagger-ui/favicon-16x16.png"
     );
 
 
