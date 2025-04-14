@@ -46,16 +46,18 @@ public class RequestLoggingInterceptor implements HandlerInterceptor {
         int status = response.getStatus();
 
         if(!excludeUrls.contains(url)) {
-            LogEntity logEntity = LogEntity.builder()
-                    .httpStatus(status)
-                    .requestUri(url)
-                    .message(duration)
-                    .errorCode("SUCCESS")
-                    .exception("SUCCESS")
-                    .timestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-                    .build();
-
-            requestLogRepository.save(logEntity);
+//            String responseBody = (String) request.getAttribute("responseBody");
+//
+//            LogEntity logEntity = LogEntity.builder()
+//                    .httpStatus(status)
+//                    .requestUri(url)
+//                    .message(duration)
+//                    .errorCode("SUCCESS")
+//                    .exception("SUCCESS")
+//                    .timestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+//                    .build();
+//
+//            requestLogRepository.save(logEntity);
         }
     }
 }
