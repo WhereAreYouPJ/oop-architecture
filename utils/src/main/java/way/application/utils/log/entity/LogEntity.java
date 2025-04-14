@@ -30,5 +30,6 @@ public class LogEntity {
     private String exception;
     private String timestamp;
     private String requestUri;
+    private String param;
 }
 

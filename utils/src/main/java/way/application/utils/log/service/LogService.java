@@ -28,6 +28,7 @@ public class LogService {
                 .errorCode(event.getErrorCode())
                 .exception(event.getException())
                 .timestamp(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+                .param(event.getParam())
                 .build();
 
         logJpaRepository.save(logEntity);

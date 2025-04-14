@@ -38,6 +38,7 @@
             <th>Error Code</th>
             <th>Exception</th>
             <th>Timestamp</th>
+            <th>Request</th>
         </tr>
         </thead>
         <tbody>
@@ -49,6 +50,7 @@
             <td th:text="${log.errorCode}"></td>
             <td th:text="${log.exception}"></td>
             <td th:text="${log.timestamp}"></td>
+            <td th:text="${log.param}"></td>
         </tr>
         </tbody>
     </table>
