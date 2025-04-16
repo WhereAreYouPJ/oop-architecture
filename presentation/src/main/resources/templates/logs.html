@@ -5,10 +5,21 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <style>
         pre {
-            white-space: pre-wrap; /* 줄바꿈 유지 + 넘치면 줄바꿈 */
-            word-break: break-word; /* 너무 긴 단어 줄바꿈 */
-            max-height: 300px;
+            white-space: pre-wrap; /* 줄바꿈 유지 */
+            word-break: break-word; /* 긴 단어 줄바꿈 */
+            max-height: 500px;
             overflow: auto;
+            font-size: 0.875rem;
+            margin: 0;
+        }
+
+        td.message-cell {
+            min-width: 600px; /* ✅ 넓은 공간 확보 */
+            max-width: 1000px;
+        }
+
+        table {
+            table-layout: auto; /* ✅ 칼럼 너비 자동 조정 */
         }
     </style>
 </head>
@@ -55,8 +66,8 @@
             <td th:text="${log.httpStatus}"></td>
             <td th:text="${log.requestUri}"></td>
 
-            <!-- ✅ JSON 메시지를 예쁘게 출력 -->
-            <td><pre th:text="${log.message}"></pre></td>
+            <!-- ✅ 넓은 셀 + 예쁘게 JSON 출력 -->
+            <td class="message-cell"><pre th:text="${log.message}"></pre></td>
 
             <td th:text="${log.errorCode}"></td>
             <td th:text="${log.exception}"></td>
