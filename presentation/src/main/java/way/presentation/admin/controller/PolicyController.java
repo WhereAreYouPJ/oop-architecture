@@ -17,4 +17,10 @@ public class PolicyController {
 		return "upload";
 	}
 
+	@GetMapping("/term-of-service")
+	public String getTermOfServicePage(){
+		return "term-of-service";
+	}
+
+
 }
