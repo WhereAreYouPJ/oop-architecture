@@ -361,4 +361,9 @@ public class MemberService {
 
 		return new TokenReissueResponseDto(accessToken, refreshToken, memberSeq);
 	}
+
+	public void validateEmail(String email) {
+
+		memberRepository.isDuplicatedEmail(email);
+	}
 }

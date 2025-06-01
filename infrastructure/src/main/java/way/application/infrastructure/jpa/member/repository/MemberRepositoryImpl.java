@@ -62,7 +62,7 @@ public class MemberRepositoryImpl implements MemberRepository {
 	public void isDuplicatedEmail(String email) {
 		memberJpaRepository.findByEmail(email)
 			.ifPresent(entity -> {
-				throw new ConflictException(ErrorResult.EMAIL_DUPLICATION_CONFLICT_EXCEPTION);
+				throw new BadRequestException(ErrorResult.EMAIL_DUPLICATION_CONFLICT_EXCEPTION);
 			});
 	}
 

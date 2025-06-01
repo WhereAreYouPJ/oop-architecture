@@ -112,6 +112,32 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		return this.makeErrorResponseEntity(exception.getErrorResult());
 	}
 
+	@ExceptionHandler({ConflictException.class})
+	public ResponseEntity<ErrorResponse> handleConflictException(
+			final NotFoundRequestException exception,
+			HttpServletResponse response,
+			HttpServletRequest request
+	) {
+		log.warn("⚠️ Conflict Exception occurred: ", exception);
+
+		String requestBody = getRequestBody(request);
+		Map<String, String> requestParams = getRequestParams(request);
+
+		String logDetail = !requestBody.isEmpty() ? "Body: " + requestBody : "Params: " + requestParams;
+
+		eventPublisher.publishEvent(new LogEvent(
+				exception.getErrorResult().getHttpStatus(),
+				exception.getErrorResult().getMessage(),
+				exception.getErrorResult().getCode(),
+				exception.getErrorResult().toString(),
+				request.getRequestURI(),
+				logDetail
+		));
+
+		response.setStatus(exception.getErrorResult().getHttpStatus());
+		return this.makeErrorResponseEntity(exception.getErrorResult());
+	}
+
 	private String getRequestBody(HttpServletRequest request) {
 		try {
 			BufferedReader reader = request.getReader();
