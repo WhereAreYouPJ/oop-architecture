@@ -3,6 +3,25 @@
 <head>
     <title>Log Management</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        pre {
+            white-space: pre-wrap; /* 줄바꿈 유지 */
+            word-break: break-word; /* 긴 단어 줄바꿈 */
+            max-height: 500px;
+            overflow: auto;
+            font-size: 0.875rem;
+            margin: 0;
+        }
+
+        td.message-cell {
+            min-width: 600px; /* ✅ 넓은 공간 확보 */
+            max-width: 1000px;
+        }
+
+        table {
+            table-layout: auto; /* ✅ 칼럼 너비 자동 조정 */
+        }
+    </style>
 </head>
 <body>
 <div class="container mt-5">
@@ -29,11 +48,11 @@
 
     <!-- Log Table -->
     <table class="table table-bordered mt-3">
-        <thead>
+        <thead class="table-light">
         <tr>
             <th>ID</th>
             <th>HTTP Status</th>
-            <th>Uri</th>
+            <th>URI</th>
             <th>Message</th>
             <th>Error Code</th>
             <th>Exception</th>
@@ -46,7 +65,10 @@
             <td th:text="${log.logSeq}"></td>
             <td th:text="${log.httpStatus}"></td>
             <td th:text="${log.requestUri}"></td>
-            <td th:text="${log.message}"></td>
+
+            <!-- ✅ 넓은 셀 + 예쁘게 JSON 출력 -->
+            <td class="message-cell"><pre th:text="${log.message}"></pre></td>
+
             <td th:text="${log.errorCode}"></td>
             <td th:text="${log.exception}"></td>
             <td th:text="${log.timestamp}"></td>

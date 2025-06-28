@@ -99,7 +99,7 @@ public class FeedController {
 	@Parameters({
 		@Parameter(name = "memberSeq", description = "Member Seq", example = "1", required = true),
 		@Parameter(name = "page", description = "페이지 번호 (기본값: 0)", example = "0"),
-		@Parameter(name = "size", description = "페이지당 항목 수 (기본값: 10)", example = "10")
+		@Parameter(name = "size", description = "페이지당 항목 수 (기본값: 10)", example = "1000")
 	})
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "200 요청에 성공하였습니다.", useReturnTypeSchema = true),
@@ -110,7 +110,7 @@ public class FeedController {
 		@Valid
 		@RequestParam(value = "memberSeq") Long memberSeq,
 		@RequestParam(value = "page", defaultValue = "0") int page,
-		@RequestParam(value = "size", defaultValue = "10") int size
+		@RequestParam(value = "size", defaultValue = "1000") int size
 	) {
 		Pageable pageable = PageRequest.of(page, size);
 		Page<GetFeedResponseDto> response = feedService.getAllFeed(memberSeq, pageable);
@@ -123,7 +123,7 @@ public class FeedController {
 	@Parameters({
 		@Parameter(name = "memberSeq", description = "Member Seq", example = "1", required = true),
 		@Parameter(name = "page", description = "페이지 번호 (기본값: 0)", example = "0"),
-		@Parameter(name = "size", description = "페이지당 항목 수 (기본값: 10)", example = "10")
+		@Parameter(name = "size", description = "페이지당 항목 수 (기본값: 10)", example = "1000")
 	})
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "200 요청에 성공하였습니다.", useReturnTypeSchema = true),
@@ -134,7 +134,7 @@ public class FeedController {
 		@Valid
 		@RequestParam(value = "memberSeq") Long memberSeq,
 		@RequestParam(value = "page", defaultValue = "0") int page,
-		@RequestParam(value = "size", defaultValue = "10") int size
+		@RequestParam(value = "size", defaultValue = "1000") int size
 	) {
 		Pageable pageable = PageRequest.of(page, size);
 		Page<GetFeedResponseDto> response = feedService.getMainFeed(memberSeq, pageable);
