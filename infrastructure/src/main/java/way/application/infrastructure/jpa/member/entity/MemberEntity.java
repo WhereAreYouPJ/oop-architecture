@@ -44,15 +44,6 @@ public class MemberEntity {
 
 	private String fireBaseTargetToken;
 
-	@ColumnDefault("'false'")
-	private String apple;
-
-	@ColumnDefault("'false'")
-	private String kakao;
-
-	@ColumnDefault("'false'")
-	private String normal;
-
 	private String memberCode;
 
 	public void updateEncodedPassword(String password) {

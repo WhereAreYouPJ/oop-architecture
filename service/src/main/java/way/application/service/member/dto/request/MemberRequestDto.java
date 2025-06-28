@@ -1,5 +1,6 @@
 package way.application.service.member.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.web.multipart.MultipartFile;
 
 public class MemberRequestDto {
@@ -107,5 +108,43 @@ public class MemberRequestDto {
 
             String refreshToken
     ) {
+    }
+
+    public record SnsRequestDto(
+            String code,
+
+            String fcmToken
+    ) {
+    }
+
+    public record KakaoProfile(
+            Long id,
+            Properties properties,
+
+            @JsonProperty("kakao_account")
+            KakaoAccount kakaoAccount
+    ) {
+        public record Properties(
+                String nickname
+        ) {}
+
+        public record KakaoAccount(
+                String email,
+
+                Profile profile
+
+        ) {}
+
+        public record Profile(
+                String nickname
+
+        ) {}
+    }
+
+    public record SnsJoinRequestDto(
+            String userName,
+            String code
+    ) {
+
     }
 }

@@ -20,9 +20,9 @@ import way.application.infrastructure.jpa.member.entity.QMemberEntity;
 import way.application.infrastructure.jpa.schedule.entity.QScheduleEntity;
 import way.application.infrastructure.jpa.schedule.entity.ScheduleEntity;
 import way.application.infrastructure.jpa.scheduleMember.entity.QScheduleMemberEntity;
-import way.application.utils.exception.BadRequestException;
-import way.application.utils.exception.ConflictException;
-import way.application.utils.exception.ErrorResult;
+import way.application.utils.exception.*;
+
+import static way.application.utils.exception.ErrorResult.MEMBER_SEQ_BAD_REQUEST_EXCEPTION;
 
 @Component
 @RequiredArgsConstructor
@@ -36,7 +36,7 @@ public class MemberRepositoryImpl implements MemberRepository {
 	@Override
 	public MemberEntity findByMemberSeq(Long memberSeq) {
 		return memberJpaRepository.findById(memberSeq)
-			.orElseThrow(() -> new BadRequestException(ErrorResult.MEMBER_SEQ_BAD_REQUEST_EXCEPTION));
+			.orElseThrow(() -> new BadRequestException(MEMBER_SEQ_BAD_REQUEST_EXCEPTION));
 	}
 
 	@Override
@@ -47,7 +47,7 @@ public class MemberRepositoryImpl implements MemberRepository {
 
 		List<MemberEntity> memberEntities = memberJpaRepository.findAllById(memberSeqs);
 		if (memberEntities.size() != memberSeqs.size()) {
-			throw new BadRequestException(ErrorResult.MEMBER_SEQ_BAD_REQUEST_EXCEPTION);
+			throw new BadRequestException(MEMBER_SEQ_BAD_REQUEST_EXCEPTION);
 		}
 
 		return memberEntities;
@@ -163,5 +163,20 @@ public class MemberRepositoryImpl implements MemberRepository {
 					.and(qScheduleMemberEntity.acceptSchedule.isTrue())
 			)
 			.fetch();
+	}
+
+	@Override
+	public MemberEntity findByKakaoId(String id) {
+		Optional<MemberEntity> byKakaoPassword = memberJpaRepository.findByKakaoPassword(id);
+
+        return byKakaoPassword.orElseThrow(() -> new NotFoundRequestException(ErrorResult.KAKAO_NOT_FOUND_EXCEPTION));
+	}
+
+	@Override
+	public void isDuplicatedKakao(String code) {
+		memberJpaRepository.findByKakaoPassword(code)
+				.ifPresent(entity -> {
+					throw new ConflictException(ErrorResult.KAKAO_DUPLICATION_CONFLICT_EXCEPTION);
+				});
 	}
 }

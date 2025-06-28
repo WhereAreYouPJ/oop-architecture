@@ -1,6 +1,5 @@
 package way.application.utils.exception;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
@@ -25,7 +24,6 @@ import java.util.Map;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 	private final ApplicationEventPublisher eventPublisher;
-	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	// ✅ 공통 예외 처리
 	@ExceptionHandler({Exception.class})

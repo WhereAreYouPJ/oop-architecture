@@ -251,6 +251,12 @@ public enum ErrorResult {
 			"TN006"
 	),
 
+	KAKAO_NOT_FOUND_EXCEPTION(
+			HttpStatus.BAD_REQUEST.value(),
+			"카카오 회원가입이 필요합니다.",
+			"KN007"
+	),
+
 	// CONFLICT
 	USER_ID_DUPLICATION_CONFLICT_EXCEPTION(
 		HttpStatus.CONFLICT.value(),
@@ -292,6 +298,13 @@ public enum ErrorResult {
 		HttpStatus.CONFLICT.value(),
 		"CHAT ROOM 중복 오류",
 		"CRDC007"
+	),
+
+	KAKAO_DUPLICATION_CONFLICT_EXCEPTION(
+			HttpStatus.CONFLICT.value(),
+			"Kakao Id 중복 오류",
+			"KDCE008"
+
 	),
 
 	// UNAUTHORIZED

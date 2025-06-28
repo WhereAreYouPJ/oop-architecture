@@ -2,9 +2,12 @@ package way.application.service.member.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 import way.application.domain.member.MemberDomain;
 import way.application.infrastructure.jpa.bookMark.repository.BookMarkRepository;
 import way.application.infrastructure.jpa.chatRoom.repository.ChatRoomMemberRepositoryImpl;
@@ -67,6 +70,9 @@ public class MemberService {
 	private final CommentMapper commentMapper;
 	private final RedisTemplate<String, String> redisTemplate;
 
+	private final RestTemplate restTemplate = new RestTemplate();
+	@Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
+	private String kakaoUserInfoUri;
 	@Transactional
 	public void saveMember(SaveMemberRequestDto saveMemberRequestDto) {
 
@@ -268,13 +274,6 @@ public class MemberService {
 
 		String memberCode = memberDomain.generateMemberCode();
 
-		// Member 저장
-		if(saveSnsMemberRequestDto.loginType().equals("kakao")) {
-			memberRepository.saveMember(
-					memberMapper.toKakaoMemberEntity(saveSnsMemberRequestDto, encoder.encode(saveSnsMemberRequestDto.password()), memberCode)
-			);
-		}
-
 		if(saveSnsMemberRequestDto.loginType().equals("apple")) {
 			memberRepository.saveMember(
 					memberMapper.toAppleMemberEntity(saveSnsMemberRequestDto, encoder.encode(saveSnsMemberRequestDto.password()), memberCode)
@@ -365,5 +364,84 @@ public class MemberService {
 	public void validateEmail(String email) {
 
 		memberRepository.isDuplicatedEmail(email);
+	}
+
+	public LoginResponseDto kakaoLogin(SnsRequestDto request) {
+
+
+		// kakaoAccessToken 조회
+//		String kakaoToken = getAccessToken(request.code());
+
+		// kakaoAccessToken으로 유저 정보 조회
+		KakaoProfile userInfo = getUserInfo(request.code());
+
+		// 가입 여부 확인
+		String id = String.valueOf(userInfo.id());
+
+		MemberEntity memberEntity = memberRepository.findByKakaoId(id);
+
+		// jwt 생성
+		String accessToken = memberDomain.generateAccessToken(memberEntity.getMemberSeq());
+		String refreshToken = memberDomain.generateRefreshToken(memberEntity.getMemberSeq());
+
+		// refreshToken 저장
+		memberRepository.saveRefreshToken(refreshToken, String.valueOf(memberEntity.getMemberSeq()));
+
+		// fcm 저장
+		memberEntity.saveFireBaseTargetToken(request.fcmToken());
+		memberRepository.saveMember(memberEntity);
+
+		return new LoginResponseDto(accessToken,refreshToken,memberEntity.getMemberSeq(),memberEntity.getMemberCode(),memberEntity.getProfileImage());
+	}
+
+//	private String getAccessToken(String code) {
+//		HttpHeaders headers = new HttpHeaders();
+//		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+//
+//		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+//		params.add("grant_type", "authorization_code");
+//		params.add("client_id", kakaoClientId);
+//		params.add("redirect_uri", kakaoRedirectUri);
+//		params.add("code", code);
+//
+//		HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
+//
+//		ResponseEntity<KakaoLoginResponseDto> response = restTemplate.postForEntity(
+//				kakaoTokenUri,
+//				request,
+//				MemberResponseDto.KakaoLoginResponseDto.class
+//		);
+//
+//		return Objects.requireNonNull(Objects.requireNonNull(response.getBody()).accessToken());
+//	}
+
+	private KakaoProfile getUserInfo(String accessToken) {
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setBearerAuth(accessToken);
+
+		HttpEntity<String> request = new HttpEntity<>(headers);
+
+		ResponseEntity<KakaoProfile> response = restTemplate.exchange(
+				kakaoUserInfoUri,
+				HttpMethod.GET,
+				request,
+				KakaoProfile.class
+		);
+
+		return response.getBody();
+	}
+
+	public void joinKakaoMember(SnsJoinRequestDto kakaoJoinRequest) {
+
+		//멤버 유효성 검사
+		memberRepository.isDuplicatedKakao(kakaoJoinRequest.code());
+
+		String memberCode = memberDomain.generateMemberCode();
+
+		// Member 저장
+		memberRepository.saveMember(
+				memberMapper.toKakaoMemberEntity(kakaoJoinRequest , kakaoJoinRequest.code() ,memberCode, initialMemberProfileImage)
+		);
 	}
 }

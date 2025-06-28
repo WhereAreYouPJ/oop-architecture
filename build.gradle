@@ -119,6 +119,8 @@ subprojects {
         //oauth
         implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
+        // JSON 파싱
+        implementation 'com.fasterxml.jackson.core:jackson-databind'
     }
 
     tasks.named('test') {

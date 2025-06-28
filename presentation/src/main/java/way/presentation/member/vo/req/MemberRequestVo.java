@@ -1,9 +1,12 @@
 package way.presentation.member.vo.req;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.web.multipart.MultipartFile;
 import way.application.service.member.dto.request.MemberRequestDto;
+import way.application.utils.exception.BadRequestException;
 
 import static way.application.service.member.dto.request.MemberRequestDto.*;
+import static way.application.utils.exception.ErrorResult.*;
 
 public class MemberRequestVo {
 
@@ -204,5 +207,56 @@ public class MemberRequestVo {
             );
         }
     }
+
+    public record SnsLoginRequest(
+            String code,
+
+            String fcmToken
+    ) {
+        public SnsRequestDto toSnsLoginRequest() {
+            return new SnsRequestDto(
+                    this.code,
+                    this.fcmToken
+            );
+        }
+
+        public void snsLoginRequestValidate() {
+            if (this.code == null) {
+                throw new BadRequestException(DTO_BAD_REQUEST_EXCEPTION);
+            }
+
+        }
+    }
+
+    public record SnsJoinRequest(
+            String userName,
+            String code
+
+    ) {
+        public SnsJoinRequestDto toSnsJoinRequest() {
+            return new SnsJoinRequestDto(
+                    this.userName,
+                    this.code
+            );
+        }
+
+        public void SnsJoinRequestValidate() {
+            if (this.code == null || this.userName == null) {
+                throw new BadRequestException(DTO_BAD_REQUEST_EXCEPTION);
+            }
+        }
+    }
+
+    public record ModifyProfileImageRequest(
+
+            @Schema(description = "회원 시퀀스", example = "1")
+            Long memberSeq,
+
+            @Schema(description = "프로필 이미지 파일", type = "string", format = "binary")
+            MultipartFile images
+
+    ) {}
+
+
 
 }
