@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -547,8 +548,13 @@ public class MemberController {
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(),searchMemberResponse));
     }
 
-    @PutMapping(value = "/profile-image", name = "회원 사진 변경")
-    @Operation(summary = "Modify profileImage API", description = "프로필 사진 변경 API")
+    @PutMapping(value = "/profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Modify profileImage API", description = "프로필 사진 변경 API",
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
+                            schema = @Schema(implementation = ModifyProfileImageRequest.class))
+            )
+    )
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
@@ -738,4 +744,128 @@ public class MemberController {
 
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), tokenReissueResponse));
     }
+
+    @PostMapping(value = "/kakao/login", name = "카카오 로그인")
+    @Operation(summary = "Kakao Login API", description = "카카오 로그인 API")
+    @Parameters({
+            @Parameter(
+                    name = "authCode",
+                    description = "Auth Code",
+                    example = "1A2B3C")
+    })
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청에 성공하였습니다.",
+                    useReturnTypeSchema = true),
+            @ApiResponse(
+                    responseCode = "B001",
+                    description = "400 Invalid DTO Parameter errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "S500",
+                    description = "500 SERVER_ERROR",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "KN007",
+                    description = "404 카카오 회원가입이 필요합니다.",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class)))
+    })
+    public ResponseEntity<BaseResponse<LoginResponseDto>> kakaoLogin(@Valid @RequestBody SnsLoginRequest request) {
+
+        // 검사
+        request.snsLoginRequestValidate();
+
+        // Vo to Dto
+        SnsRequestDto kakaoLoginRequest = request.toSnsLoginRequest();
+
+        // 서비스
+        LoginResponseDto loginResponseDto = memberService.kakaoLogin(kakaoLoginRequest);
+
+        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(),loginResponseDto));
+    }
+
+    @PostMapping(value = "/kakaoJoin", name = "카카오 회원가입")
+    @Operation(summary = "join Kakao Member API", description = "카카오 회원가입 API")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청에 성공하였습니다.",
+                    useReturnTypeSchema = true),
+            @ApiResponse(
+                    responseCode = "S500",
+                    description = "500 SERVER_ERROR",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "B001",
+                    description = "400 Invalid DTO Parameter errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "KDCE008",
+                    description = "409 Kakao Id 중복 오류",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class)))
+    })
+    public ResponseEntity<BaseResponse<String>> JoinKakaoMember(@Valid @RequestBody MemberRequestVo.SnsJoinRequest request) {
+
+        // DTO 유효성 검사
+        request.SnsJoinRequestValidate();
+
+        // VO -> DTO 변환
+        SnsJoinRequestDto kakaoJoinRequest = request.toSnsJoinRequest();
+        memberService.joinKakaoMember(kakaoJoinRequest);
+
+        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
+    }
+
+//    @PostMapping(value = "/appleLogin", name = "애플 로그인")
+//    @Operation(summary = "Apple Login API", description = "애플 로그인 API")
+//    @Parameters({
+//            @Parameter(
+//                    name = "authCode",
+//                    description = "Auth Code",
+//                    example = "1A2B3C")
+//    })
+//    @ApiResponses(value = {
+//            @ApiResponse(
+//                    responseCode = "200",
+//                    description = "요청에 성공하였습니다.",
+//                    useReturnTypeSchema = true),
+//            @ApiResponse(
+//                    responseCode = "B001",
+//                    description = "400 Invalid DTO Parameter errors",
+//                    content = @Content(
+//                            schema = @Schema(
+//                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+//            @ApiResponse(
+//                    responseCode = "S500",
+//                    description = "500 SERVER_ERROR",
+//                    content = @Content(
+//                            schema = @Schema(
+//                                    implementation = GlobalExceptionHandler.ErrorResponse.class)))
+//    })
+//    public ResponseEntity<BaseResponse<LoginResponseDto>> appleLogin(@Valid @RequestBody MemberRequestVo.SnsLoginRequest request) throws Exception {
+//
+//        // 검사
+//        request.snsLoginRequestValidate();
+//
+//        // Vo to Dto
+//        SnsRequestDto snsRequestDto = request.toSnsLoginRequest();
+//
+//        // 서비스
+//        LoginResponseDto loginResponseDto = memberService.appleLogin(snsRequestDto);
+//
+//        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(),loginResponseDto));
+//    }
 }

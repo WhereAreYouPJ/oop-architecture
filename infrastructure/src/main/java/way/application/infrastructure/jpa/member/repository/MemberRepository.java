@@ -36,4 +36,9 @@ public interface MemberRepository {
 	void deleteByMemberSeq(MemberEntity memberEntity);
 
 	List<MemberEntity> findByScheduleEntityAcceptTrue(ScheduleEntity scheduleEntity);
+
+	MemberEntity findByKakaoId(String id);
+
+	void isDuplicatedKakao(String code);
+
 }

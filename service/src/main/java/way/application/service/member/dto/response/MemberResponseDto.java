@@ -1,5 +1,7 @@
 package way.application.service.member.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 public class MemberResponseDto {
@@ -52,5 +54,4 @@ public class MemberResponseDto {
     ) {
 
     }
-
 }
