@@ -747,12 +747,6 @@ public class MemberController {
 
     @PostMapping(value = "/kakao/login", name = "카카오 로그인")
     @Operation(summary = "Kakao Login API", description = "카카오 로그인 API")
-    @Parameters({
-            @Parameter(
-                    name = "authCode",
-                    description = "Auth Code",
-                    example = "1A2B3C")
-    })
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
@@ -829,14 +823,8 @@ public class MemberController {
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
     }
 
-    @PostMapping(value = "/apple/Login", name = "애플 로그인")
+    @PostMapping(value = "/apple/login", name = "애플 로그인")
     @Operation(summary = "Apple Login API", description = "애플 로그인 API")
-    @Parameters({
-            @Parameter(
-                    name = "authCode",
-                    description = "Auth Code",
-                    example = "1A2B3C")
-    })
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
