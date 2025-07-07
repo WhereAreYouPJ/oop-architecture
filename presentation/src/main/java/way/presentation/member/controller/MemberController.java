@@ -299,7 +299,13 @@ public class MemberController {
                     description = "500 SERVER_ERROR",
                     content = @Content(
                             schema = @Schema(
-                                    implementation = GlobalExceptionHandler.ErrorResponse.class)))
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "EDC002",
+                    description = "409 EMAIL 중복 오류",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
     })
     public ResponseEntity<BaseResponse<String>> sendMailV2(@Valid @RequestBody MailSendRequest request) {
 
@@ -747,12 +753,6 @@ public class MemberController {
 
     @PostMapping(value = "/kakao/login", name = "카카오 로그인")
     @Operation(summary = "Kakao Login API", description = "카카오 로그인 API")
-    @Parameters({
-            @Parameter(
-                    name = "authCode",
-                    description = "Auth Code",
-                    example = "1A2B3C")
-    })
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
@@ -829,14 +829,8 @@ public class MemberController {
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
     }
 
-    @PostMapping(value = "/apple/Login", name = "애플 로그인")
+    @PostMapping(value = "/apple/login", name = "애플 로그인")
     @Operation(summary = "Apple Login API", description = "애플 로그인 API")
-    @Parameters({
-            @Parameter(
-                    name = "authCode",
-                    description = "Auth Code",
-                    example = "1A2B3C")
-    })
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
