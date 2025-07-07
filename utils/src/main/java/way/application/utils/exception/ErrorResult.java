@@ -257,6 +257,12 @@ public enum ErrorResult {
 			"KN007"
 	),
 
+	APPLE_NOT_FOUND_EXCEPTION(
+			HttpStatus.BAD_REQUEST.value(),
+			"애플 회원가입이 필요합니다.",
+			"AN008"
+	),
+
 	// CONFLICT
 	USER_ID_DUPLICATION_CONFLICT_EXCEPTION(
 		HttpStatus.CONFLICT.value(),
@@ -304,6 +310,13 @@ public enum ErrorResult {
 			HttpStatus.CONFLICT.value(),
 			"Kakao Id 중복 오류",
 			"KDCE008"
+
+	),
+
+	APPLE_DUPLICATION_CONFLICT_EXCEPTION(
+			HttpStatus.CONFLICT.value(),
+			"Apple Id 중복 오류",
+			"ADCE009"
 
 	),
 

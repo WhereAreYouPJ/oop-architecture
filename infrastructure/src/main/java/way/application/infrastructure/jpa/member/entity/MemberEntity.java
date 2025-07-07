@@ -1,6 +1,5 @@
 package way.application.infrastructure.jpa.member.entity;
 
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -34,9 +33,9 @@ public class MemberEntity {
 
 	private String encodedPassword;
 
-	private String kakaoPassword;
+	private String kakaoId;
 
-	private String applePassword;
+	private String appleId;
 
 	private String email;
 
@@ -67,10 +66,10 @@ public class MemberEntity {
 	}
 
 	public void updateKakaoPassword(String kakaoPassword) {
-		this.kakaoPassword = kakaoPassword;
+		this.kakaoId = kakaoPassword;
 	}
 
 	public void updateApplePassword(String applePassword) {
-		this.applePassword = applePassword;
+		this.appleId = applePassword;
 	}
 }

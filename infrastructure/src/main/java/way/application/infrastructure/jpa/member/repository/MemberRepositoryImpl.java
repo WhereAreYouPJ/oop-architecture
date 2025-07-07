@@ -167,16 +167,30 @@ public class MemberRepositoryImpl implements MemberRepository {
 
 	@Override
 	public MemberEntity findByKakaoId(String id) {
-		Optional<MemberEntity> byKakaoPassword = memberJpaRepository.findByKakaoPassword(id);
 
-        return byKakaoPassword.orElseThrow(() -> new NotFoundRequestException(ErrorResult.KAKAO_NOT_FOUND_EXCEPTION));
+        return memberJpaRepository.findByKakaoId(id)
+				.orElseThrow(() -> new NotFoundRequestException(ErrorResult.KAKAO_NOT_FOUND_EXCEPTION));
 	}
 
 	@Override
-	public void isDuplicatedKakao(String code) {
-		memberJpaRepository.findByKakaoPassword(code)
+	public void isDuplicatedKakao(String kakaoId) {
+		memberJpaRepository.findByKakaoId(kakaoId)
 				.ifPresent(entity -> {
 					throw new ConflictException(ErrorResult.KAKAO_DUPLICATION_CONFLICT_EXCEPTION);
+				});
+	}
+
+	@Override
+	public MemberEntity findByAppleId(String appleId) {
+		return memberJpaRepository.findByAppleId(appleId)
+				.orElseThrow(() -> new NotFoundRequestException(ErrorResult.APPLE_NOT_FOUND_EXCEPTION));
+	}
+
+	@Override
+	public void isDuplicatedApple(String code) {
+		memberJpaRepository.findByAppleId(code)
+				.ifPresent(entity -> {
+					throw new ConflictException(ErrorResult.APPLE_DUPLICATION_CONFLICT_EXCEPTION);
 				});
 	}
 }

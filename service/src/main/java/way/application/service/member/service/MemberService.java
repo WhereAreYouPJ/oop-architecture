@@ -1,5 +1,8 @@
 package way.application.service.member.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,6 +11,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import way.application.core.configuration.ApplePublicKeyProvider;
 import way.application.domain.member.MemberDomain;
 import way.application.infrastructure.jpa.bookMark.repository.BookMarkRepository;
 import way.application.infrastructure.jpa.chatRoom.repository.ChatRoomMemberRepositoryImpl;
@@ -32,7 +36,10 @@ import way.application.utils.exception.ConflictException;
 import way.application.utils.s3.S3Utils;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import static way.application.service.member.dto.request.MemberRequestDto.*;
@@ -69,6 +76,7 @@ public class MemberService {
 	private final CommentRepository commentRepository;
 	private final CommentMapper commentMapper;
 	private final RedisTemplate<String, String> redisTemplate;
+	private final ApplePublicKeyProvider applePublicKeyProvider;
 
 	private final RestTemplate restTemplate = new RestTemplate();
 	@Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
@@ -100,10 +108,10 @@ public class MemberService {
 			if(memberEntity.getEncodedPassword() != null) {
 				type.add("normal");
 			}
-			if(memberEntity.getKakaoPassword() != null) {
+			if(memberEntity.getKakaoId() != null) {
 				type.add("kakao");
 			}
-			if(memberEntity.getApplePassword() != null) {
+			if(memberEntity.getAppleId() != null) {
 				type.add("apple");
 			}
 
@@ -125,12 +133,12 @@ public class MemberService {
 
 		// 카카오 로그인 비번 검증
 		if(loginRequestDto.loginType().equals("kakao")) {
-			memberDomain.checkPassword(loginRequestDto.password(), memberEntity.getKakaoPassword());
+			memberDomain.checkPassword(loginRequestDto.password(), memberEntity.getKakaoId());
 		}
 
 		// 애플 로그인 비번 검증
 		if(loginRequestDto.loginType().equals("apple")) {
-			memberDomain.checkPassword(loginRequestDto.password(), memberEntity.getApplePassword());
+			memberDomain.checkPassword(loginRequestDto.password(), memberEntity.getAppleId());
 		}
 
 		// jwt 생성
@@ -434,14 +442,82 @@ public class MemberService {
 
 	public void joinKakaoMember(SnsJoinRequestDto kakaoJoinRequest) {
 
+		KakaoProfile userInfo = getUserInfo(kakaoJoinRequest.code());
+
+		// 가입 여부 확인
+		String kakaoId = String.valueOf(userInfo.id());
+
 		//멤버 유효성 검사
-		memberRepository.isDuplicatedKakao(kakaoJoinRequest.code());
+		memberRepository.isDuplicatedKakao(kakaoId);
 
 		String memberCode = memberDomain.generateMemberCode();
 
 		// Member 저장
 		memberRepository.saveMember(
-				memberMapper.toKakaoMemberEntity(kakaoJoinRequest , kakaoJoinRequest.code() ,memberCode, initialMemberProfileImage)
+				memberMapper.toKakaoMemberEntity(kakaoJoinRequest , kakaoId ,memberCode, initialMemberProfileImage)
+		);
+	}
+
+	public LoginResponseDto appleLogin(SnsRequestDto snsRequestDto) {
+
+		// 애플 토큰 검증
+		Claims claims = verifyAppleToken(snsRequestDto.code());
+
+		String appleId = claims.getSubject();
+
+		// 가입 여부 확인
+		MemberEntity memberEntity =  memberRepository.findByAppleId(appleId);
+
+		// jwt 생성
+		String accessToken = memberDomain.generateAccessToken(memberEntity.getMemberSeq());
+		String refreshToken = memberDomain.generateRefreshToken(memberEntity.getMemberSeq());
+
+		// refreshToken 저장
+		memberRepository.saveRefreshToken(refreshToken, String.valueOf(memberEntity.getMemberSeq()));
+
+		// fcm 저장
+		memberEntity.saveFireBaseTargetToken(snsRequestDto.fcmToken());
+		memberRepository.saveMember(memberEntity);
+
+		return new LoginResponseDto(accessToken,refreshToken,memberEntity.getMemberSeq(),memberEntity.getMemberCode(),memberEntity.getProfileImage());
+
+	}
+
+	private Claims verifyAppleToken(String identityToken) {
+		try {
+			// 토큰 헤더에서 kid 추출
+			String[] parts = identityToken.split("\\.");
+			String headerJson = new String(Base64.getUrlDecoder().decode(parts[0]), StandardCharsets.UTF_8);
+			String kid = new ObjectMapper().readTree(headerJson).get("kid").asText();
+
+			// kid로 Apple 공개키 찾기
+			PublicKey publicKey = applePublicKeyProvider.getPublicKeyByKid(kid);
+
+			// JJWT로 서명 검증 및 파싱
+			return Jwts.parser()
+					.setSigningKey(publicKey)
+					.parseClaimsJws(identityToken)
+					.getBody();
+
+		} catch (Exception e) {
+			throw new RuntimeException("Apple identity token 검증 실패", e);
+		}
+	}
+
+	public void joinAppleMember(SnsJoinRequestDto appleJoinRequest) {
+
+		Claims claims = verifyAppleToken(appleJoinRequest.code());
+
+		String appleId = claims.getSubject();
+
+		//멤버 유효성 검사
+		memberRepository.isDuplicatedApple(appleId);
+
+		String memberCode = memberDomain.generateMemberCode();
+
+		// Member 저장
+		memberRepository.saveMember(
+				memberMapper.toAppleMemberEntity(appleJoinRequest , appleId ,memberCode, initialMemberProfileImage)
 		);
 	}
 }
