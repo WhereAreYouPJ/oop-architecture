@@ -41,4 +41,7 @@ public interface MemberRepository {
 
 	void isDuplicatedKakao(String code);
 
+	MemberEntity findByAppleId(String appleId);
+
+	void isDuplicatedApple(String code);
 }

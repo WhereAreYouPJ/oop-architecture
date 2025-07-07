@@ -13,5 +13,6 @@ public interface MemberJpaRepository extends JpaRepository<MemberEntity, Long> {
 
     Optional<MemberEntity> findByMemberCode(String memberCode);
 
-    Optional<MemberEntity> findByKakaoPassword(String kakao);
+    Optional<MemberEntity> findByKakaoId(String kakao);
+    Optional<MemberEntity> findByAppleId(String appleId);
 }

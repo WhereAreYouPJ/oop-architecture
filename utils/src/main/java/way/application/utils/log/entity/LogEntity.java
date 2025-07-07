@@ -43,7 +43,8 @@ public class LogEntity {
     @Column(name = "request_uri", nullable = false)
     private String requestUri;
 
-    @Column(name = "param", nullable = false)
+    @Lob
+    @Column(name = "param", nullable = false, columnDefinition = "LONGTEXT")
     private String param;
 }
 
