@@ -299,7 +299,13 @@ public class MemberController {
                     description = "500 SERVER_ERROR",
                     content = @Content(
                             schema = @Schema(
-                                    implementation = GlobalExceptionHandler.ErrorResponse.class)))
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "EDC002",
+                    description = "409 EMAIL 중복 오류",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
     })
     public ResponseEntity<BaseResponse<String>> sendMailV2(@Valid @RequestBody MailSendRequest request) {
 
