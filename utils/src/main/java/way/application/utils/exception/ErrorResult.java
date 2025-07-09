@@ -320,6 +320,12 @@ public enum ErrorResult {
 
 	),
 
+	ALREADY_FRIEND_CONFLICT_EXCEPTION(
+			HttpStatus.CONFLICT.value(),
+			"이미 친구 입니다.",
+			"AFCE010"
+	),
+
 	// UNAUTHORIZED
 	EXPIRED_TOKEN_UNAUTHORIZED_EXCEPTION(
 			HttpStatus.UNAUTHORIZED.value(),

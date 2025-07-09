@@ -39,6 +39,9 @@ public class FriendRequestService {
         // 신청 받은 멤버 유효성 검사
         MemberEntity receiver = friendRequestRepository.validateReceiverSeq(saveFriendRequestDto.friendSeq());
 
+        //이미 친구
+        friendRepository.validateAlreadyFriend(sender, receiver);
+
         // 본인 한테 친구 요청 보낼 수 없음
         friendRequestRepository.validateMemberAndFriend(saveFriendRequestDto.memberSeq(), saveFriendRequestDto.friendSeq());
 
@@ -47,8 +50,6 @@ public class FriendRequestService {
 
         //친구가 친구 요청을 보냄
         friendRequestRepository.validateAlreadyFriendRequestByFriend(receiver, sender);
-
-        //이미 친구 ( 추후 예정)
 
         // 친구 요청 저장
         friendRequestRepository.saveFriendRequest(
@@ -126,7 +127,7 @@ public class FriendRequestService {
         friendRequestRepository.delete(friendRequest);
 
         // 푸시 알림
-        firebaseNotificationDomain.sendFriendRequestNotification(sender,member);
+        firebaseNotificationDomain.acceptNotification(sender,member);
 
     }
 

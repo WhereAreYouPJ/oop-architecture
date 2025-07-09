@@ -112,7 +112,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@ExceptionHandler({ConflictException.class})
 	public ResponseEntity<ErrorResponse> handleConflictException(
-			final NotFoundRequestException exception,
+			final ConflictException exception,
 			HttpServletResponse response,
 			HttpServletRequest request
 	) {

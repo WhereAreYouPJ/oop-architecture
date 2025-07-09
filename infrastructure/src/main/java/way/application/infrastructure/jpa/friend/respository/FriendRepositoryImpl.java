@@ -10,6 +10,7 @@ import way.application.infrastructure.jpa.friendRequest.entity.QFriendRequestEnt
 import way.application.infrastructure.jpa.member.entity.MemberEntity;
 import way.application.infrastructure.jpa.member.repository.MemberJpaRepository;
 import way.application.utils.exception.BadRequestException;
+import way.application.utils.exception.ConflictException;
 import way.application.utils.exception.ErrorResult;
 
 import java.util.List;
@@ -65,5 +66,13 @@ public class FriendRepositoryImpl implements FriendRepository {
 
         em.flush();
         em.clear();
+    }
+
+    @Override
+    public void validateAlreadyFriend(MemberEntity member, MemberEntity friend) {
+        friendJpaRepository.findByOwnerAndFriends(member,friend)
+                .ifPresent(entity -> {
+                    throw new ConflictException(ErrorResult.ALREADY_FRIEND_CONFLICT_EXCEPTION);
+                });
     }
 }

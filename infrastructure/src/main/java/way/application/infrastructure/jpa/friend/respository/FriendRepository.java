@@ -17,4 +17,6 @@ public interface FriendRepository {
     FriendEntity findByOwnerAndFriend(MemberEntity member, MemberEntity friend);
 
     void deleteAllByMemberSeq(MemberEntity memberEntity);
+
+    void validateAlreadyFriend(MemberEntity sender, MemberEntity receiver);
 }
