@@ -92,6 +92,12 @@ public class FriendRequestController {
                     description = "400 RECEIVER_SEQ_BAD_REQUEST_EXCEPTION / 신청 받은 아이디 오류",
                     content = @Content(
                             schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "AFCE010",
+                    description = "409 ALREADY_FRIEND_CONFLICT_EXCEPTION / 이미 친구 입니다.",
+                    content = @Content(
+                            schema = @Schema(
                                     implementation = GlobalExceptionHandler.ErrorResponse.class)))
     })
     public ResponseEntity<BaseResponse<String>> friendRequest(@Valid @RequestBody SaveFriendRequestRequest request) throws IOException {
