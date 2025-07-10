@@ -322,6 +322,47 @@ public class MemberController {
         return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
     }
 
+    @PostMapping(value = "/email/send/findId", name = "메일 전송 아이디 찾기용")
+    @Operation(summary = "Mail Send 아이디 찾기용 ", description = "인증 메일 전송 아이디 찾기용 API")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "요청에 성공하였습니다.",
+                    useReturnTypeSchema = true),
+            @ApiResponse(
+                    responseCode = "B001",
+                    description = "400 Invalid DTO Parameter errors",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "S500",
+                    description = "500 SERVER_ERROR",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+            @ApiResponse(
+                    responseCode = "EB009",
+                    description = "400 EMAIL_BAD_REQUEST_EXCEPTION",
+                    content = @Content(
+                            schema = @Schema(
+                                    implementation = GlobalExceptionHandler.ErrorResponse.class))),
+    })
+    public ResponseEntity<BaseResponse<String>> sendMailFindId(@Valid @RequestBody MailSendRequest request) {
+
+        // DTO 유효성 검사
+        sendEmailRequestValidator.validate(request);
+
+        // 이메일 유효성 검사
+        memberService.validateEmailFindId(request.email());
+
+        // VO -> DTO 변환
+        MailSendRequestDto mailSendRequestDto = request.toMailSendRequestDto();
+        memberService.send(mailSendRequestDto);
+
+        return ResponseEntity.ok().body(BaseResponse.ofSuccess(HttpStatus.OK.value(), "SUCCESS"));
+    }
+
     @PostMapping(value = "/email/verify", name = "인증코드 검증 ")
     @Operation(summary = "Code Verify API", description = "인증코드 검증 API")
     @ApiResponses(value = {
