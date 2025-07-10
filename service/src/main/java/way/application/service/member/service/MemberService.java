@@ -374,6 +374,11 @@ public class MemberService {
 		memberRepository.isDuplicatedEmail(email);
 	}
 
+	public void validateEmailFindId(String email) {
+
+		memberRepository.validateEmail(email);
+	}
+
 	public LoginResponseDto kakaoLogin(SnsRequestDto request) {
 
 
