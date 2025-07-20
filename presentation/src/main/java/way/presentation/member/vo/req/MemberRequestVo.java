@@ -221,7 +221,7 @@ public class MemberRequestVo {
         }
 
         public void snsLoginRequestValidate() {
-            if (this.code == null) {
+            if (this.code == null || this.code.isEmpty()) {
                 throw new BadRequestException(DTO_BAD_REQUEST_EXCEPTION);
             }
 
@@ -241,7 +241,7 @@ public class MemberRequestVo {
         }
 
         public void SnsJoinRequestValidate() {
-            if (this.code == null || this.userName == null) {
+            if (this.code == null || this.userName == null || this.userName.trim().isEmpty() || this.code.trim().isEmpty()) {
                 throw new BadRequestException(DTO_BAD_REQUEST_EXCEPTION);
             }
         }
