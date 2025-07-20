@@ -16,7 +16,7 @@ public interface MemberMapper {
 	MemberEntity toMemberEntity(SaveMemberRequestDto request, String encodedPassword, String memberCode, String profileImage);
 
 	@Mapping(target = "memberSeq", ignore = true)
-	MemberEntity toKakaoMemberEntity(SnsJoinRequestDto request, String kakaoPassword, String memberCode, String profileImage);
+	MemberEntity toKakaoMemberEntity(SnsJoinRequestDto request, String kakaoId, String memberCode, String profileImage);
 
 	@Mapping(target = "memberSeq", ignore = true)
 	MemberEntity toAppleMemberEntity(SnsJoinRequestDto request, String appleId, String memberCode, String profileImage);
