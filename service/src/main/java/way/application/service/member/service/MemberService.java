@@ -247,7 +247,7 @@ public class MemberService {
 		memberDomain.fireBaseTargetToken(memberEntity);
 
 		// jwt 삭제
-		memberRepository.deleteJwt(memberEntity.getEmail());
+		memberRepository.deleteJwt(String.valueOf(memberEntity.getMemberSeq()));
 
 		// 변경 저장
 		memberRepository.saveMember(memberEntity);
