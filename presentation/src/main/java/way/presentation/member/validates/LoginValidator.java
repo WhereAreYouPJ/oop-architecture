@@ -30,7 +30,7 @@ public class LoginValidator {
     }
 
     private void validateFcmToken(String fcmToken) {
-        if (fcmToken == null || fcmToken.isEmpty()) {
+        if (fcmToken == null) {
             throw new BadRequestException(ErrorResult.DTO_BAD_REQUEST_EXCEPTION);
         }
     }
